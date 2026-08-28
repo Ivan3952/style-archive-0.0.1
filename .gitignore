@@ -1,0 +1,8 @@
+Thumbs.db
+.DS_Store
+desktop.ini
+__pycache__/
+*.pyc
+prepare_github_release.py
+.vscode/
+.idea/

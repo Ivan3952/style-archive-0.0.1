@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>Style Archive</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Style Archive">
+      <span class="brand-mark">STYLE / ARCHIVE</span>
+      <span class="brand-count"><b id="brandVisualCount">000000</b> PREVIEWS · <b id="brandSupportedCount">059676</b> SUPPORTED</span>
+    </a>
+
+    <nav class="top-actions" aria-label="Основные действия">
+      <div class="random-wrap">
+        <button class="text-button" id="randomButton" type="button">RANDOM</button>
+        <div class="random-menu" id="randomMenu" hidden>
+          <button data-random-mode="any" type="button">ANY</button>
+          <button data-random-mode="main" type="button">MAIN</button>
+          <button data-random-mode="alt" type="button">ALT</button>
+          <button data-random-mode="saved" type="button">SAVED</button>
+        </div>
+      </div>
+      <button class="text-button" id="discoverButton" type="button">DISCOVER 12</button>
+      <button class="text-button" id="recentButton" type="button">RECENT <span id="recentCount">0</span></button>
+      <button class="text-button" id="trayButton" type="button">TRAY <span id="trayCount">0</span></button>
+      <button class="text-button" id="savedButton" type="button">SAVED <span id="savedCount">0</span></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div>
+        <p class="eyebrow">PREVIEW AM / STYLE INDEX</p>
+        <h1>Styles</h1>
+      </div>
+
+      <div class="intro-stats" aria-label="Статистика архива">
+        <div class="stat-block">
+          <span class="stat-value" id="visualStat">4,337</span>
+          <span class="stat-label">VISUAL</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-value" id="supportedStat">59,676</span>
+          <span class="stat-label">SUPPORTED</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mode-switch" aria-label="Режим каталога">
+      <button class="mode-tab active" data-mode="visual" type="button">
+        <span>VISUAL ARCHIVE</span>
+        <small>styles with previews</small>
+      </button>
+      <button class="mode-tab" data-mode="supported" type="button">
+        <span>ALL SUPPORTED</span>
+        <small>full model index</small>
+      </button>
+    </section>
+
+    <section class="toolbar" aria-label="Поиск и фильтры">
+      <label class="search-wrap">
+        <span class="search-label">SEARCH</span>
+        <input
+          id="searchInput"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="search every style"
+          aria-label="Поиск по всем стилям"
+        >
+        <span class="search-count" id="resultCount"></span>
+      </label>
+
+      <div class="filters-row" id="visualFilters">
+        <div class="visual-filter-groups">
+          <div class="filter-list" id="filterList" aria-label="Фильтр по пресетам"></div>
+          <div class="sort-list" id="sortList" aria-label="Сортировка визуального архива">
+            <span class="tool-label">SORT</span>
+            <button class="sort-chip active" data-sort="archive" type="button">ARCHIVE</button>
+            <button class="sort-chip" data-sort="newest" type="button">NEWEST</button>
+            <button class="sort-chip" data-sort="oldest" type="button">OLDEST</button>
+            <button class="sort-chip" data-sort="az" type="button">A–Z</button>
+            <button class="sort-chip" data-sort="random" type="button">RANDOM</button>
+          </div>
+        </div>
+        <button class="text-button compact" id="clearButton" type="button">CLEAR</button>
+      </div>
+
+      <div class="supported-tools" id="supportedTools" hidden>
+        <div class="supported-tool-groups">
+          <div class="supported-filter-list" id="supportedFilterList" aria-label="Фильтры полного индекса"></div>
+          <div class="alphabet" id="alphabet" aria-label="Алфавитная навигация"></div>
+        </div>
+        <button class="text-button compact" id="supportedClearButton" type="button">CLEAR</button>
+      </div>
+    </section>
+
+    <section class="archive-shell" id="visualShell">
+      <div class="status-line" id="statusLine">LOADING ARCHIVE</div>
+      <div class="gallery" id="gallery" aria-live="polite"></div>
+      <div class="load-sentinel" id="loadSentinel" aria-hidden="true"></div>
+
+      <section class="search-supported" id="searchSupported" hidden>
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">SUPPORTED</span>
+            <h2 id="searchSupportedTitle">More supported styles</h2>
+          </div>
+          <button class="text-button" id="showAllSupportedResults" type="button">VIEW ALL</button>
+        </div>
+        <div class="supported-list compact-supported-list" id="searchSupportedList"></div>
+      </section>
+    </section>
+
+    <section class="supported-shell" id="supportedShell" hidden>
+      <div class="status-line" id="supportedStatusLine">SUPPORTED INDEX</div>
+      <div class="supported-list" id="supportedList" aria-live="polite"></div>
+      <div class="load-sentinel" id="supportedSentinel" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="utility-drawer" id="utilityDrawer" hidden aria-label="Style tools">
+    <header class="drawer-header">
+      <div class="drawer-tabs">
+        <button class="drawer-tab active" data-drawer-tab="tray" type="button">TRAY <span id="drawerTrayCount">0</span></button>
+        <button class="drawer-tab" data-drawer-tab="recent" type="button">RECENT <span id="drawerRecentCount">0</span></button>
+      </div>
+      <button class="text-button" id="closeDrawer" type="button">CLOSE</button>
+    </header>
+
+    <section class="drawer-panel" id="trayPanel">
+      <div class="drawer-actions">
+        <button class="drawer-primary" id="copyTrayButton" type="button">COPY ALL</button>
+        <button class="text-button compact" id="clearTrayButton" type="button">CLEAR</button>
+      </div>
+      <div class="drawer-list" id="trayList"></div>
+    </section>
+
+    <section class="drawer-panel" id="recentPanel" hidden>
+      <div class="drawer-actions">
+        <span class="drawer-note">LAST VIEWED PREVIEWS</span>
+        <button class="text-button compact" id="clearRecentButton" type="button">CLEAR</button>
+      </div>
+      <div class="drawer-list" id="recentList"></div>
+    </section>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="viewer" id="viewer">
+    <div class="viewer-shell">
+      <header class="viewer-header">
+        <span class="viewer-index" id="viewerIndex"></span>
+        <button class="text-button" id="closeViewer" type="button">CLOSE</button>
+      </header>
+
+      <div class="viewer-media-wrap">
+        <button class="viewer-nav viewer-prev" id="prevMedia" type="button" aria-label="Предыдущее изображение">←</button>
+        <img id="viewerImage" class="viewer-image" alt="">
+        <button class="viewer-nav viewer-next" id="nextMedia" type="button" aria-label="Следующее изображение">→</button>
+      </div>
+
+      <footer class="viewer-footer">
+        <div class="viewer-meta">
+          <button class="viewer-name" id="viewerName" type="button"></button>
+          <div class="viewer-subline">
+            <span id="viewerPreset"></span>
+            <span id="viewerDate"></span>
+            <span id="viewerImageCount"></span>
+          </div>
+        </div>
+
+        <div class="viewer-related" id="viewerRelated" hidden>
+          <span class="viewer-related-label">RELATED</span>
+          <div class="viewer-related-list" id="viewerRelatedList"></div>
+        </div>
+
+        <div class="viewer-actions">
+          <button class="save-button" id="viewerTray" type="button">ADD</button>
+          <button class="save-button" id="viewerSave" type="button">SAVE</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
