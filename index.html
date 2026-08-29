@@ -3,7 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0b0b">
+  <meta id="themeColor" name="theme-color" content="#0b0b0b">
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem("style-archive:theme");
+        const theme = saved === "light" || saved === "dark"
+          ? saved
+          : (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        document.documentElement.dataset.theme = theme;
+      } catch (_) {
+        document.documentElement.dataset.theme = "dark";
+      }
+    })();
+  </script>
   <title>Style Archive</title>
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -11,65 +24,67 @@
   <header class="topbar">
     <a class="brand" href="./" aria-label="Style Archive">
       <span class="brand-mark">STYLE / ARCHIVE</span>
-      <span class="brand-count"><b id="brandVisualCount">000000</b> PREVIEWS · <b id="brandSupportedCount">059676</b> SUPPORTED</span>
+      <span class="brand-count"><b id="brandVisualCount">000000</b> <span data-i18n="previewsShort">PREVIEWS</span> · <b id="brandSupportedCount">059676</b> <span data-i18n="supportedShort">SUPPORTED</span></span>
     </a>
 
     <nav class="top-actions" aria-label="Основные действия">
       <div class="random-wrap">
-        <button class="text-button" id="randomButton" type="button">RANDOM</button>
+        <button class="text-button" id="randomButton" type="button" data-i18n="random">RANDOM</button>
         <div class="random-menu" id="randomMenu" hidden>
-          <button data-random-mode="any" type="button">ANY</button>
+          <button data-random-mode="any" type="button" data-i18n="randomAny">ANY</button>
           <button data-random-mode="main" type="button">MAIN</button>
           <button data-random-mode="alt" type="button">ALT</button>
-          <button data-random-mode="saved" type="button">SAVED</button>
+          <button data-random-mode="saved" type="button" data-i18n="saved">SAVED</button>
         </div>
       </div>
-      <button class="text-button" id="discoverButton" type="button">DISCOVER 12</button>
-      <button class="text-button" id="recentButton" type="button">RECENT <span id="recentCount">0</span></button>
-      <button class="text-button" id="trayButton" type="button">TRAY <span id="trayCount">0</span></button>
-      <button class="text-button" id="savedButton" type="button">SAVED <span id="savedCount">0</span></button>
+      <button class="text-button" id="recentButton" type="button"><span data-i18n="recent">RECENT</span> <span id="recentCount">0</span></button>
+      <button class="text-button" id="trayButton" type="button"><span data-i18n="tray">TRAY</span> <span id="trayCount">0</span></button>
+      <button class="text-button" id="savedButton" type="button"><span data-i18n="saved">SAVED</span> <span id="savedCount">0</span></button>
+      <button class="text-button" id="infoButton" type="button" data-i18n="info">INFO</button>
+      <button class="text-button locale-button" id="languageButton" type="button" aria-label="Switch language">RU</button>
+      <button class="text-button theme-button" id="themeButton" type="button" aria-label="Switch theme" title="Switch theme">◐</button>
     </nav>
   </header>
 
   <main>
     <section class="intro">
       <div>
-        <p class="eyebrow">PREVIEW AM / STYLE INDEX</p>
-        <h1>Styles</h1>
+        <p class="eyebrow"><span>PREVIEW AM</span> / <span data-i18n="styleIndex">STYLE INDEX</span></p>
+        <h1 data-i18n="stylesTitle">Styles</h1>
       </div>
 
       <div class="intro-stats" aria-label="Статистика архива">
         <div class="stat-block">
           <span class="stat-value" id="visualStat">4,337</span>
-          <span class="stat-label">VISUAL</span>
+          <span class="stat-label" data-i18n="visualStat">VISUAL</span>
         </div>
         <div class="stat-block">
           <span class="stat-value" id="supportedStat">59,676</span>
-          <span class="stat-label">SUPPORTED</span>
+          <span class="stat-label" data-i18n="supportedStat">SUPPORTED</span>
         </div>
       </div>
     </section>
 
     <section class="mode-switch" aria-label="Режим каталога">
       <button class="mode-tab active" data-mode="visual" type="button">
-        <span>VISUAL ARCHIVE</span>
-        <small>styles with previews</small>
+        <span data-i18n="visualArchive">VISUAL ARCHIVE</span>
+        <small data-i18n="stylesWithPreviews">styles with previews</small>
       </button>
       <button class="mode-tab" data-mode="supported" type="button">
-        <span>ALL SUPPORTED</span>
-        <small>full model index</small>
+        <span data-i18n="allSupported">ALL SUPPORTED</span>
+        <small data-i18n="fullModelIndex">full model index</small>
       </button>
     </section>
 
     <section class="toolbar" aria-label="Поиск и фильтры">
       <label class="search-wrap">
-        <span class="search-label">SEARCH</span>
+        <span class="search-label" data-i18n="search">SEARCH</span>
         <input
           id="searchInput"
           type="search"
           autocomplete="off"
           spellcheck="false"
-          placeholder="search every style"
+          placeholder="search every style" data-i18n-placeholder="searchPlaceholder"
           aria-label="Поиск по всем стилям"
         >
         <span class="search-count" id="resultCount"></span>
@@ -79,15 +94,17 @@
         <div class="visual-filter-groups">
           <div class="filter-list" id="filterList" aria-label="Фильтр по пресетам"></div>
           <div class="sort-list" id="sortList" aria-label="Сортировка визуального архива">
-            <span class="tool-label">SORT</span>
-            <button class="sort-chip active" data-sort="archive" type="button">ARCHIVE</button>
-            <button class="sort-chip" data-sort="newest" type="button">NEWEST</button>
-            <button class="sort-chip" data-sort="oldest" type="button">OLDEST</button>
+            <span class="tool-label" data-i18n="sort">SORT</span>
+            <button class="sort-chip saved-sort-chip" data-sort="saved-newest" type="button" data-i18n="sortAddedNewest" hidden>ADDED ↓</button>
+            <button class="sort-chip saved-sort-chip" data-sort="saved-oldest" type="button" data-i18n="sortAddedOldest" hidden>ADDED ↑</button>
+            <button class="sort-chip active" data-sort="archive" type="button" data-i18n="sortArchive">ARCHIVE</button>
+            <button class="sort-chip" data-sort="newest" type="button" data-i18n="sortNewest">NEWEST</button>
+            <button class="sort-chip" data-sort="oldest" type="button" data-i18n="sortOldest">OLDEST</button>
             <button class="sort-chip" data-sort="az" type="button">A–Z</button>
-            <button class="sort-chip" data-sort="random" type="button">RANDOM</button>
+            <button class="sort-chip" data-sort="random" type="button" data-i18n="sortRandom">RANDOM</button>
           </div>
         </div>
-        <button class="text-button compact" id="clearButton" type="button">CLEAR</button>
+        <button class="text-button compact" id="clearButton" type="button" data-i18n="clear">CLEAR</button>
       </div>
 
       <div class="supported-tools" id="supportedTools" hidden>
@@ -95,60 +112,235 @@
           <div class="supported-filter-list" id="supportedFilterList" aria-label="Фильтры полного индекса"></div>
           <div class="alphabet" id="alphabet" aria-label="Алфавитная навигация"></div>
         </div>
-        <button class="text-button compact" id="supportedClearButton" type="button">CLEAR</button>
+        <button class="text-button compact" id="supportedClearButton" type="button" data-i18n="clear">CLEAR</button>
       </div>
     </section>
 
     <section class="archive-shell" id="visualShell">
-      <div class="status-line" id="statusLine">LOADING ARCHIVE</div>
+      <div class="status-line" id="statusLine" data-i18n="loadingArchive">LOADING ARCHIVE</div>
+
+      <div class="archive-skeleton" id="archiveSkeleton" aria-hidden="true">
+        <div class="skeleton-column"><div class="skeleton-block s1"></div><div class="skeleton-block s2"></div></div>
+        <div class="skeleton-column"><div class="skeleton-block s3"></div><div class="skeleton-block s1"></div></div>
+        <div class="skeleton-column"><div class="skeleton-block s2"></div><div class="skeleton-block s3"></div></div>
+        <div class="skeleton-column"><div class="skeleton-block s1"></div><div class="skeleton-block s2"></div></div>
+        <div class="skeleton-column"><div class="skeleton-block s3"></div><div class="skeleton-block s1"></div></div>
+      </div>
+
+      <div class="state-panel" id="visualEmptyState" hidden>
+        <span class="state-kicker" data-i18n="nothingFound">NOTHING FOUND</span>
+        <p data-i18n="nothingFoundHint">Try another query or reset the active filters.</p>
+        <button class="state-action" id="visualEmptyReset" type="button" data-i18n="resetFilters">RESET FILTERS</button>
+      </div>
+
+      <div class="state-panel state-panel-error" id="archiveErrorState" hidden>
+        <span class="state-kicker" data-i18n="archiveLoadFailed">ARCHIVE COULD NOT BE LOADED</span>
+        <p data-i18n="archiveLoadFailedHint">Check that the site is running through a local HTTP server and try again.</p>
+        <button class="state-action" id="retryArchiveButton" type="button" data-i18n="retry">RETRY</button>
+      </div>
+
       <div class="gallery" id="gallery" aria-live="polite"></div>
       <div class="load-sentinel" id="loadSentinel" aria-hidden="true"></div>
 
       <section class="search-supported" id="searchSupported" hidden>
         <div class="section-heading">
           <div>
-            <span class="section-kicker">SUPPORTED</span>
-            <h2 id="searchSupportedTitle">More supported styles</h2>
+            <span class="section-kicker" data-i18n="supportedShort">SUPPORTED</span>
+            <h2 id="searchSupportedTitle" data-i18n="moreSupportedStyles">More supported styles</h2>
           </div>
-          <button class="text-button" id="showAllSupportedResults" type="button">VIEW ALL</button>
+          <button class="text-button" id="showAllSupportedResults" type="button" data-i18n="viewAll">VIEW ALL</button>
         </div>
         <div class="supported-list compact-supported-list" id="searchSupportedList"></div>
       </section>
     </section>
 
     <section class="supported-shell" id="supportedShell" hidden>
-      <div class="status-line" id="supportedStatusLine">SUPPORTED INDEX</div>
+      <div class="status-line" id="supportedStatusLine" data-i18n="supportedIndex">SUPPORTED INDEX</div>
+      <div class="state-panel" id="supportedEmptyState" hidden>
+        <span class="state-kicker" data-i18n="nothingFound">NOTHING FOUND</span>
+        <p data-i18n="nothingFoundHint">Try another query or reset the active filters.</p>
+        <button class="state-action" id="supportedEmptyReset" type="button" data-i18n="resetFilters">RESET FILTERS</button>
+      </div>
+      <div class="state-panel state-panel-error" id="supportedErrorState" hidden>
+        <span class="state-kicker" data-i18n="supportedLoadFailed">SUPPORTED INDEX COULD NOT BE LOADED</span>
+        <p data-i18n="supportedLoadFailedHint">The supported style list is unavailable. Try again.</p>
+        <button class="state-action" id="retrySupportedButton" type="button" data-i18n="retry">RETRY</button>
+      </div>
       <div class="supported-list" id="supportedList" aria-live="polite"></div>
       <div class="load-sentinel" id="supportedSentinel" aria-hidden="true"></div>
     </section>
   </main>
 
+  <footer class="site-footer">
+    <span>STYLE / ARCHIVE</span>
+    <span>v0.0.2</span>
+    <span><span data-i18n="verifiedStylesThrough">VERIFIED STYLES THROUGH</span> 18.07.2026</span>
+  </footer>
+
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-  <aside class="utility-drawer" id="utilityDrawer" hidden aria-label="Style tools">
+  <aside class="utility-drawer" id="utilityDrawer" hidden aria-label="Style tools" data-i18n-aria="styleTools">
     <header class="drawer-header">
       <div class="drawer-tabs">
-        <button class="drawer-tab active" data-drawer-tab="tray" type="button">TRAY <span id="drawerTrayCount">0</span></button>
-        <button class="drawer-tab" data-drawer-tab="recent" type="button">RECENT <span id="drawerRecentCount">0</span></button>
+        <button class="drawer-tab active" data-drawer-tab="tray" type="button"><span data-i18n="tray">TRAY</span> <span id="drawerTrayCount">0</span></button>
+        <button class="drawer-tab" data-drawer-tab="recent" type="button"><span data-i18n="recent">RECENT</span> <span id="drawerRecentCount">0</span></button>
       </div>
-      <button class="text-button" id="closeDrawer" type="button">CLOSE</button>
+      <button class="text-button" id="closeDrawer" type="button" data-i18n="close">CLOSE</button>
     </header>
 
     <section class="drawer-panel" id="trayPanel">
       <div class="drawer-actions">
-        <button class="drawer-primary" id="copyTrayButton" type="button">COPY ALL</button>
-        <button class="text-button compact" id="clearTrayButton" type="button">CLEAR</button>
+        <button class="drawer-primary" id="copyTrayButton" type="button" data-i18n="copyAll">COPY ALL</button>
+        <button class="text-button compact" id="clearTrayButton" type="button" data-i18n="clear">CLEAR</button>
       </div>
       <div class="drawer-list" id="trayList"></div>
     </section>
 
     <section class="drawer-panel" id="recentPanel" hidden>
       <div class="drawer-actions">
-        <span class="drawer-note">LAST VIEWED PREVIEWS</span>
-        <button class="text-button compact" id="clearRecentButton" type="button">CLEAR</button>
+        <span class="drawer-note" data-i18n="lastViewedPreviews">LAST VIEWED PREVIEWS</span>
+        <button class="text-button compact" id="clearRecentButton" type="button" data-i18n="clear">CLEAR</button>
       </div>
       <div class="drawer-list" id="recentList"></div>
     </section>
   </aside>
+
+  <dialog class="info-dialog" id="infoDialog">
+    <div class="info-shell">
+      <header class="info-header">
+        <div>
+          <span class="section-kicker">STYLE / ARCHIVE</span>
+          <h2 data-i18n="aboutTitle">ABOUT</h2>
+        </div>
+        <button class="text-button" id="closeInfo" type="button" data-i18n="close">CLOSE</button>
+      </header>
+
+      <div class="info-body">
+        <p class="info-lead" data-i18n="aboutLead">A visual archive and searchable index of model-supported styles.</p>
+
+        <div class="info-stats">
+          <div>
+            <b id="infoVisualCount">—</b>
+            <span data-i18n="visualStat">VISUAL</span>
+          </div>
+          <div>
+            <b id="infoSupportedCount">—</b>
+            <span data-i18n="supportedStat">SUPPORTED</span>
+          </div>
+        </div>
+
+        <div class="info-guide">
+          <section class="info-guide-group">
+            <div class="info-group-title" data-i18n="infoGroupExplore">EXPLORE</div>
+            <div class="info-feature-grid">
+              <article class="info-feature">
+                <span class="info-label" data-i18n="visualArchive">VISUAL ARCHIVE</span>
+                <p data-i18n="visualArchiveFullDesc">Browse only styles that already have visual previews. Click an image to open the full-screen viewer; click a style name to copy it.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="allSupported">ALL SUPPORTED</span>
+                <p data-i18n="allSupportedFullDesc">Browse the complete list of model-supported style identifiers, including styles without previews. Styles with available previews are highlighted.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="search">SEARCH</span>
+                <p data-i18n="searchFullDesc">Search across the archive and the full supported index. The search tolerates minor typos and close spellings.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label">MAIN / ALT</span>
+                <p data-i18n="presetsFullDesc">Filter previews by the preset in which they were generated. In the full index you can also show styles with MAIN, ALT, both presets, previews, or no previews.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="sort">SORT</span>
+                <p data-i18n="sortFullDesc">Reorder the visual archive by archive order, newest, oldest, A–Z, or a new random order.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="alphabetInfoTitle">A–Z INDEX</span>
+                <p data-i18n="alphabetInfoDesc">Use alphabet navigation in All Supported to jump directly to styles beginning with a specific letter or symbol.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="info-guide-group">
+            <div class="info-group-title" data-i18n="infoGroupTools">STYLE TOOLS</div>
+            <div class="info-feature-grid">
+              <article class="info-feature">
+                <span class="info-label" data-i18n="random">RANDOM</span>
+                <p data-i18n="randomFullDesc">Open a random visual style. The menu can limit the random pool to ANY, MAIN, ALT, or your SAVED styles.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="tray">ADDED</span>
+                <p data-i18n="addedFullDesc">Build a temporary working list of style names. Add styles from cards, the supported index, Recent, or the viewer, then copy the whole list at once.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="saved">SAVED</span>
+                <p data-i18n="savedFullDesc">Save styles to a persistent local favourites list. Press SAVED in the header to show only saved visual styles. In Saved mode, ADDED ↓ / ADDED ↑ sorts them by the moment you saved them.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="recent">RECENT</span>
+                <p data-i18n="recentFullDesc">Keeps the latest viewed preview styles so you can quickly return to something you opened earlier.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="copyInfoTitle">ONE-CLICK COPY</span>
+                <p data-i18n="copyInfoDesc">Click a style name anywhere in the interface to copy its identifier. Added can copy several selected styles in one line.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="localStorageInfoTitle">LOCAL STORAGE</span>
+                <p data-i18n="localStorageInfoDesc">Saved, Added, Recent, language, and theme are stored only in your browser. No account is required.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="info-guide-group">
+            <div class="info-group-title" data-i18n="infoGroupViewer">PREVIEW VIEWER</div>
+            <div class="info-feature-grid">
+              <article class="info-feature">
+                <span class="info-label" data-i18n="viewerInfoTitle">FULL-SCREEN PREVIEW</span>
+                <p data-i18n="viewerInfoDesc">Open an image at maximum available size. If a style has several previews, use the arrows to move between them.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="related">RELATED</span>
+                <p data-i18n="relatedFullDesc">Shows additional previewed styles that share an available preset with the current style. This is preset-based related content, not visual-similarity search.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label" data-i18n="previewMetaInfoTitle">PREVIEW INFO</span>
+                <p data-i18n="previewMetaInfoDesc">The viewer shows the archive position, preset, publication date, and the number of available preview images.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="info-guide-group">
+            <div class="info-group-title" data-i18n="infoGroupInterface">INTERFACE</div>
+            <div class="info-feature-grid">
+              <article class="info-feature">
+                <span class="info-label" data-i18n="themeInfoTitle">LIGHT / DARK</span>
+                <p data-i18n="themeInfoDesc">Use the ◐ button to switch between light and dark themes. Your choice is remembered by the browser.</p>
+              </article>
+              <article class="info-feature">
+                <span class="info-label">RU / EN</span>
+                <p data-i18n="languageInfoDesc">Switch the interface between Russian and English without changing style identifiers or preset names.</p>
+              </article>
+              <article class="info-feature info-feature-shortcuts">
+                <span class="info-label" data-i18n="shortcutsInfoTitle">KEYBOARD</span>
+                <div class="shortcut-list">
+                  <div><kbd>/</kbd><span data-i18n="shortcutSearch">Focus search</span></div>
+                  <div><kbd>R</kbd><span data-i18n="shortcutRandom">Random style</span></div>
+                  <div><kbd>C</kbd><span data-i18n="shortcutCopy">Copy current style</span></div>
+                  <div><kbd>←</kbd><kbd>→</kbd><span data-i18n="shortcutPreview">Previous / next preview</span></div>
+                  <div><kbd>Esc</kbd><span data-i18n="shortcutClose">Close open panel or viewer</span></div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <div class="info-version">
+          <span data-i18n="version">VERSION</span>
+          <b>0.0.2</b>
+          <span data-i18n="localBuildDate">RELEASE · 29.08.2026</span>
+          <span class="info-verified"><span data-i18n="verifiedStylesThrough">VERIFIED STYLES THROUGH</span> <b>18.07.2026</b></span>
+        </div>
+      </div>
+    </div>
+  </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -156,7 +348,7 @@
     <div class="viewer-shell">
       <header class="viewer-header">
         <span class="viewer-index" id="viewerIndex"></span>
-        <button class="text-button" id="closeViewer" type="button">CLOSE</button>
+        <button class="text-button" id="closeViewer" type="button" data-i18n="close">CLOSE</button>
       </header>
 
       <div class="viewer-media-wrap">
@@ -176,13 +368,13 @@
         </div>
 
         <div class="viewer-related" id="viewerRelated" hidden>
-          <span class="viewer-related-label">RELATED</span>
+          <span class="viewer-related-label" data-i18n="related">RELATED</span>
           <div class="viewer-related-list" id="viewerRelatedList"></div>
         </div>
 
         <div class="viewer-actions">
-          <button class="save-button" id="viewerTray" type="button">ADD</button>
-          <button class="save-button" id="viewerSave" type="button">SAVE</button>
+          <button class="save-button" id="viewerTray" type="button" data-i18n="add">ADD</button>
+          <button class="save-button" id="viewerSave" type="button" data-i18n="save">SAVE</button>
         </div>
       </footer>
     </div>

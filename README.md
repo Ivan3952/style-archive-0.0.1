@@ -1,33 +1,20 @@
-# Style Archive
+# STYLE / ARCHIVE
 
-**Version 0.0.1**
+**Version 0.0.2**
 
-Independent visual archive and searchable index of model-supported styles.
+Visual archive and searchable index of model-supported styles.
 
-## Current archive
+## v0.0.2
 
-- 4,337 visual style entries with previews
-- 59,676 supported style names
-- MAIN / ALT preview metadata
-- fuzzy search
-- filters and sorting
-- Saved, Recent, Style Tray
-- Random and Discover modes
-- mobile-friendly lazy-loaded gallery
+- light / dark theme
+- Russian / English localization
+- expanded INFO / help
+- improved typography and mobile UI
+- improved loading, empty and error states
+- clearer copy / save / add feedback
+- ADDED replaces TRAY
+- Saved sorting by time saved
+- keyboard shortcuts documented
+- archive validation and quality pass
 
-## Run locally
-
-```bash
-python -m http.server 8000
-```
-
-Open `http://localhost:8000`.
-
-## Notes
-
-Style identifiers are presented as model-recognized labels.
-This project is independent and is not affiliated with artists or creators whose names may appear in style identifiers.
-
-## Version
-
-`v0.0.1`
+Verified style previews are included through **18.07.2026**.

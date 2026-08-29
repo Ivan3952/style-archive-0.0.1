@@ -5,6 +5,286 @@
   const VISUAL_SUPPORTED_PREVIEW_LIMIT = window.innerWidth <= 680 ? 10 : 18;
   const RECENT_LIMIT = 24;
 
+  const LANG_KEY = "style-archive:lang";
+  const THEME_KEY = "style-archive:theme";
+
+  const I18N = {
+    en: {
+      previewsShort: "PREVIEWS",
+      supportedShort: "SUPPORTED",
+      styleIndex: "STYLE INDEX",
+      stylesTitle: "Styles",
+      visualStat: "VISUAL",
+      supportedStat: "SUPPORTED",
+      random: "RANDOM",
+      randomAny: "ANY",
+      discover12: "DISCOVER 12",
+      recent: "RECENT",
+      tray: "ADDED",
+      saved: "SAVED",
+      info: "INFO",
+      aboutTitle: "ABOUT",
+      aboutLead: "A visual archive and searchable index of model-supported styles.",
+      visualArchiveDesc: "Styles with visual previews available in the archive.",
+      allSupportedDesc: "The complete searchable list of style identifiers supported by the model.",
+      presetsDesc: "Available preview presets for a style.",
+      infoGroupExplore: "EXPLORE",
+      infoGroupTools: "STYLE TOOLS",
+      infoGroupViewer: "PREVIEW VIEWER",
+      infoGroupInterface: "INTERFACE",
+      visualArchiveFullDesc: "Browse only styles that already have visual previews. Click an image to open the full-screen viewer; click a style name to copy it.",
+      allSupportedFullDesc: "Browse the complete list of model-supported style identifiers, including styles without previews. Styles with available previews are highlighted.",
+      searchFullDesc: "Search across the archive and the full supported index. The search tolerates minor typos and close spellings.",
+      presetsFullDesc: "Filter previews by the preset in which they were generated. In the full index you can also show styles with MAIN, ALT, both presets, previews, or no previews.",
+      sortFullDesc: "Reorder the visual archive by archive order, newest, oldest, A–Z, or a new random order.",
+      alphabetInfoTitle: "A–Z INDEX",
+      alphabetInfoDesc: "Use alphabet navigation in All Supported to jump directly to styles beginning with a specific letter or symbol.",
+      randomFullDesc: "Open a random visual style. The menu can limit the random pool to ANY, MAIN, ALT, or your SAVED styles.",
+      addedFullDesc: "Build a temporary working list of style names. Add styles from cards, the supported index, Recent, or the viewer, then copy the whole list at once.",
+      savedFullDesc: "Save styles to a persistent local favourites list. Press SAVED in the header to show only saved visual styles. In Saved mode, ADDED ↓ shows the most recently saved styles first, while ADDED ↑ shows the oldest saved styles first.",
+      recentFullDesc: "Keeps the latest viewed preview styles so you can quickly return to something you opened earlier.",
+      copyInfoTitle: "ONE-CLICK COPY",
+      copyInfoDesc: "Click a style name anywhere in the interface to copy its identifier. Added can copy several selected styles in one line.",
+      localStorageInfoTitle: "LOCAL STORAGE",
+      localStorageInfoDesc: "Saved, Added, Recent, language, and theme are stored only in your browser. No account is required.",
+      viewerInfoTitle: "FULL-SCREEN PREVIEW",
+      viewerInfoDesc: "Open an image at maximum available size. If a style has several previews, use the arrows to move between them.",
+      relatedFullDesc: "Shows additional previewed styles that share an available preset with the current style. This is preset-based related content, not visual-similarity search.",
+      previewMetaInfoTitle: "PREVIEW INFO",
+      previewMetaInfoDesc: "The viewer shows the archive position, preset, publication date, and the number of available preview images.",
+      themeInfoTitle: "LIGHT / DARK",
+      themeInfoDesc: "Use the ◐ button to switch between light and dark themes. Your choice is remembered by the browser.",
+      languageInfoDesc: "Switch the interface between Russian and English without changing style identifiers or preset names.",
+      shortcutsInfoTitle: "KEYBOARD",
+      shortcutsInfoDesc: "/ focuses search, R opens a random style, C copies the current style in the viewer, ← / → switch preview images, and Esc closes the side panel.",
+      version: "VERSION",
+      visualArchive: "VISUAL ARCHIVE",
+      stylesWithPreviews: "styles with previews",
+      allSupported: "ALL SUPPORTED",
+      fullModelIndex: "full model index",
+      search: "SEARCH",
+      searchPlaceholder: "search every style",
+      sort: "SORT",
+      sortArchive: "ARCHIVE",
+      sortNewest: "NEWEST",
+      sortOldest: "OLDEST",
+      sortAddedNewest: "ADDED ↓",
+      sortAddedOldest: "ADDED ↑",
+      sortRandom: "RANDOM",
+      clear: "CLEAR",
+      loadingArchive: "LOADING ARCHIVE",
+      moreSupportedStyles: "More supported styles",
+      viewAll: "VIEW ALL",
+      supportedIndex: "SUPPORTED INDEX",
+      styleTools: "Style tools",
+      close: "CLOSE",
+      copyAll: "COPY ALL",
+      lastViewedPreviews: "LAST VIEWED PREVIEWS",
+      related: "RELATED",
+      add: "ADD",
+      added: "ADDED ✓",
+      save: "SAVE",
+      savedState: "SAVED ✓",
+      remove: "REMOVE",
+      removed: "REMOVED",
+      copy: "COPY",
+      copied: "COPIED ✓",
+      allCopied: "ALL COPIED ✓",
+      savedToast: "SAVED ✓",
+      unsavedToast: "REMOVED FROM SAVED",
+      addedToast: "ADDED ✓",
+      removedToast: "REMOVED FROM ADDED",
+      cleared: "CLEARED",
+      nothingFound: "NOTHING FOUND",
+      nothingFoundHint: "Try another query or reset the active filters.",
+      resetFilters: "RESET FILTERS",
+      archiveLoadFailed: "ARCHIVE COULD NOT BE LOADED",
+      archiveLoadFailedHint: "Check that the site is running through a local HTTP server and try again.",
+      supportedLoadFailed: "SUPPORTED INDEX COULD NOT BE LOADED",
+      supportedLoadFailedHint: "The supported style list is unavailable. Try again.",
+      retry: "RETRY",
+      localBuildDate: "RELEASE · 29.08.2026",
+      verifiedStylesThrough: "VERIFIED STYLES THROUGH",
+      shortcutSearch: "Focus search",
+      shortcutRandom: "Random style",
+      shortcutCopy: "Copy current style",
+      shortcutPreview: "Previous / next preview",
+      shortcutClose: "Close open panel or viewer",
+      preview: "PREVIEW",
+      previews: "PREVIEWS",
+      noPreview: "NO PREVIEW",
+      all: "ALL",
+      matches: "MATCHES",
+      visualIndex: "VISUAL INDEX",
+      discoverStatus: "DISCOVER",
+      savedStatus: "SAVED",
+      supportedSearch: "SUPPORTED SEARCH",
+      loadingSupportedIndex: "LOADING SUPPORTED INDEX",
+      supportedGeneric: "SUPPORTED",
+      dataError: "SUPPORTED DATA ERROR",
+      empty: "EMPTY",
+      trayEmptyToast: "NOTHING ADDED",
+      trayEmpty: "Added styles appear here. Copy the full list in one click.",
+      recentEmpty: "Viewed styles will appear here.",
+      noMatchingStyles: "No matching styles.",
+      availablePreviewPresets: "Available preview presets",
+      untitled: "Untitled",
+      styleAlt: "Style",
+      archiveDataError: "ERROR / ARCHIVE DATA NOT FOUND",
+      archiveDataHint: "Could not load <code>./data/styles.json</code> and <code>./data/media.json</code>. Run the site through a local HTTP server instead of opening index.html directly.",
+      switchToRussian: "Switch to Russian",
+      switchToEnglish: "Switch to English",
+      switchTheme: "Switch theme",
+      lightTheme: "Light theme",
+      darkTheme: "Dark theme",
+      moreSupportedMatches: "{count} more supported matches",
+    },
+    ru: {
+      previewsShort: "ПРЕВЬЮ",
+      supportedShort: "ПОДДЕРЖИВАЕМЫХ",
+      styleIndex: "ИНДЕКС СТИЛЕЙ",
+      stylesTitle: "Стили",
+      visualStat: "С ПРЕВЬЮ",
+      supportedStat: "ПОДДЕРЖИВАЕТСЯ",
+      random: "СЛУЧАЙНЫЙ",
+      randomAny: "ЛЮБОЙ",
+      discover12: "ПОДБОРКА 12",
+      recent: "НЕДАВНИЕ",
+      tray: "ДОБАВЛЕННЫЕ",
+      saved: "ИЗБРАННОЕ",
+      info: "ИНФО",
+      aboutTitle: "О ПРОЕКТЕ",
+      aboutLead: "Визуальный архив и поисковый индекс стилей, поддерживаемых моделью.",
+      visualArchiveDesc: "Стили, для которых в архиве доступны визуальные превью.",
+      allSupportedDesc: "Полный доступный для поиска список идентификаторов стилей, поддерживаемых моделью.",
+      presetsDesc: "Доступные варианты превью для конкретного стиля.",
+      infoGroupExplore: "ПОИСК И ПРОСМОТР",
+      infoGroupTools: "ИНСТРУМЕНТЫ",
+      infoGroupViewer: "ПРОСМОТР ПРЕВЬЮ",
+      infoGroupInterface: "ИНТЕРФЕЙС",
+      visualArchiveFullDesc: "Здесь находятся только стили, для которых уже есть визуальные превью. Нажмите на изображение, чтобы открыть полноэкранный просмотр, или на название стиля, чтобы сразу его скопировать.",
+      allSupportedFullDesc: "Полный список идентификаторов стилей, поддерживаемых моделью, включая стили без превью. Стили с доступными визуальными примерами выделяются отдельно.",
+      searchFullDesc: "Поиск работает одновременно по визуальному архиву и полному списку поддерживаемых стилей. Допускаются небольшие опечатки и близкие варианты написания.",
+      presetsFullDesc: "Позволяют отфильтровать превью по пресету, в котором они были получены. В полном списке также доступны фильтры MAIN, ALT, MAIN + ALT, с превью и без превью.",
+      sortFullDesc: "Визуальный архив можно сортировать по исходному порядку, от новых к старым, от старых к новым, по алфавиту или в случайном порядке.",
+      alphabetInfoTitle: "АЛФАВИТ A–Z",
+      alphabetInfoDesc: "Во вкладке «Все поддерживаемые» можно быстро перейти к стилям, начинающимся с нужной буквы или символа.",
+      randomFullDesc: "Открывает случайный стиль с превью. В меню можно ограничить выбор всеми стилями, только MAIN, только ALT или только сохранёнными стилями.",
+      addedFullDesc: "Временная рабочая подборка стилей. Стили можно добавлять из карточек, полного списка, «Недавних» и полноэкранного просмотра, а затем скопировать весь список одной строкой.",
+      savedFullDesc: "Постоянное локальное избранное. Кнопка «Избранное» в шапке позволяет показать только сохранённые визуальные стили.",
+      recentFullDesc: "Автоматически сохраняет последние просмотренные стили с превью, чтобы к ним можно было быстро вернуться.",
+      copyInfoTitle: "КОПИРОВАНИЕ В ОДИН КЛИК",
+      copyInfoDesc: "Нажмите на название стиля в любой части сайта, чтобы скопировать его идентификатор. Через «Добавленные» можно скопировать сразу несколько выбранных стилей одной строкой.",
+      localStorageInfoTitle: "ЛОКАЛЬНОЕ ХРАНЕНИЕ",
+      localStorageInfoDesc: "Избранное, Добавленные, Недавние, язык и тема сохраняются только в вашем браузере. Регистрация и аккаунт не требуются.",
+      viewerInfoTitle: "ПОЛНОЭКРАННЫЙ ПРОСМОТР",
+      viewerInfoDesc: "Открывает изображение в максимально доступном размере. Если у стиля несколько превью, между ними можно переключаться стрелками.",
+      relatedFullDesc: "Показывает дополнительные стили с превью, у которых совпадает доступный пресет с текущим стилем. Сейчас это подборка по пресету, а не поиск по визуальному сходству.",
+      previewMetaInfoTitle: "ИНФОРМАЦИЯ О ПРЕВЬЮ",
+      previewMetaInfoDesc: "В просмотрщике отображаются позиция в архиве, пресет, дата публикации и количество доступных изображений стиля.",
+      themeInfoTitle: "СВЕТЛАЯ / ТЁМНАЯ ТЕМА",
+      themeInfoDesc: "Кнопка ◐ переключает светлую и тёмную тему. Выбранный вариант запоминается браузером.",
+      languageInfoDesc: "Кнопка RU / EN переключает интерфейс между русским и английским языком, не изменяя названия стилей и пресетов.",
+      shortcutsInfoTitle: "КЛАВИАТУРА",
+      shortcutsInfoDesc: "/ переводит курсор в поиск, R открывает случайный стиль, C копирует текущий стиль в просмотрщике, ← / → переключают превью, Esc закрывает боковую панель.",
+      version: "ВЕРСИЯ",
+      visualArchive: "ВИЗУАЛЬНЫЙ АРХИВ",
+      stylesWithPreviews: "стили с доступными превью",
+      allSupported: "ВСЕ ПОДДЕРЖИВАЕМЫЕ",
+      fullModelIndex: "полный список модели",
+      search: "ПОИСК",
+      searchPlaceholder: "найти стиль",
+      sort: "СОРТИРОВКА",
+      sortArchive: "АРХИВ",
+      sortNewest: "НОВЫЕ",
+      sortOldest: "СТАРЫЕ",
+      sortAddedNewest: "ДОБАВЛЕНЫ ↓",
+      sortAddedOldest: "ДОБАВЛЕНЫ ↑",
+      sortRandom: "СЛУЧАЙНО",
+      clear: "СБРОСИТЬ",
+      loadingArchive: "ЗАГРУЗКА АРХИВА",
+      moreSupportedStyles: "Другие поддерживаемые стили",
+      viewAll: "ПОКАЗАТЬ ВСЕ",
+      supportedIndex: "СПИСОК ПОДДЕРЖИВАЕМЫХ",
+      styleTools: "Инструменты стилей",
+      close: "ЗАКРЫТЬ",
+      copyAll: "КОПИРОВАТЬ ВСЕ",
+      lastViewedPreviews: "ПОСЛЕДНИЕ ПРОСМОТРЕННЫЕ",
+      related: "ЕЩЁ",
+      add: "ДОБАВИТЬ",
+      added: "ДОБАВЛЕНО ✓",
+      save: "СОХРАНИТЬ",
+      savedState: "СОХРАНЕНО ✓",
+      remove: "УДАЛИТЬ",
+      removed: "УДАЛЕНО",
+      copy: "КОПИРОВАТЬ",
+      copied: "СКОПИРОВАНО ✓",
+      allCopied: "ВСЁ СКОПИРОВАНО ✓",
+      savedToast: "СОХРАНЕНО ✓",
+      unsavedToast: "УДАЛЕНО ИЗ ИЗБРАННОГО",
+      addedToast: "ДОБАВЛЕНО ✓",
+      removedToast: "УДАЛЕНО ИЗ ДОБАВЛЕННЫХ",
+      cleared: "ОЧИЩЕНО",
+      nothingFound: "НИЧЕГО НЕ НАЙДЕНО",
+      nothingFoundHint: "Попробуйте изменить запрос или сбросить активные фильтры.",
+      resetFilters: "СБРОСИТЬ ФИЛЬТРЫ",
+      archiveLoadFailed: "НЕ УДАЛОСЬ ЗАГРУЗИТЬ АРХИВ",
+      archiveLoadFailedHint: "Проверьте, что сайт запущен через локальный HTTP-сервер, и повторите попытку.",
+      supportedLoadFailed: "НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК",
+      supportedLoadFailedHint: "Полный список поддерживаемых стилей сейчас недоступен. Повторите попытку.",
+      retry: "ПОВТОРИТЬ",
+      localBuildDate: "РЕЛИЗ · 29.08.2026",
+      verifiedStylesThrough: "ПРОВЕРЕННЫЕ СТИЛИ ДО",
+      shortcutSearch: "Перейти к поиску",
+      shortcutRandom: "Случайный стиль",
+      shortcutCopy: "Скопировать текущий стиль",
+      shortcutPreview: "Предыдущее / следующее превью",
+      shortcutClose: "Закрыть окно или просмотр",
+      preview: "ПРЕВЬЮ",
+      previews: "ПРЕВЬЮ",
+      noPreview: "БЕЗ ПРЕВЬЮ",
+      all: "ВСЕ",
+      matches: "СОВПАДЕНИЙ",
+      visualIndex: "ВИЗУАЛЬНЫЙ АРХИВ",
+      discoverStatus: "ПОДБОРКА",
+      savedStatus: "ИЗБРАННОЕ",
+      supportedSearch: "ПОИСК ПО ПОДДЕРЖИВАЕМЫМ",
+      loadingSupportedIndex: "ЗАГРУЗКА СПИСКА",
+      supportedGeneric: "ПОДДЕРЖИВАЕТСЯ",
+      dataError: "ОШИБКА ДАННЫХ",
+      empty: "ПУСТО",
+      trayEmptyToast: "НИЧЕГО НЕ ДОБАВЛЕНО",
+      trayEmpty: "Добавленные стили появятся здесь. Весь список можно скопировать одним нажатием.",
+      recentEmpty: "Здесь появятся последние просмотренные стили.",
+      noMatchingStyles: "Подходящих стилей не найдено.",
+      availablePreviewPresets: "Доступные пресеты превью",
+      untitled: "Без названия",
+      styleAlt: "Стиль",
+      archiveDataError: "ОШИБКА / ДАННЫЕ АРХИВА НЕ НАЙДЕНЫ",
+      archiveDataHint: "Не удалось загрузить <code>./data/styles.json</code> и <code>./data/media.json</code>. Запускай сайт через локальный HTTP-сервер, а не двойным кликом по index.html.",
+      switchToRussian: "Переключить на русский",
+      switchToEnglish: "Переключить на английский",
+      switchTheme: "Переключить тему",
+      lightTheme: "Светлая тема",
+      darkTheme: "Тёмная тема",
+      moreSupportedMatches: "Ещё поддерживаемых совпадений: {count}",
+    },
+  };
+
+  const initialLanguage = (() => {
+    try {
+      const saved = localStorage.getItem(LANG_KEY);
+      if (saved === "ru" || saved === "en") return saved;
+    } catch {}
+    return String(navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en";
+  })();
+
+  const initialTheme = (() => {
+    const domTheme = document.documentElement.dataset.theme;
+    if (domTheme === "light" || domTheme === "dark") return domTheme;
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  })();
+
   const readStoredArray = (key) => {
     try {
       const value = JSON.parse(localStorage.getItem(key) || "[]");
@@ -13,6 +293,37 @@
       return [];
     }
   };
+
+  const initialSavedIds = readStoredArray("style-archive:saved")
+    .filter((value) => typeof value === "string" && value);
+
+  const readSavedAt = (savedIds) => {
+    const map = new Map();
+    let stored = [];
+
+    try {
+      const parsed = JSON.parse(localStorage.getItem("style-archive:saved-at") || "[]");
+      if (Array.isArray(parsed)) stored = parsed;
+    } catch {}
+
+    stored.forEach((entry) => {
+      if (!Array.isArray(entry) || entry.length < 2) return;
+      const id = String(entry[0] || "");
+      const stamp = Number(entry[1]);
+      if (id && Number.isFinite(stamp)) map.set(id, stamp);
+    });
+
+    // Migration for favourites created before v0.0.2:
+    // Set preserves the old insertion order, so sequential legacy values
+    // retain "first saved → last saved" without deleting old favourites.
+    savedIds.forEach((id, index) => {
+      if (!map.has(id)) map.set(id, index + 1);
+    });
+
+    return map;
+  };
+
+  const initialSavedAt = readSavedAt(initialSavedIds);
 
   const state = {
     mode: "visual",
@@ -31,7 +342,8 @@
     randomSortSeed: Date.now(),
     savedOnly: false,
     discoveryStyles: null,
-    saved: new Set(readStoredArray("style-archive:saved")),
+    saved: new Set(initialSavedIds),
+    savedAt: initialSavedAt,
     tray: readStoredArray("style-archive:tray").filter((value) => typeof value === "string" && value.trim()),
     recent: readStoredArray("style-archive:recent").filter((value) => typeof value === "string"),
     drawerTab: "tray",
@@ -48,6 +360,8 @@
     supportedLastLetter: "",
     supportedLetter: "all",
     supportedFilter: "all",
+    lang: initialLanguage,
+    theme: initialTheme,
   };
 
   const el = {
@@ -74,14 +388,28 @@
     recentButton: document.querySelector("#recentButton"),
     trayButton: document.querySelector("#trayButton"),
     savedButton: document.querySelector("#savedButton"),
+    infoButton: document.querySelector("#infoButton"),
+    infoDialog: document.querySelector("#infoDialog"),
+    closeInfo: document.querySelector("#closeInfo"),
+    infoVisualCount: document.querySelector("#infoVisualCount"),
+    infoSupportedCount: document.querySelector("#infoSupportedCount"),
     gallery: document.querySelector("#gallery"),
     statusLine: document.querySelector("#statusLine"),
+    archiveSkeleton: document.querySelector("#archiveSkeleton"),
+    visualEmptyState: document.querySelector("#visualEmptyState"),
+    visualEmptyReset: document.querySelector("#visualEmptyReset"),
+    archiveErrorState: document.querySelector("#archiveErrorState"),
+    retryArchiveButton: document.querySelector("#retryArchiveButton"),
     visualShell: document.querySelector("#visualShell"),
     supportedShell: document.querySelector("#supportedShell"),
     sentinel: document.querySelector("#loadSentinel"),
     supportedSentinel: document.querySelector("#supportedSentinel"),
     supportedList: document.querySelector("#supportedList"),
     supportedStatusLine: document.querySelector("#supportedStatusLine"),
+    supportedEmptyState: document.querySelector("#supportedEmptyState"),
+    supportedEmptyReset: document.querySelector("#supportedEmptyReset"),
+    supportedErrorState: document.querySelector("#supportedErrorState"),
+    retrySupportedButton: document.querySelector("#retrySupportedButton"),
     searchSupported: document.querySelector("#searchSupported"),
     searchSupportedTitle: document.querySelector("#searchSupportedTitle"),
     searchSupportedList: document.querySelector("#searchSupportedList"),
@@ -114,8 +442,107 @@
     closeViewer: document.querySelector("#closeViewer"),
     prevMedia: document.querySelector("#prevMedia"),
     nextMedia: document.querySelector("#nextMedia"),
+    languageButton: document.querySelector("#languageButton"),
+    themeButton: document.querySelector("#themeButton"),
+    themeColor: document.querySelector("#themeColor"),
     modeTabs: [...document.querySelectorAll("[data-mode]")],
   };
+
+  function t(key, vars = {}) {
+    const dict = I18N[state.lang] || I18N.en;
+    let value = dict[key] ?? I18N.en[key] ?? key;
+    Object.entries(vars).forEach(([name, replacement]) => {
+      value = String(value).replaceAll(`{${name}}`, String(replacement));
+    });
+    return value;
+  }
+
+  function previewCountLabel(count) {
+    const n = Number(count) || 0;
+    if (state.lang === "ru") return `${n} ${t("preview")}`;
+    return `${n} ${n === 1 ? t("preview") : t("previews")}`;
+  }
+
+  function supportedFilterLabel(filter) {
+    if (filter === "preview") return t("preview");
+    if (filter === "no-preview") return t("noPreview");
+    if (filter === "main") return "MAIN";
+    if (filter === "alt") return "ALT";
+    if (filter === "both") return "MAIN + ALT";
+    return "";
+  }
+
+  function applyStaticLocale() {
+    document.documentElement.lang = state.lang;
+
+    document.querySelectorAll("[data-i18n]").forEach((node) => {
+      const key = node.dataset.i18n;
+      if (key) node.textContent = t(key);
+    });
+
+    document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+      const key = node.dataset.i18nPlaceholder;
+      if (key) node.setAttribute("placeholder", t(key));
+    });
+
+    document.querySelectorAll("[data-i18n-aria]").forEach((node) => {
+      const key = node.dataset.i18nAria;
+      if (key) node.setAttribute("aria-label", t(key));
+    });
+
+    if (el.languageButton) {
+      const nextLang = state.lang === "ru" ? "en" : "ru";
+      el.languageButton.textContent = nextLang.toUpperCase();
+      el.languageButton.setAttribute("aria-label", state.lang === "ru" ? t("switchToEnglish") : t("switchToRussian"));
+      el.languageButton.title = state.lang === "ru" ? t("switchToEnglish") : t("switchToRussian");
+    }
+
+    updateThemeButton();
+  }
+
+  function applyTheme(theme, persist = true) {
+    state.theme = theme === "light" ? "light" : "dark";
+    document.documentElement.dataset.theme = state.theme;
+
+    if (el.themeColor) {
+      el.themeColor.setAttribute("content", state.theme === "light" ? "#f4f2ed" : "#0b0b0b");
+    }
+
+    if (persist) {
+      try { localStorage.setItem(THEME_KEY, state.theme); } catch {}
+    }
+
+    updateThemeButton();
+  }
+
+  function updateThemeButton() {
+    if (!el.themeButton) return;
+    const targetLabel = state.theme === "dark" ? t("lightTheme") : t("darkTheme");
+    el.themeButton.textContent = "◐";
+    el.themeButton.setAttribute("aria-label", `${t("switchTheme")}: ${targetLabel}`);
+    el.themeButton.title = `${t("switchTheme")}: ${targetLabel}`;
+  }
+
+  function toggleTheme() {
+    applyTheme(state.theme === "dark" ? "light" : "dark");
+  }
+
+  function setLanguage(lang) {
+    if (lang !== "ru" && lang !== "en") return;
+    state.lang = lang;
+    try { localStorage.setItem(LANG_KEY, lang); } catch {}
+
+    applyStaticLocale();
+    buildFilters();
+    buildAlphabet();
+    if (state.supportedIndex) buildSupportedFilters();
+
+    if (state.mode === "visual") applyVisualFilters(true);
+    else if (state.supportedIndex) applySupportedFilters(true);
+
+    if (!el.utilityDrawer.hidden) renderDrawer();
+    if (el.viewer.open && state.viewerStyle) renderViewer();
+  }
 
   const toLocalPath = (path) => {
     if (!path) return "";
@@ -149,7 +576,7 @@
     if (!iso) return "";
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return "";
-    return new Intl.DateTimeFormat("ru-RU", {
+    return new Intl.DateTimeFormat(state.lang === "ru" ? "ru-RU" : "en-GB", {
       day: "2-digit",
       month: "2-digit",
       year: "2-digit",
@@ -249,6 +676,9 @@
 
   function savePersistentState() {
     localStorage.setItem("style-archive:saved", JSON.stringify([...state.saved]));
+    localStorage.setItem("style-archive:saved-at", JSON.stringify(
+      [...state.savedAt.entries()].filter(([id]) => state.saved.has(id))
+    ));
     localStorage.setItem("style-archive:tray", JSON.stringify(state.tray));
     localStorage.setItem("style-archive:recent", JSON.stringify(state.recent));
     updateUtilityCounts();
@@ -266,14 +696,14 @@
     window.clearTimeout(state.toastTimer);
     el.toast.textContent = text;
     el.toast.classList.add("show");
-    state.toastTimer = window.setTimeout(() => el.toast.classList.remove("show"), 950);
+    state.toastTimer = window.setTimeout(() => el.toast.classList.remove("show"), 1250);
   }
 
-  async function copyValue(value, toast = "COPIED") {
+  async function copyValue(value, toast = null) {
     if (!value) return;
     try {
       await navigator.clipboard.writeText(value);
-      showToast(toast);
+      showToast(toast || t("copied"));
     } catch {
       const temp = document.createElement("textarea");
       temp.value = value;
@@ -283,7 +713,7 @@
       temp.select();
       document.execCommand("copy");
       temp.remove();
-      showToast(toast);
+      showToast(toast || t("copied"));
     }
   }
 
@@ -348,16 +778,23 @@
   }
 
   function toggleSaved(styleId) {
-    if (state.saved.has(styleId)) state.saved.delete(styleId);
-    else state.saved.add(styleId);
+    const willSave = !state.saved.has(styleId);
+    if (willSave) {
+      state.saved.add(styleId);
+      state.savedAt.set(styleId, Date.now());
+    } else {
+      state.saved.delete(styleId);
+      state.savedAt.delete(styleId);
+    }
 
     savePersistentState();
+    showToast(t(willSave ? "savedToast" : "unsavedToast"));
 
     document.querySelectorAll("[data-save-id]").forEach((button) => {
       if (button.dataset.saveId !== styleId) return;
       const active = state.saved.has(styleId);
       button.classList.toggle("saved", active);
-      button.textContent = active ? "SAVED" : "SAVE";
+      button.textContent = active ? t("savedState") : t("save");
     });
 
     if (state.viewerStyle?.id === styleId) updateViewerActions();
@@ -378,16 +815,13 @@
     if (!name) return;
     const key = trayKey(name);
     const index = state.tray.findIndex((item) => trayKey(item) === key);
+    const willAdd = index < 0;
 
-    if (index >= 0) {
-      state.tray.splice(index, 1);
-      showToast("REMOVED");
-    } else {
-      state.tray.push(name);
-      showToast("ADDED");
-    }
+    if (!willAdd) state.tray.splice(index, 1);
+    else state.tray.push(name);
 
     savePersistentState();
+    showToast(t(willAdd ? "addedToast" : "removedToast"));
     updateVisibleTrayButtons();
     if (!el.utilityDrawer.hidden && state.drawerTab === "tray") renderTray();
     updateViewerActions();
@@ -397,6 +831,7 @@
     const key = trayKey(name);
     state.tray = state.tray.filter((item) => trayKey(item) !== key);
     savePersistentState();
+    showToast(t("removedToast"));
     updateVisibleTrayButtons();
     renderTray();
     updateViewerActions();
@@ -406,8 +841,8 @@
     document.querySelectorAll("[data-tray-name]").forEach((button) => {
       const active = isInTray(button.dataset.trayName);
       button.classList.toggle("added", active);
-      if (button.classList.contains("card-tray")) button.textContent = active ? "ADDED" : "ADD";
-      else if (button.classList.contains("supported-action")) button.textContent = active ? "ADDED" : "ADD";
+      if (button.classList.contains("card-tray")) button.textContent = active ? t("added") : t("add");
+      else if (button.classList.contains("supported-action")) button.textContent = active ? t("added") : t("add");
     });
   }
 
@@ -430,7 +865,7 @@
       });
     });
 
-    const items = [["all", "ALL"], ...[...presets.entries()]
+    const items = [["all", t("all")], ...[...presets.entries()]
       .sort((a, b) => a[1].localeCompare(b[1]))
       .map(([key, label]) => [key, String(label).toUpperCase()])];
 
@@ -440,10 +875,9 @@
   }
 
   function buildAlphabet() {
-    const letters = ["ALL", "#", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+    const letters = [{ key: "all", label: t("all") }, { key: "#", label: "#" }, ...[..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((letter) => ({ key: letter, label: letter }))];
     el.alphabet.innerHTML = letters
-      .map((label) => {
-        const key = label === "ALL" ? "all" : label;
+      .map(({ key, label }) => {
         return `<button class="alphabet-button${key === state.supportedLetter ? " active" : ""}" data-letter="${key}" type="button">${label}</button>`;
       })
       .join("");
@@ -486,9 +920,9 @@
     });
 
     const items = [
-      ["all", "ALL"],
-      ["preview", "PREVIEW"],
-      ["no-preview", "NO PREVIEW"],
+      ["all", t("all")],
+      ["preview", t("preview")],
+      ["no-preview", t("noPreview")],
       ["main", "MAIN"],
       ["alt", "ALT"],
       ["both", "MAIN + ALT"],
@@ -526,7 +960,7 @@
       .catch((error) => {
         state.supportedPromise = null;
         console.error(error);
-        showToast("SUPPORTED DATA ERROR");
+        showToast(t("dataError"));
         throw error;
       });
 
@@ -563,6 +997,18 @@
     }
 
     const styles = result.map((row) => row.style);
+    if (state.visualSort === "saved-newest") {
+      return styles.sort((a, b) =>
+        ((state.savedAt.get(b.id) || 0) - (state.savedAt.get(a.id) || 0)) ||
+        ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0))
+      );
+    }
+    if (state.visualSort === "saved-oldest") {
+      return styles.sort((a, b) =>
+        ((state.savedAt.get(a.id) || 0) - (state.savedAt.get(b.id) || 0)) ||
+        ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0))
+      );
+    }
     if (state.visualSort === "newest") {
       return styles.sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
     }
@@ -599,20 +1045,21 @@
 
     state.filtered = sortVisualResults(scored, Boolean(queryNorm));
 
-    if (queryNorm) el.resultCount.textContent = `${state.filtered.length} PREVIEWS`;
+    if (queryNorm) el.resultCount.textContent = previewCountLabel(state.filtered.length);
     else el.resultCount.textContent = `${state.filtered.length} / ${state.styles.length}`;
 
     el.statusLine.textContent = state.discoveryStyles
-      ? `DISCOVER / ${state.filtered.length}`
+      ? `${t("discoverStatus")} / ${state.filtered.length}`
       : state.savedOnly
-        ? `SAVED / ${state.filtered.length}`
-        : `VISUAL INDEX / ${state.filtered.length}`;
+        ? `${t("savedStatus")} / ${state.filtered.length}`
+        : `${t("visualIndex")} / ${state.filtered.length}`;
 
     if (reset) {
       state.rendered = 0;
       setupGalleryColumns(true);
     }
 
+    if (el.visualEmptyState) el.visualEmptyState.hidden = state.filtered.length !== 0;
     renderVisualMore();
 
     if (queryNorm && !state.savedOnly) updateVisualSupportedMatches(queryNorm, queryCompact);
@@ -663,7 +1110,7 @@
       }
 
       el.searchSupported.hidden = false;
-      el.searchSupportedTitle.textContent = `${prettyNumber(additional.length)} more supported matches`;
+      el.searchSupportedTitle.textContent = t("moreSupportedMatches", { count: prettyNumber(additional.length) });
       el.searchSupportedList.innerHTML = additional
         .slice(0, VISUAL_SUPPORTED_PREVIEW_LIMIT)
         .map((entry, index) => supportedRowHtml(entry.name, index + 1, false))
@@ -744,21 +1191,21 @@
 
     card.innerHTML = `
       <div class="card-media" data-open-id="${escapeHtml(style.id)}"${ratioStyle}>
-        ${thumb ? `<img src="${escapeAttr(thumb)}"${sizeAttrs} loading="lazy" decoding="async" alt="${escapeAttr(style.name || "Style")}">` : ""}
+        ${thumb ? `<img src="${escapeAttr(thumb)}"${sizeAttrs} loading="lazy" decoding="async" alt="${escapeAttr(style.name || t("styleAlt"))}">` : ""}
         ${imageCount > 1 ? `<span class="card-image-count">×${imageCount}</span>` : ""}
       </div>
       <div class="card-bottom">
         <div class="card-index">
           <span>#${pad(archiveIndex)}</span>
           <span class="card-inline-actions">
-            <button class="card-tray" data-tray-name="${escapeAttr(trayName)}" type="button">ADD</button>
-            <button class="card-save${saved ? " saved" : ""}" data-save-id="${escapeHtml(style.id)}" type="button">${saved ? "SAVED" : "SAVE"}</button>
+            <button class="card-tray" data-tray-name="${escapeAttr(trayName)}" type="button">${t("add")}</button>
+            <button class="card-save${saved ? " saved" : ""}" data-save-id="${escapeHtml(style.id)}" type="button">${saved ? t("savedState") : t("save")}</button>
           </span>
         </div>
-        <button class="card-name" data-copy-id="${escapeHtml(style.id)}" type="button">${escapeHtml(style.name || "Untitled")}</button>
+        <button class="card-name" data-copy-id="${escapeHtml(style.id)}" type="button">${escapeHtml(style.name || t("untitled"))}</button>
         <div class="card-meta">
           ${(style.presets || []).map((p) => `<span>${escapeHtml(p)}</span>`).join("")}
-          ${imageCount ? `<span>${imageCount} PREVIEW${imageCount === 1 ? "" : "S"}</span>` : ""}
+          ${imageCount ? `<span>${previewCountLabel(imageCount)}</span>` : ""}
           ${style.published_at ? `<span>${escapeHtml(compactDate(style.published_at))}</span>` : ""}
         </div>
       </div>
@@ -800,10 +1247,10 @@
         <button class="supported-name" data-supported-copy="${escapeAttr(name)}" type="button">${escapeHtml(name)}</button>
         <div class="supported-actions">
           ${showNumber ? `<span class="supported-number">${pad(index)}</span>` : ""}
-          ${preview ? `<span class="supported-presets" aria-label="Available preview presets">${presetSummaryHtml(previewMeta)}</span>` : ""}
-          ${preview ? `<button class="supported-action preview" data-preview-id="${escapeAttr(preview.id)}" type="button">PREVIEW ×${previewMeta.mediaIds.size}</button>` : ""}
-          <button class="supported-action${trayAdded ? " added" : ""}" data-tray-name="${escapeAttr(name)}" type="button">${trayAdded ? "ADDED" : "ADD"}</button>
-          <button class="supported-action" data-supported-copy="${escapeAttr(name)}" type="button">COPY</button>
+          ${preview ? `<span class="supported-presets" aria-label="${escapeAttr(t("availablePreviewPresets"))}">${presetSummaryHtml(previewMeta)}</span>` : ""}
+          ${preview ? `<button class="supported-action preview" data-preview-id="${escapeAttr(preview.id)}" type="button">${t("preview")} ×${previewMeta.mediaIds.size}</button>` : ""}
+          <button class="supported-action${trayAdded ? " added" : ""}" data-tray-name="${escapeAttr(name)}" type="button">${trayAdded ? t("added") : t("add")}</button>
+          <button class="supported-action" data-supported-copy="${escapeAttr(name)}" type="button">${t("copy")}</button>
         </div>
       </div>
     `;
@@ -823,12 +1270,13 @@
 
     state.supportedFiltered = rankSupportedEntries(base, queryNorm, queryCompact);
 
-    el.resultCount.textContent = `${prettyNumber(state.supportedFiltered.length)} MATCHES`;
-    const filterLabel = state.supportedFilter === "all" ? "" : ` / ${state.supportedFilter.toUpperCase()}`;
+    el.resultCount.textContent = `${prettyNumber(state.supportedFiltered.length)} ${t("matches")}`;
+    const rawFilterLabel = supportedFilterLabel(state.supportedFilter);
+    const filterLabel = rawFilterLabel ? ` / ${rawFilterLabel}` : "";
     el.supportedStatusLine.textContent = queryNorm
-      ? `SUPPORTED SEARCH${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`
+      ? `${t("supportedSearch")}${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`
       : state.supportedLetter === "all"
-        ? `SUPPORTED INDEX${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`
+        ? `${t("supportedIndex")}${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`
         : `${state.supportedLetter}${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`;
 
     if (reset) {
@@ -837,6 +1285,7 @@
       el.supportedList.innerHTML = "";
     }
 
+    if (el.supportedEmptyState) el.supportedEmptyState.hidden = state.supportedFiltered.length !== 0;
     renderSupportedMore();
   }
 
@@ -862,13 +1311,6 @@
       fragment.appendChild(wrap.firstElementChild);
     });
 
-    if (!slice.length && start === 0) {
-      const empty = document.createElement("div");
-      empty.className = "supported-empty";
-      empty.textContent = "No matching styles.";
-      fragment.appendChild(empty);
-    }
-
     el.supportedList.appendChild(fragment);
     state.supportedRendered += slice.length;
     updateVisibleTrayButtons();
@@ -889,11 +1331,18 @@
       return;
     }
 
-    el.supportedStatusLine.textContent = "LOADING SUPPORTED INDEX";
-    await loadSupported();
-    buildAlphabet();
-    buildSupportedFilters();
-    applySupportedFilters(true);
+    el.supportedStatusLine.textContent = t("loadingSupportedIndex");
+    if (el.supportedErrorState) el.supportedErrorState.hidden = true;
+    try {
+      await loadSupported();
+      buildAlphabet();
+      buildSupportedFilters();
+      applySupportedFilters(true);
+    } catch {
+      el.supportedStatusLine.textContent = t("dataError");
+      if (el.supportedEmptyState) el.supportedEmptyState.hidden = true;
+      if (el.supportedErrorState) el.supportedErrorState.hidden = false;
+    }
   }
 
   function openViewer(style) {
@@ -954,11 +1403,11 @@
 
     el.viewerIndex.textContent = `#${pad(archiveIndex)} / ${pad(state.styles.length)}`;
     el.viewerImage.src = src;
-    el.viewerImage.alt = style.name || "Style";
-    el.viewerName.textContent = style.name || "Untitled";
+    el.viewerImage.alt = style.name || t("styleAlt");
+    el.viewerName.textContent = style.name || t("untitled");
     el.viewerPreset.textContent = (style.presets || []).join(" / ").toUpperCase();
     el.viewerDate.textContent = compactDate(style.published_at);
-    el.viewerImageCount.textContent = mediaIds.length ? `${mediaIds.length} PREVIEW${mediaIds.length === 1 ? "" : "S"}${mediaIds.length > 1 ? ` · ${index + 1}/${mediaIds.length}` : ""}` : "";
+    el.viewerImageCount.textContent = mediaIds.length ? `${previewCountLabel(mediaIds.length)}${mediaIds.length > 1 ? ` · ${index + 1}/${mediaIds.length}` : ""}` : "";
 
     const multiple = mediaIds.length > 1;
     el.prevMedia.hidden = !multiple;
@@ -973,12 +1422,12 @@
 
     const saved = state.saved.has(style.id);
     el.viewerSave.classList.toggle("saved", saved);
-    el.viewerSave.textContent = saved ? "SAVED" : "SAVE";
+    el.viewerSave.textContent = saved ? t("savedState") : t("save");
 
     const name = style.copy_value || style.name || "";
     const added = isInTray(name);
     el.viewerTray.classList.toggle("added", added);
-    el.viewerTray.textContent = added ? "ADDED" : "ADD";
+    el.viewerTray.textContent = added ? t("added") : t("add");
   }
 
   function shiftViewerMedia(delta) {
@@ -1000,7 +1449,7 @@
   function randomStyle(mode = "any") {
     const pool = randomPool(mode);
     if (!pool.length) {
-      showToast("EMPTY");
+      showToast(t("empty"));
       return;
     }
     openViewer(pool[Math.floor(Math.random() * pool.length)]);
@@ -1025,9 +1474,18 @@
   }
 
   function syncVisualControls() {
+    if (!state.savedOnly && (state.visualSort === "saved-newest" || state.visualSort === "saved-oldest")) {
+      state.visualSort = "archive";
+    }
+
     el.filterList.querySelectorAll("[data-preset]").forEach((chip) => {
       chip.classList.toggle("active", chip.dataset.preset === state.activePreset);
     });
+
+    el.sortList.querySelectorAll(".saved-sort-chip").forEach((chip) => {
+      chip.hidden = !state.savedOnly;
+    });
+
     el.sortList.querySelectorAll("[data-sort]").forEach((chip) => {
       chip.classList.toggle("active", chip.dataset.sort === state.visualSort);
     });
@@ -1075,14 +1533,14 @@
   }
 
   function drawerPresetText(meta) {
-    if (!meta) return "SUPPORTED";
+    if (!meta) return t("supportedGeneric");
     const labels = [...meta.presets.values()].map((value) => String(value).toUpperCase());
-    return labels.length ? labels.join(" / ") : "PREVIEW";
+    return labels.length ? labels.join(" / ") : t("preview");
   }
 
   function renderTray() {
     if (!state.tray.length) {
-      el.trayList.innerHTML = `<div class="drawer-empty">Add styles here, then copy the whole mix in one click.</div>`;
+      el.trayList.innerHTML = `<div class="drawer-empty">${escapeHtml(t("trayEmpty"))}</div>`;
       return;
     }
 
@@ -1094,10 +1552,10 @@
           <span class="drawer-index">${pad(index + 1, 2)}</span>
           <div class="drawer-row-main">
             <button class="drawer-name" data-drawer-copy="${escapeAttr(name)}" type="button">${escapeHtml(name)}</button>
-            <span class="drawer-meta">${escapeHtml(drawerPresetText(meta))}${meta ? ` · ${meta.mediaIds.size} PREVIEW${meta.mediaIds.size === 1 ? "" : "S"}` : ""}</span>
+            <span class="drawer-meta">${escapeHtml(drawerPresetText(meta))}${meta ? ` · ${escapeHtml(previewCountLabel(meta.mediaIds.size))}` : ""}</span>
           </div>
           <div class="drawer-row-actions">
-            ${preview ? `<button data-drawer-preview="${escapeAttr(preview.id)}" type="button">PREVIEW</button>` : ""}
+            ${preview ? `<button data-drawer-preview="${escapeAttr(preview.id)}" type="button">${t("preview")}</button>` : ""}
             <button data-tray-remove="${escapeAttr(name)}" type="button">×</button>
           </div>
         </div>
@@ -1108,7 +1566,7 @@
   function renderRecent() {
     const rows = state.recent.map(findStyle).filter(Boolean);
     if (!rows.length) {
-      el.recentList.innerHTML = `<div class="drawer-empty">Viewed styles will appear here.</div>`;
+      el.recentList.innerHTML = `<div class="drawer-empty">${escapeHtml(t("recentEmpty"))}</div>`;
       return;
     }
 
@@ -1126,7 +1584,7 @@
             <span class="drawer-meta">${escapeHtml((style.presets || []).join(" / ").toUpperCase())}</span>
           </div>
           <div class="drawer-row-actions">
-            <button class="${isInTray(name) ? "added" : ""}" data-tray-name="${escapeAttr(name)}" type="button">${isInTray(name) ? "ADDED" : "ADD"}</button>
+            <button class="${isInTray(name) ? "added" : ""}" data-tray-name="${escapeAttr(name)}" type="button">${isInTray(name) ? t("added") : t("add")}</button>
           </div>
         </div>
       `;
@@ -1236,6 +1694,16 @@
 
     el.clearButton.addEventListener("click", clearVisualFilters);
     el.supportedClearButton.addEventListener("click", clearSupportedFilters);
+    el.visualEmptyReset?.addEventListener("click", clearVisualFilters);
+    el.supportedEmptyReset?.addEventListener("click", clearSupportedFilters);
+    el.retryArchiveButton?.addEventListener("click", () => window.location.reload());
+    el.retrySupportedButton?.addEventListener("click", async () => {
+      state.supported = null;
+      state.supportedIndex = null;
+      state.supportedPromise = null;
+      if (el.supportedErrorState) el.supportedErrorState.hidden = true;
+      await setMode("supported");
+    });
 
     el.randomButton.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -1251,15 +1719,40 @@
       if (!event.target.closest(".random-wrap")) el.randomMenu.hidden = true;
     });
 
-    el.discoverButton.addEventListener("click", discoverStyles);
+    el.themeButton?.addEventListener("click", toggleTheme);
+    el.languageButton?.addEventListener("click", () => {
+      setLanguage(state.lang === "ru" ? "en" : "ru");
+    });
+
+    el.discoverButton?.addEventListener("click", discoverStyles);
+
+    el.infoButton?.addEventListener("click", () => {
+      if (el.infoVisualCount) el.infoVisualCount.textContent = el.visualStat?.textContent || "—";
+      if (el.infoSupportedCount) el.infoSupportedCount.textContent = el.supportedStat?.textContent || "—";
+      el.infoDialog?.showModal();
+    });
+    el.closeInfo?.addEventListener("click", () => el.infoDialog?.close());
+    el.infoDialog?.addEventListener("click", (event) => {
+      if (event.target === el.infoDialog) el.infoDialog.close();
+    });
+
     el.trayButton.addEventListener("click", () => openDrawer("tray"));
     el.recentButton.addEventListener("click", () => openDrawer("recent"));
 
     el.savedButton.addEventListener("click", async () => {
       if (state.mode !== "visual") await setMode("visual");
       state.discoveryStyles = null;
-      state.savedOnly = !state.savedOnly;
+
+      const enteringSaved = !state.savedOnly;
+      state.savedOnly = enteringSaved;
       state.activePreset = "all";
+
+      if (enteringSaved) {
+        state.visualSort = "saved-newest";
+      } else if (state.visualSort === "saved-newest" || state.visualSort === "saved-oldest") {
+        state.visualSort = "archive";
+      }
+
       syncVisualControls();
       applyVisualFilters(true);
     });
@@ -1277,10 +1770,10 @@
     el.drawerBackdrop.addEventListener("click", closeDrawer);
     el.copyTrayButton.addEventListener("click", () => {
       if (!state.tray.length) {
-        showToast("TRAY EMPTY");
+        showToast(t("trayEmptyToast"));
         return;
       }
-      copyValue(state.tray.join(", "), "ALL COPIED");
+      copyValue(state.tray.join(", "), t("allCopied"));
     });
     el.clearTrayButton.addEventListener("click", () => {
       state.tray = [];
@@ -1288,11 +1781,13 @@
       updateVisibleTrayButtons();
       renderTray();
       updateViewerActions();
+      showToast(t("cleared"));
     });
     el.clearRecentButton.addEventListener("click", () => {
       state.recent = [];
       savePersistentState();
       renderRecent();
+      showToast(t("cleared"));
     });
 
     el.utilityDrawer.addEventListener("click", (event) => {
@@ -1339,28 +1834,46 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      const typing = /INPUT|TEXTAREA/.test(document.activeElement?.tagName || "");
+      const activeTag = document.activeElement?.tagName || "";
+      const typing = /INPUT|TEXTAREA|SELECT/.test(activeTag) || document.activeElement?.isContentEditable;
 
-      if (event.key === "/" && !typing) {
+      if (event.key === "Escape") {
+        el.randomMenu.hidden = true;
+        if (el.infoDialog?.open) {
+          event.preventDefault();
+          el.infoDialog.close();
+          return;
+        }
+        if (!el.utilityDrawer.hidden) {
+          event.preventDefault();
+          closeDrawer();
+          return;
+        }
+        if (el.viewer.open) {
+          event.preventDefault();
+          closeViewer();
+          return;
+        }
+      }
+
+      if (typing) return;
+
+      if (event.key === "/") {
         event.preventDefault();
         el.searchInput.focus();
         return;
       }
 
-      if ((event.key === "r" || event.key === "R") && !typing && !el.viewer.open) {
+      if ((event.key === "r" || event.key === "R") && !el.viewer.open && !el.infoDialog?.open && el.utilityDrawer.hidden) {
+        event.preventDefault();
         randomStyle("any");
         return;
       }
 
-      if (event.key === "Escape" && !el.utilityDrawer.hidden) {
-        closeDrawer();
-        return;
-      }
-
       if (el.viewer.open) {
-        if (event.key === "ArrowLeft") shiftViewerMedia(-1);
-        if (event.key === "ArrowRight") shiftViewerMedia(1);
-        if ((event.key === "c" || event.key === "C") && !typing) copyStyle(state.viewerStyle);
+        if (event.key === "ArrowLeft") { event.preventDefault(); shiftViewerMedia(-1); }
+        if (event.key === "ArrowRight") { event.preventDefault(); shiftViewerMedia(1); }
+        if (event.key === "c" || event.key === "C") { event.preventDefault(); copyStyle(state.viewerStyle); }
       }
     });
 
@@ -1390,6 +1903,12 @@
   }
 
   async function init() {
+    applyTheme(state.theme, false);
+    applyStaticLocale();
+    if (el.archiveSkeleton) el.archiveSkeleton.hidden = false;
+    if (el.archiveErrorState) el.archiveErrorState.hidden = true;
+    if (el.visualEmptyState) el.visualEmptyState.hidden = true;
+
     try {
       const [stylesResponse, mediaResponse] = await Promise.all([
         fetch("./data/styles.json"),
@@ -1400,6 +1919,7 @@
 
       state.styles = await stylesResponse.json();
       state.media = await mediaResponse.json();
+      if (el.archiveSkeleton) el.archiveSkeleton.hidden = true;
       buildVisualLookup();
       state.recent = state.recent.filter((id) => state.styleById.has(id)).slice(0, RECENT_LIMIT);
 
@@ -1418,13 +1938,11 @@
       applyVisualFilters(true);
     } catch (error) {
       console.error(error);
-      el.statusLine.textContent = "ERROR / ARCHIVE DATA NOT FOUND";
-      el.gallery.innerHTML = `
-        <p style="color:#8b8984;max-width:720px;line-height:1.6">
-          Не удалось загрузить <code>./data/styles.json</code> и <code>./data/media.json</code>.
-          Запускай сайт через локальный HTTP-сервер, а не двойным кликом по index.html.
-        </p>
-      `;
+      if (el.archiveSkeleton) el.archiveSkeleton.hidden = true;
+      if (el.visualEmptyState) el.visualEmptyState.hidden = true;
+      if (el.archiveErrorState) el.archiveErrorState.hidden = false;
+      el.statusLine.textContent = t("archiveDataError");
+      el.gallery.innerHTML = "";
     }
   }
 
