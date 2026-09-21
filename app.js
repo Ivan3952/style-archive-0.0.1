@@ -25,6 +25,8 @@
       info: "INFO",
       aboutTitle: "ABOUT",
       aboutLead: "A visual archive and searchable index of model-supported styles.",
+      archiveOriginTitle: "ABOUT THE ARCHIVE",
+      archiveOriginDesc: "All styles featured in the Visual Archive were tested by members of the Stable Waifu community using the AM Preview model. The previews in the archive are results of those tests.",
       visualArchiveDesc: "Styles with visual previews available in the archive.",
       allSupportedDesc: "The complete searchable list of style identifiers supported by the model.",
       presetsDesc: "Available preview presets for a style.",
@@ -103,7 +105,7 @@
       supportedLoadFailed: "SUPPORTED INDEX COULD NOT BE LOADED",
       supportedLoadFailedHint: "The supported style list is unavailable. Try again.",
       retry: "RETRY",
-      localBuildDate: "RELEASE · 29.08.2026",
+      localBuildDate: "RELEASE · 22.09.2026",
       verifiedStylesThrough: "VERIFIED STYLES THROUGH",
       shortcutSearch: "Focus search",
       shortcutRandom: "Random style",
@@ -155,6 +157,8 @@
       info: "ИНФО",
       aboutTitle: "О ПРОЕКТЕ",
       aboutLead: "Визуальный архив и поисковый индекс стилей, поддерживаемых моделью.",
+      archiveOriginTitle: "ОБ АРХИВЕ",
+      archiveOriginDesc: "Все стили, представленные в Визуальном архиве, были проверены участниками чата Stable Waifu на модели AM Preview. Превью в архиве являются результатами этих проверок.",
       visualArchiveDesc: "Стили, для которых в архиве доступны визуальные превью.",
       allSupportedDesc: "Полный доступный для поиска список идентификаторов стилей, поддерживаемых моделью.",
       presetsDesc: "Доступные варианты превью для конкретного стиля.",
@@ -233,7 +237,7 @@
       supportedLoadFailed: "НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК",
       supportedLoadFailedHint: "Полный список поддерживаемых стилей сейчас недоступен. Повторите попытку.",
       retry: "ПОВТОРИТЬ",
-      localBuildDate: "РЕЛИЗ · 29.08.2026",
+      localBuildDate: "РЕЛИЗ · 22.09.2026",
       verifiedStylesThrough: "ПРОВЕРЕННЫЕ СТИЛИ ДО",
       shortcutSearch: "Перейти к поиску",
       shortcutRandom: "Случайный стиль",
@@ -313,7 +317,7 @@
       if (id && Number.isFinite(stamp)) map.set(id, stamp);
     });
 
-    // Migration for favourites created before v0.0.2:
+    // Migration for favourites created before timestamped saved data:
     // Set preserves the old insertion order, so sequential legacy values
     // retain "first saved → last saved" without deleting old favourites.
     savedIds.forEach((id, index) => {
@@ -339,6 +343,8 @@
     rendered: 0,
     activePreset: "all",
     visualSort: "archive",
+    danbooruMin: 0,
+    danbooruPresence: "all",
     randomSortSeed: Date.now(),
     savedOnly: false,
     discoveryStyles: null,
@@ -360,6 +366,8 @@
     supportedLastLetter: "",
     supportedLetter: "all",
     supportedFilter: "all",
+    supportedSort: "az",
+    supportedDanbooruPresence: "all",
     lang: initialLanguage,
     theme: initialTheme,
   };
@@ -379,6 +387,7 @@
     visualFilters: document.querySelector("#visualFilters"),
     supportedTools: document.querySelector("#supportedTools"),
     supportedFilterList: document.querySelector("#supportedFilterList"),
+    supportedSortList: document.querySelector("#supportedSortList"),
     alphabet: document.querySelector("#alphabet"),
     clearButton: document.querySelector("#clearButton"),
     supportedClearButton: document.querySelector("#supportedClearButton"),
@@ -991,8 +1000,16 @@
   function sortVisualResults(rows, queryActive = false) {
     const result = [...rows];
 
-    if (queryActive) {
-      result.sort((a, b) => (a.rank - b.rank) || ((state.archiveOrder.get(a.style.id) || 0) - (state.archiveOrder.get(b.style.id) || 0)));
+    if (
+      queryActive &&
+      state.visualSort !== "danbooru-desc" &&
+      state.visualSort !== "danbooru-asc"
+    ) {
+      result.sort((a, b) =>
+        (a.rank - b.rank) ||
+        ((state.archiveOrder.get(a.style.id) || 0) -
+         (state.archiveOrder.get(b.style.id) || 0))
+      );
       return result.map((row) => row.style);
     }
 
@@ -1009,6 +1026,25 @@
         ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0))
       );
     }
+    if (state.visualSort === "danbooru-desc") {
+      return styles.sort((a, b) =>
+        (Number(b.danbooru_post_count || 0) - Number(a.danbooru_post_count || 0)) ||
+        ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0))
+      );
+    }
+    if (state.visualSort === "danbooru-asc") {
+      return styles.sort((a, b) => {
+        const av = Number(a.danbooru_post_count || 0);
+        const bv = Number(b.danbooru_post_count || 0);
+
+        if (!av && bv) return 1;
+        if (av && !bv) return -1;
+
+        return (av - bv) ||
+          ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0));
+      });
+    }
+
     if (state.visualSort === "newest") {
       return styles.sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
     }
@@ -1032,6 +1068,21 @@
 
     source.forEach((style) => {
       if (state.savedOnly && !state.saved.has(style.id)) return;
+
+      const danbooruRecord =
+        window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(
+          style.copy_value || style.name
+        ) || null;
+
+      const danbooruMatched = danbooruRecord?.status === "matched";
+
+      if (state.danbooruPresence === "on" && !danbooruMatched) return;
+      if (state.danbooruPresence === "no-data" && danbooruMatched) return;
+
+      if (
+        state.danbooruMin > 0 &&
+        Number(style?.danbooru_post_count || 0) < state.danbooruMin
+      ) return;
 
       if (state.activePreset !== "all") {
         const presets = (style.presets || []).map(normalize);
@@ -1256,6 +1307,23 @@
     `;
   }
 
+  function supportedDanbooruCount(entry) {
+    const local = Number(entry?.danbooru_post_count || 0);
+    if (local > 0) return local;
+
+    const external = Number(
+      window.STYLE_ARCHIVE_DANBOORU?.countForName?.(entry?.name) || 0
+    );
+    return Number.isFinite(external) ? external : 0;
+  }
+
+  function syncSupportedSortControls() {
+    if (!el.supportedSortList) return;
+    el.supportedSortList.querySelectorAll("[data-supported-sort]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.supportedSort === state.supportedSort);
+    });
+  }
+
   function applySupportedFilters(reset = false) {
     if (!state.supportedIndex) return;
 
@@ -1265,19 +1333,54 @@
     let base = state.supportedIndex.filter((entry) => {
       if (state.supportedLetter !== "all" && entry.letter !== state.supportedLetter) return false;
       if (!supportedFilterMatch(entry)) return false;
+
+      const record =
+        window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(entry.name) || null;
+
+      const matched = record?.status === "matched";
+
+      if (state.supportedDanbooruPresence === "on" && !matched) return false;
+      if (state.supportedDanbooruPresence === "no-data" && matched) return false;
+
       return true;
     });
 
-    state.supportedFiltered = rankSupportedEntries(base, queryNorm, queryCompact);
+    let rankedSupported = rankSupportedEntries(base, queryNorm, queryCompact);
+
+    if (state.supportedSort === "danbooru-desc") {
+      rankedSupported = [...rankedSupported].sort((a, b) =>
+        (supportedDanbooruCount(b) - supportedDanbooruCount(a)) ||
+        a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+      );
+    } else if (state.supportedSort === "danbooru-asc") {
+      rankedSupported = [...rankedSupported].sort((a, b) => {
+        const av = supportedDanbooruCount(a);
+        const bv = supportedDanbooruCount(b);
+
+        if (!av && bv) return 1;
+        if (av && !bv) return -1;
+
+        return (av - bv) ||
+          a.name.localeCompare(b.name, "en", { sensitivity: "base" });
+      });
+    }
+
+    state.supportedFiltered = rankedSupported;
 
     el.resultCount.textContent = `${prettyNumber(state.supportedFiltered.length)} ${t("matches")}`;
     const rawFilterLabel = supportedFilterLabel(state.supportedFilter);
     const filterLabel = rawFilterLabel ? ` / ${rawFilterLabel}` : "";
+    const supportedSortLabel =
+      state.supportedSort === "danbooru-desc"
+        ? " / DANBOORU ↓"
+        : state.supportedSort === "danbooru-asc"
+          ? " / DANBOORU ↑"
+          : "";
     el.supportedStatusLine.textContent = queryNorm
-      ? `${t("supportedSearch")}${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`
+      ? `${t("supportedSearch")}${filterLabel}${supportedSortLabel} / ${prettyNumber(state.supportedFiltered.length)}`
       : state.supportedLetter === "all"
-        ? `${t("supportedIndex")}${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`
-        : `${state.supportedLetter}${filterLabel} / ${prettyNumber(state.supportedFiltered.length)}`;
+        ? `${t("supportedIndex")}${filterLabel}${supportedSortLabel} / ${prettyNumber(state.supportedFiltered.length)}`
+        : `${state.supportedLetter}${filterLabel}${supportedSortLabel} / ${prettyNumber(state.supportedFiltered.length)}`;
 
     if (reset) {
       state.supportedRendered = 0;
@@ -1298,7 +1401,7 @@
 
     slice.forEach((entry, localIndex) => {
       const letter = entry.letter;
-      if (letter !== state.supportedLastLetter) {
+      if (state.supportedSort === "az" && letter !== state.supportedLastLetter) {
         const heading = document.createElement("div");
         heading.className = "supported-letter";
         heading.textContent = letter;
@@ -1337,6 +1440,7 @@
       await loadSupported();
       buildAlphabet();
       buildSupportedFilters();
+      syncSupportedSortControls();
       applySupportedFilters(true);
     } catch {
       el.supportedStatusLine.textContent = t("dataError");
@@ -1495,6 +1599,8 @@
     el.searchInput.value = "";
     state.activePreset = "all";
     state.visualSort = "archive";
+    state.danbooruMin = 0;
+    state.danbooruPresence = "all";
     state.savedOnly = false;
     state.discoveryStyles = null;
     syncVisualControls();
@@ -1505,6 +1611,9 @@
     el.searchInput.value = "";
     state.supportedLetter = "all";
     state.supportedFilter = "all";
+    state.supportedSort = "az";
+    state.supportedDanbooruPresence = "all";
+    syncSupportedSortControls();
     buildAlphabet();
     buildSupportedFilters();
     applySupportedFilters(true);
@@ -1650,6 +1759,15 @@
       if (!button || !state.supportedIndex) return;
       state.supportedFilter = button.dataset.supportedFilter;
       buildSupportedFilters();
+      applySupportedFilters(true);
+    });
+
+    el.supportedSortList?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-supported-sort]");
+      if (!button || button.disabled || !state.supportedIndex) return;
+
+      state.supportedSort = button.dataset.supportedSort;
+      syncSupportedSortControls();
       applySupportedFilters(true);
     });
 
@@ -1946,5 +2064,15 @@
     }
   }
 
+  window.STYLE_ARCHIVE_V003 = {
+    state,
+    applyVisualFilters,
+    applySupportedFilters,
+    syncVisualControls,
+    syncSupportedSortControls
+  };
+
+  // V003_DANBOORU_UI
+  // V003_SUPPORTED_DANBOORU_SORT
   init();
 })();

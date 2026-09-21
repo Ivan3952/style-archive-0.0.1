@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   color-scheme: dark;
   --bg: #0b0b0b;
   --surface: #111111;
@@ -273,7 +273,7 @@ h2 { margin: 0; font-size: clamp(28px, 4vw, 58px); font-weight: 450; line-height
 }
 .supported-action:hover { color: var(--accent); }
 .supported-action.preview { color: var(--accent); }
-.supported-action.preview::before { content: "●"; margin-right: 5px; color: var(--accent); font-size: 7px; }
+.supported-action.preview::before { content: "в—Џ"; margin-right: 5px; color: var(--accent); font-size: 7px; }
 .supported-number { color: var(--muted-2); font-size: 8px; }
 .compact-supported-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .compact-supported-list .supported-row { min-height: 44px; }
@@ -622,7 +622,7 @@ body.drawer-open { overflow: hidden; }
 }
 
 /* =========================================================
-   v0.0.2-dev1 — light theme + locale controls
+   v0.0.2-dev1 вЂ” light theme + locale controls
    ========================================================= */
 
 html[data-theme="light"] {
@@ -754,7 +754,7 @@ html[data-theme="light"] ::selection {
 
 
 /* =========================================================
-   v0.0.2-dev2 — INFO, ADDED, typography pass
+   v0.0.2-dev2 вЂ” INFO, ADDED, typography pass
    ========================================================= */
 
 /* Larger micro typography throughout the interface */
@@ -913,7 +913,7 @@ html[data-theme="light"] .info-header { background: var(--bg); }
 }
 
 
-/* v0.0.2-dev3 — full INFO guide */
+/* v0.0.2-dev3 вЂ” full INFO guide */
 .info-dialog {
   width: min(1120px, calc(100vw - 28px));
 }
@@ -973,8 +973,8 @@ html[data-theme="light"] .info-header { background: var(--bg); }
 
 
 /* =========================================================
-   v0.0.2-dev5 — quality pass
-   feedback · states · mobile · release metadata
+   v0.0.2-dev5 вЂ” quality pass
+   feedback В· states В· mobile В· release metadata
    ========================================================= */
 
 /* Unified action feedback */
@@ -1120,7 +1120,7 @@ kbd {
   letter-spacing: .045em;
 }
 
-/* Keyboard focus — visible without changing mouse UI */
+/* Keyboard focus вЂ” visible without changing mouse UI */
 :focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: 3px;
@@ -1196,7 +1196,7 @@ kbd {
 }
 
 
-/* v0.0.2-dev5 — Saved order */
+/* v0.0.2-dev5 вЂ” Saved order */
 .saved-sort-chip:not([hidden]) {
   border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
 }
@@ -1211,3 +1211,318 @@ kbd {
     display: inline-flex;
   }
 }
+
+
+/* =========================================================
+   V003_DANBOORU_UI вЂ” v0.0.3-dev2
+   ========================================================= */
+
+.danbooru-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+
+.danbooru-filter-chip {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: transparent;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.danbooru-filter-chip:hover,
+.danbooru-filter-chip.active {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.danbooru-filter-chip.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.danbooru-control:disabled {
+  opacity: .35;
+  cursor: wait;
+}
+
+.danbooru-sync-note {
+  margin-left: 4px;
+  color: var(--muted-2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: .045em;
+}
+
+.danbooru-posts {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: inherit;
+  letter-spacing: .045em;
+  white-space: nowrap;
+}
+
+.danbooru-posts::before {
+  content: "DB";
+  color: var(--muted-2);
+  font-size: .82em;
+}
+
+.card-meta .danbooru-posts {
+  color: var(--accent);
+}
+
+.supported-actions .danbooru-posts {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.viewer-subline .danbooru-posts {
+  color: var(--accent);
+}
+
+.danbooru-info-block {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.danbooru-info-title {
+  margin-bottom: 9px;
+  color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: .045em;
+}
+
+.danbooru-info-copy {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.danbooru-info-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: .035em;
+}
+
+@media (max-width: 680px) {
+  .danbooru-filter-list {
+    gap: 5px;
+  }
+
+  .danbooru-filter-chip {
+    padding: 5px 7px;
+    font-size: 9px;
+  }
+
+  .danbooru-sync-note {
+    width: 100%;
+    margin: 3px 0 0;
+    font-size: 8px;
+  }
+
+  .supported-actions .danbooru-posts {
+    font-size: 8px;
+  }
+}
+
+
+/* =========================================================
+   V003_RELEASE_FINAL
+   ========================================================= */
+
+.archive-origin-block {
+  margin: 22px 0 4px;
+  padding: 18px 0 4px;
+  border-top: 1px solid var(--line);
+}
+
+.archive-origin-title {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-size: 11px;
+  letter-spacing: .045em;
+}
+
+.archive-origin-block p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.danbooru-coverage-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.danbooru-coverage-item {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.danbooru-coverage-item b {
+  display: block;
+  color: var(--text);
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.danbooru-coverage-item span {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-size: 9px;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 680px) {
+  .archive-origin-block p {
+    font-size: 13px;
+  }
+
+  .danbooru-coverage-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .danbooru-coverage-item {
+    padding: 10px 11px;
+  }
+}
+/* v0.0.3-dev4 вЂ” toolbar no longer sticky */
+.toolbar {
+  position: static;
+  top: auto;
+  z-index: auto;
+  backdrop-filter: none;
+}
+/* =========================================================
+   v0.0.3 вЂ” motion polish
+   ========================================================= */
+
+@keyframes archive-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes archive-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+main {
+  animation: archive-fade-in 260ms ease-out both;
+}
+
+.card {
+  animation: archive-fade-in 220ms ease-out both;
+}
+
+.mode-tab,
+.sort-chip,
+.filter-chip,
+.danbooru-filter-chip,
+.supported-filter-chip,
+.alphabet-button,
+.text-button,
+.save-button,
+.supported-action,
+.card-name,
+.supported-name {
+  transition:
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.sort-chip:active,
+.filter-chip:active,
+.danbooru-filter-chip:active,
+.supported-filter-chip:active,
+.alphabet-button:active,
+.save-button:active {
+  transform: scale(.97);
+}
+
+.info-dialog[open] .info-shell {
+  animation: archive-dialog-in 180ms ease-out both;
+}
+
+.viewer[open] .viewer-shell {
+  animation: archive-dialog-in 180ms ease-out both;
+}
+
+.utility-drawer:not([hidden]) {
+  animation: archive-dialog-in 180ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+

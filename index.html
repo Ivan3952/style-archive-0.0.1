@@ -20,7 +20,7 @@
   <title>Style Archive</title>
   <link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body data-v003-danbooru-ui="1"><!-- V003_DANBOORU_UI -->
   <header class="topbar">
     <a class="brand" href="./" aria-label="Style Archive">
       <span class="brand-mark">STYLE / ARCHIVE</span>
@@ -101,16 +101,45 @@
             <button class="sort-chip" data-sort="newest" type="button" data-i18n="sortNewest">NEWEST</button>
             <button class="sort-chip" data-sort="oldest" type="button" data-i18n="sortOldest">OLDEST</button>
             <button class="sort-chip" data-sort="az" type="button">A–Z</button>
+            <button class="sort-chip danbooru-control" data-sort="danbooru-desc" type="button" disabled>DANBOORU ↓</button>
+            <button class="sort-chip danbooru-control" data-sort="danbooru-asc" type="button" disabled>DANBOORU ↑</button>
             <button class="sort-chip" data-sort="random" type="button" data-i18n="sortRandom">RANDOM</button>
           </div>
-        </div>
+          <div class="danbooru-filter-list" id="danbooruFilterList" aria-label="Danbooru posts filter">
+            <span class="tool-label" id="danbooruFilterLabel">DANBOORU POSTS</span>
+            <button class="danbooru-filter-chip active danbooru-control" data-danbooru-min="0" type="button" disabled>ALL</button>
+            <button class="danbooru-filter-chip danbooru-control" data-danbooru-min="100" type="button" disabled>100+</button>
+            <button class="danbooru-filter-chip danbooru-control" data-danbooru-min="1000" type="button" disabled>1K+</button>
+            <button class="danbooru-filter-chip danbooru-control" data-danbooru-min="10000" type="button" disabled>10K+</button>
+            <span class="danbooru-sync-note" id="danbooruSyncNote">LOADING DANBOORU DATA</span>
+          </div>
+          <div class="danbooru-filter-list" id="danbooruPresenceList">
+            <span class="tool-label" id="danbooruPresenceLabel">DANBOORU DATA</span>
+            <button class="danbooru-filter-chip active danbooru-control" data-danbooru-presence="all" type="button" disabled>ALL</button>
+            <button class="danbooru-filter-chip danbooru-control" data-danbooru-presence="on" type="button" disabled>ON</button>
+            <button class="danbooru-filter-chip danbooru-control" data-danbooru-presence="no-data" type="button" disabled>NO DATA</button>
+          </div>
+</div>
         <button class="text-button compact" id="clearButton" type="button" data-i18n="clear">CLEAR</button>
       </div>
 
       <div class="supported-tools" id="supportedTools" hidden>
         <div class="supported-tool-groups">
           <div class="supported-filter-list" id="supportedFilterList" aria-label="Фильтры полного индекса"></div>
-          <div class="alphabet" id="alphabet" aria-label="Алфавитная навигация"></div>
+          <div class="sort-list supported-sort-list" id="supportedSortList" aria-label="Сортировка полного индекса">
+            <span class="tool-label" data-i18n="sort">SORT</span>
+            <button class="sort-chip active" data-supported-sort="az" type="button">A–Z</button>
+            <button class="sort-chip danbooru-control" data-supported-sort="danbooru-desc" type="button" disabled>DANBOORU ↓</button>
+            <button class="sort-chip danbooru-control" data-supported-sort="danbooru-asc" type="button" disabled>DANBOORU ↑</button>
+          </div><!-- V003_SUPPORTED_DANBOORU_SORT -->
+
+          <div class="danbooru-filter-list" id="supportedDanbooruPresenceList">
+            <span class="tool-label" id="supportedDanbooruPresenceLabel">DANBOORU DATA</span>
+            <button class="danbooru-filter-chip active danbooru-control" data-supported-danbooru-presence="all" type="button" disabled>ALL</button>
+            <button class="danbooru-filter-chip danbooru-control" data-supported-danbooru-presence="on" type="button" disabled>ON</button>
+            <button class="danbooru-filter-chip danbooru-control" data-supported-danbooru-presence="no-data" type="button" disabled>NO DATA</button>
+          </div>
+<div class="alphabet" id="alphabet" aria-label="Алфавитная навигация"></div>
         </div>
         <button class="text-button compact" id="supportedClearButton" type="button" data-i18n="clear">CLEAR</button>
       </div>
@@ -173,7 +202,7 @@
 
   <footer class="site-footer">
     <span>STYLE / ARCHIVE</span>
-    <span>v0.0.2</span>
+    <span>v0.0.3</span>
     <span><span data-i18n="verifiedStylesThrough">VERIFIED STYLES THROUGH</span> 18.07.2026</span>
   </footer>
 
@@ -227,6 +256,13 @@
             <span data-i18n="supportedStat">SUPPORTED</span>
           </div>
         </div>
+
+        <section class="archive-origin-block">
+          <span class="archive-origin-title" data-i18n="archiveOriginTitle">ABOUT THE ARCHIVE</span>
+          <p data-i18n="archiveOriginDesc">
+            All styles featured in the Visual Archive were tested by members of the Stable Waifu community using the AM Preview model.
+          </p>
+        </section>
 
         <div class="info-guide">
           <section class="info-guide-group">
@@ -334,8 +370,8 @@
 
         <div class="info-version">
           <span data-i18n="version">VERSION</span>
-          <b>0.0.2</b>
-          <span data-i18n="localBuildDate">RELEASE · 29.08.2026</span>
+          <b>0.0.3</b>
+          <span data-i18n="localBuildDate">RELEASE · 22.09.2026</span>
           <span class="info-verified"><span data-i18n="verifiedStylesThrough">VERIFIED STYLES THROUGH</span> <b>18.07.2026</b></span>
         </div>
       </div>
@@ -381,5 +417,7 @@
   </dialog>
 
   <script src="./app.js" defer></script>
+  <script src="./danbooru-v003.js" defer></script>
+  <script src="./qol-v003.js" defer></script>
 </body>
 </html>
