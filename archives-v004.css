@@ -1,0 +1,162 @@
+/* =========================================================
+   V0.0.4 / ARCHIVE SELECTOR
+   ========================================================= */
+
+.archive-selector-v004 {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: stretch;
+
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.archive-v004-label {
+  display: flex;
+  align-items: center;
+
+  padding: 0 16px 0 0;
+
+  border-right: 1px solid var(--line);
+
+  color: var(--muted-2);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+.archive-v004-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.archive-v004-button {
+  appearance: none;
+
+  position: relative;
+
+  min-width: 0;
+
+  padding: 17px 18px 16px;
+
+  border: 0;
+  border-right: 1px solid var(--line);
+
+  background: transparent;
+  color: var(--muted);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  font-size: 10px;
+  letter-spacing: 0.065em;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    color 120ms ease,
+    background 120ms ease;
+}
+
+.archive-v004-button:last-child {
+  border-right: 0;
+}
+
+.archive-v004-button:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.archive-v004-button.active {
+  color: var(--text);
+}
+
+.archive-v004-button.active::after {
+  content: "";
+
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -1px;
+
+  height: 2px;
+
+  background: var(--accent);
+}
+
+
+/* =========================================================
+   SKY / NO SUPPORTED LIST
+   ========================================================= */
+
+.mode-switch.archive-v004-no-supported {
+  grid-template-columns: 1fr;
+}
+
+.mode-switch.archive-v004-no-supported
+.mode-tab[data-mode="visual"] {
+  padding-right: 0;
+}
+
+
+/* =========================================================
+   ARCHIVE IDENTITY
+   ========================================================= */
+
+body[data-archive-v004="opus"]
+.archive-v004-button[data-archive-v004="opus"] {
+  font-weight: 700;
+}
+
+body[data-archive-v004="sky"]
+.archive-v004-button[data-archive-v004="sky"] {
+  font-weight: 700;
+}
+
+body[data-archive-v004="am"]
+.archive-v004-button[data-archive-v004="am"] {
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 680px) {
+  .archive-selector-v004 {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-v004-label {
+    display: none;
+  }
+
+  .archive-v004-button {
+    padding:
+      13px
+      10px
+      12px;
+
+    font-size: 8px;
+
+    text-align: center;
+  }
+
+  .archive-v004-button.active::after {
+    left: 10px;
+    right: 10px;
+  }
+}

@@ -1,0 +1,243 @@
+/* =========================================================
+   GRID DENSITY V0.0.4
+   ========================================================= */
+
+.grid-density-v004 {
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    5px;
+
+  align-items:
+    center;
+}
+
+
+.grid-density-label-v004 {
+  margin-right:
+    2px;
+
+  color:
+    var(--muted-2);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  font-size:
+    7px;
+
+  letter-spacing:
+    .08em;
+}
+
+
+.grid-density-v004 button {
+  appearance:
+    none;
+
+  padding:
+    5px 7px;
+
+  border:
+    1px solid
+    var(--line-soft);
+
+  background:
+    transparent;
+
+  color:
+    var(--muted);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  font-size:
+    8px;
+
+  letter-spacing:
+    .04em;
+
+  cursor:
+    pointer;
+
+  transition:
+    color
+      120ms ease,
+    border-color
+      120ms ease,
+    background
+      120ms ease;
+}
+
+
+.grid-density-v004 button:hover {
+  border-color:
+    var(--line);
+
+  color:
+    var(--text);
+}
+
+
+.grid-density-v004 button.active {
+  border-color:
+    var(--accent);
+
+  background:
+    rgba(
+      214,
+      255,
+      63,
+      .055
+    );
+
+  color:
+    var(--accent);
+}
+
+
+/* =========================================================
+   COMPACT
+   ========================================================= */
+
+html[
+  data-grid-density-v004="compact"
+]
+.gallery {
+  column-gap:
+    9px;
+}
+
+
+html[
+  data-grid-density-v004="compact"
+]
+.card {
+  margin-bottom:
+    19px;
+}
+
+
+html[
+  data-grid-density-v004="compact"
+]
+.card-bottom {
+  padding-top:
+    6px;
+}
+
+
+html[
+  data-grid-density-v004="compact"
+]
+.card-name {
+  font-size:
+    13px;
+}
+
+
+html[
+  data-grid-density-v004="compact"
+]
+.card-meta,
+html[
+  data-grid-density-v004="compact"
+]
+.card-index {
+  font-size:
+    8px;
+}
+
+
+/* =========================================================
+   LARGE
+   ========================================================= */
+
+html[
+  data-grid-density-v004="large"
+]
+.gallery {
+  column-gap:
+    18px;
+}
+
+
+html[
+  data-grid-density-v004="large"
+]
+.card {
+  margin-bottom:
+    34px;
+}
+
+
+html[
+  data-grid-density-v004="large"
+]
+.card-bottom {
+  padding-top:
+    10px;
+}
+
+
+html[
+  data-grid-density-v004="large"
+]
+.card-name {
+  font-size:
+    17px;
+}
+
+
+/* =========================================================
+   MOBILE — DON'T FUCK UP SMALL SCREENS
+   ========================================================= */
+
+@media (
+  max-width: 680px
+) {
+
+  .grid-density-v004 {
+    gap:
+      4px;
+  }
+
+
+  .grid-density-v004 button {
+    padding:
+      4px 6px;
+
+    font-size:
+      7px;
+  }
+
+
+  html[
+    data-grid-density-v004="compact"
+  ]
+  .card-name {
+    font-size:
+      14px;
+  }
+
+
+  html[
+    data-grid-density-v004="large"
+  ]
+  .card-name {
+    font-size:
+      15px;
+  }
+}

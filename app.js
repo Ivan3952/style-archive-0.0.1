@@ -570,6 +570,75 @@
 
   const normalizeStyleName = (value) => normalize(value).replace(/\s+/g, " ");
 
+  function groupVisualStyles(rows) {
+    const grouped = [];
+    const map = new Map();
+
+    (Array.isArray(rows) ? rows : []).forEach((style, index) => {
+      if (!style || typeof style !== "object") return;
+
+      const key =
+        normalizeStyleName(style.name || style.copy_value || "") ||
+        `__record_${style.id || index}`;
+
+      const existing = map.get(key);
+
+      if (!existing) {
+        const item = {
+          ...style,
+          media: [...new Set(style.media || [])],
+          presets: [...new Set(style.presets || [])],
+          tags: [...new Set(style.tags || [])],
+          source_ids: style.id ? [String(style.id)] : [],
+        };
+
+        map.set(key, item);
+        grouped.push(item);
+        return;
+      }
+
+      existing.media = [
+        ...new Set([
+          ...(existing.media || []),
+          ...(style.media || []),
+        ])
+      ];
+
+      existing.presets = [
+        ...new Set([
+          ...(existing.presets || []),
+          ...(style.presets || []),
+        ])
+      ];
+
+      existing.tags = [
+        ...new Set([
+          ...(existing.tags || []),
+          ...(style.tags || []),
+        ])
+      ];
+
+      if (
+        style.id &&
+        !existing.source_ids.includes(String(style.id))
+      ) {
+        existing.source_ids.push(String(style.id));
+      }
+
+      const currentPosts =
+        Number(existing.danbooru_post_count || 0);
+
+      const incomingPosts =
+        Number(style.danbooru_post_count || 0);
+
+      if (incomingPosts > currentPosts) {
+        existing.danbooru_post_count = incomingPosts;
+      }
+    });
+
+    return grouped;
+  }
+
   const compactSearch = (value) =>
     normalizeStyleName(value)
       .replace(/^@+/, "")
@@ -752,6 +821,10 @@
 
     state.styles.forEach((style, index) => {
       state.styleById.set(style.id, style);
+
+      (style.source_ids || []).forEach((sourceId) => {
+        state.styleById.set(String(sourceId), style);
+      });
       state.archiveOrder.set(style.id, index);
       state.visualSearchIndex.set(style.id, makeNameIndex(style.name || style.copy_value || ""));
 
@@ -911,7 +984,7 @@
     if (!state.supportedIndex) return;
 
     const counts = {
-      all: state.supportedIndex.length,
+      all: 0,
       preview: 0,
       "no-preview": 0,
       main: 0,
@@ -920,6 +993,13 @@
     };
 
     state.supportedIndex.forEach((entry) => {
+      if (
+        window.STYLE_ARCHIVE_MODELS_V004 &&
+        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
+      ) return;
+
+      counts.all += 1;
+
       const meta = previewMetaForName(entry.name);
       if (meta) counts.preview += 1;
       else counts["no-preview"] += 1;
@@ -977,6 +1057,16 @@
   }
 
   function visualSearchMatch(style, queryNorm, queryCompact) {
+    const searchV004 =
+      window.STYLE_ARCHIVE_SEARCH_V004;
+
+if (searchV004) {
+  return searchV004.matchVisual(
+    style,
+    state.visualSearchIndex.get(style.id),
+    el.searchInput.value
+  );
+}
     if (!queryNorm) return { match: true, rank: 0 };
 
     const haystack = normalize([
@@ -1069,6 +1159,14 @@
     source.forEach((style) => {
       if (state.savedOnly && !state.saved.has(style.id)) return;
 
+      // V004_MODEL_FILTER
+      if (
+        window.STYLE_ARCHIVE_MODELS_V004 &&
+        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(
+          style.copy_value || style.name
+        )
+      ) return;
+
       const danbooruRecord =
         window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(
           style.copy_value || style.name
@@ -1121,6 +1219,15 @@
   }
 
   function rankSupportedEntries(entries, queryNorm, queryCompact) {
+const searchV004 =
+  window.STYLE_ARCHIVE_SEARCH_V004;
+
+if (searchV004) {
+  return searchV004.rankEntries(
+    entries,
+    el.searchInput.value
+  );
+}
     if (!queryNorm) return entries;
 
     const exact = [];
@@ -1153,7 +1260,13 @@
       if (state.mode !== "visual" || normalize(el.searchInput.value) !== queryNorm) return;
 
       const ranked = rankSupportedEntries(state.supportedIndex, queryNorm, queryCompact);
-      const additional = ranked.filter((entry) => !previewStyleForName(entry.name));
+      const additional = ranked.filter((entry) =>
+        !previewStyleForName(entry.name) &&
+        (
+          !window.STYLE_ARCHIVE_MODELS_V004 ||
+          window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
+        )
+      );
 
       if (!additional.length) {
         el.searchSupported.hidden = true;
@@ -1172,12 +1285,56 @@
     }
   }
 
+  // V004_GRID_DENSITY
   function getColumnCount() {
-    const width = window.innerWidth;
+    const width =
+      window.innerWidth;
+
+    const density =
+      document
+        .documentElement
+        .dataset
+        .gridDensityV004
+      ||
+      "normal";
+
+
+    if (
+      density ===
+      "compact"
+    ) {
+      if (width <= 390) return 1;
+      if (width <= 680) return 2;
+      if (width <= 980) return 4;
+      if (width <= 1320) return 5;
+      if (width <= 1800) return 6;
+
+      return 7;
+    }
+
+
+    if (
+      density ===
+      "large"
+    ) {
+      if (width <= 390) return 1;
+      if (width <= 680) return 1;
+      if (width <= 980) return 2;
+      if (width <= 1320) return 3;
+
+      return 4;
+    }
+
+
+    /*
+      NORMAL = original v0.0.4
+      behaviour.
+    */
     if (width <= 390) return 1;
     if (width <= 680) return 2;
     if (width <= 980) return 3;
     if (width <= 1320) return 4;
+
     return 5;
   }
 
@@ -1333,6 +1490,12 @@
     let base = state.supportedIndex.filter((entry) => {
       if (state.supportedLetter !== "all" && entry.letter !== state.supportedLetter) return false;
       if (!supportedFilterMatch(entry)) return false;
+
+      // V004_MODEL_FILTER
+      if (
+        window.STYLE_ARCHIVE_MODELS_V004 &&
+        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
+      ) return false;
 
       const record =
         window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(entry.name) || null;
@@ -1976,23 +2139,9 @@
 
       if (typing) return;
 
-      if (event.key === "/") {
-        event.preventDefault();
-        el.searchInput.focus();
-        return;
-      }
 
-      if ((event.key === "r" || event.key === "R") && !el.viewer.open && !el.infoDialog?.open && el.utilityDrawer.hidden) {
-        event.preventDefault();
-        randomStyle("any");
-        return;
-      }
 
-      if (el.viewer.open) {
-        if (event.key === "ArrowLeft") { event.preventDefault(); shiftViewerMedia(-1); }
-        if (event.key === "ArrowRight") { event.preventDefault(); shiftViewerMedia(1); }
-        if (event.key === "c" || event.key === "C") { event.preventDefault(); copyStyle(state.viewerStyle); }
-      }
+
     });
 
     const visualObserver = new IntersectionObserver((entries) => {
@@ -2035,7 +2184,12 @@
 
       if (!stylesResponse.ok || !mediaResponse.ok) throw new Error("Could not load archive data");
 
-      state.styles = await stylesResponse.json();
+      const rawStyles = await stylesResponse.json();
+      state.styles = groupVisualStyles(rawStyles);
+
+      console.info(
+        `[v0.0.4] grouped visual styles: ${rawStyles.length} -> ${state.styles.length}`
+      );
       state.media = await mediaResponse.json();
       if (el.archiveSkeleton) el.archiveSkeleton.hidden = true;
       buildVisualLookup();
@@ -2064,12 +2218,16 @@
     }
   }
 
+  /* V004_DEEP_LINK_API */
   window.STYLE_ARCHIVE_V003 = {
     state,
     applyVisualFilters,
     applySupportedFilters,
+    buildSupportedFilters,
     syncVisualControls,
-    syncSupportedSortControls
+    syncSupportedSortControls,
+    openViewer,
+    closeViewer
   };
 
   // V003_DANBOORU_UI

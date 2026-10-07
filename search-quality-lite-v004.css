@@ -1,0 +1,172 @@
+/* =========================================================
+   SEARCH QUALITY LITE V0.0.4
+   ========================================================= */
+
+.search-lite-panel-v004 {
+  grid-column:
+    1 / -1;
+
+  display:
+    flex;
+
+  gap:
+    5px;
+
+  align-items:
+    center;
+
+  min-width:
+    0;
+
+  overflow-x:
+    auto;
+
+  padding-top:
+    6px;
+
+  scrollbar-width:
+    none;
+}
+
+
+.search-lite-panel-v004::-webkit-scrollbar {
+  display:
+    none;
+}
+
+
+.search-lite-panel-v004[hidden] {
+  display:
+    none;
+}
+
+
+.search-lite-hint-v004 {
+  appearance:
+    none;
+
+  flex:
+    0 0 auto;
+
+  max-width:
+    min(
+      430px,
+      78vw
+    );
+
+  padding:
+    6px 8px;
+
+  overflow:
+    hidden;
+
+  border:
+    1px solid
+    var(--line-soft);
+
+  background:
+    transparent;
+
+  color:
+    var(--text);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  font-size:
+    8px;
+
+  line-height:
+    1.15;
+
+  text-align:
+    left;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+
+  cursor:
+    pointer;
+
+  transition:
+    border-color
+      120ms ease,
+    color
+      120ms ease,
+    background
+      120ms ease;
+}
+
+
+.search-lite-hint-v004 span {
+  margin-right:
+    7px;
+
+  color:
+    var(--accent);
+
+  font-size:
+    6px;
+
+  letter-spacing:
+    .06em;
+}
+
+
+.search-lite-hint-v004 b {
+  margin:
+    0 4px;
+
+  color:
+    var(--muted);
+
+  font-weight:
+    400;
+}
+
+
+.search-lite-hint-v004:hover {
+  border-color:
+    var(--accent);
+
+  background:
+    rgba(
+      214,
+      255,
+      63,
+      .035
+    );
+
+  color:
+    var(--accent);
+}
+
+
+@media (
+  max-width: 680px
+) {
+
+  .search-lite-panel-v004 {
+    padding-top:
+      5px;
+  }
+
+
+  .search-lite-hint-v004 {
+    max-width:
+      84vw;
+
+    padding:
+      5px 7px;
+
+    font-size:
+      7px;
+  }
+}
