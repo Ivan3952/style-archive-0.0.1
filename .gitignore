@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Резервные копии, которые создают скрипты и заплатки
+*.before-*
+*.bak
+data/*.before_*.json
+
+# Служебное
+.DS_Store
+Thumbs.db
