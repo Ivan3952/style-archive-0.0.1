@@ -19,7 +19,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
 
@@ -34,14 +34,31 @@ jobs:
           DEST: ${{ secrets.DEPLOY_PATH }}
           PORT: ${{ secrets.DEPLOY_PORT }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
           export SSHPASS="$PASS"
-          SSH="sshpass -e ssh -p ${PORT:-22} -o StrictHostKeyChecking=accept-new"
+          SSH="sshpass -e ssh -p ${PORT:-22} -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ServerAliveCountMax=6"
           EXCLUDES=(--exclude=.git --exclude=.github --exclude=tests --exclude=tools
                     --exclude=docs --exclude=README.md --exclude=.gitignore)
-          # 1) картинки: сравниваем по размеру (mtime после checkout всегда новый)
-          rsync -rlz --size-only --partial -e "$SSH" "${EXCLUDES[@]}" \
-            media/ "$USER_@$HOST:${DEST%/}/media/"
-          # 2) всё остальное: по контрольной сумме, чтобы не пропустить правку того же размера
-          rsync -rlzc -e "$SSH" "${EXCLUDES[@]}" --exclude=media/ \
-            ./ "$USER_@$HOST:${DEST%/}/"
+
+          # rsync с повторами: при обрыве соединения продолжает с места остановки
+          sync() {  # sync <rsync-флаги> <откуда> <куда>
+            local n=0
+            until rsync "$@"; do
+              n=$((n+1))
+              [ "$n" -ge 6 ] && { echo "::error::rsync не удался после $n попыток"; return 1; }
+              echo "::warning::обрыв, повтор $n через 20 с"; sleep 20
+            done
+          }
+
+          # 1) картинки по папкам. Сначала AM (thumb, web): сайт оживает раньше.
+          #    WebP уже сжат, поэтому без -z; --size-only: mtime после checkout всегда новый
+          for d in thumb web opus sky; do
+            echo "=== media/$d ==="
+            sync -rl --size-only --partial --timeout=180 --info=stats1 -e "$SSH" \
+              "media/$d/" "$USER_@$HOST:${DEST%/}/media/$d/" || exit 1
+          done
+
+          # 2) остальное (html, js, css, data): по контрольной сумме, чтобы не пропустить правку того же размера
+          echo "=== остальные файлы ==="
+          sync -rlzc --timeout=180 --info=stats1 -e "$SSH" "${EXCLUDES[@]}" --exclude=media/ \
+            ./ "$USER_@$HOST:${DEST%/}/" || exit 1
