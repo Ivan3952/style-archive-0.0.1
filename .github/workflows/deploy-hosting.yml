@@ -5,6 +5,9 @@
 #   DEPLOY_PASSWORD  пароль SSH
 #   DEPLOY_PATH      папка сайта на сервере, например /home/u123/stylearchive.art/public_html/
 #   DEPLOY_PORT      (необязательно) порт SSH, по умолчанию 22
+# Переменная (вкладка Variables):
+#   MAINTENANCE_MODE = 1  -> index.html на сервере НЕ перезаписывается (там висит заглушка).
+#                            Чтобы открыть сайт: удалить переменную и запустить workflow.
 name: Deploy to hosting
 
 on:
@@ -33,6 +36,7 @@ jobs:
           PASS: ${{ secrets.DEPLOY_PASSWORD }}
           DEST: ${{ secrets.DEPLOY_PATH }}
           PORT: ${{ secrets.DEPLOY_PORT }}
+          MAINT: ${{ vars.MAINTENANCE_MODE }}
         run: |
           set -uo pipefail
           export SSHPASS="$PASS"
@@ -60,5 +64,10 @@ jobs:
 
           # 2) остальное (html, js, css, data): по контрольной сумме, чтобы не пропустить правку того же размера
           echo "=== остальные файлы ==="
-          sync -rlzc --timeout=180 --info=stats1 -e "$SSH" "${EXCLUDES[@]}" --exclude=media/ \
+          EXTRA=()
+          if [ "${MAINT:-}" = "1" ]; then
+            EXTRA=(--exclude=/index.html)
+            echo "::notice::MAINTENANCE_MODE=1: index.html не трогаем, на сайте остаётся заглушка"
+          fi
+          sync -rlzc --timeout=180 --info=stats1 -e "$SSH" "${EXCLUDES[@]}" "${EXTRA[@]}" --exclude=media/ \
             ./ "$USER_@$HOST:${DEST%/}/" || exit 1
