@@ -1,0 +1,47 @@
+# Заливка сайта на российский хостинг по SSH (rsync).
+# Секреты (Settings -> Secrets and variables -> Actions):
+#   DEPLOY_HOST      адрес сервера из панели хостинга
+#   DEPLOY_USER      логин SSH
+#   DEPLOY_PASSWORD  пароль SSH
+#   DEPLOY_PATH      папка сайта на сервере, например /home/u123/stylearchive.art/public_html/
+#   DEPLOY_PORT      (необязательно) порт SSH, по умолчанию 22
+name: Deploy to hosting
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-hosting
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass rsync
+
+      - name: Upload
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER_: ${{ secrets.DEPLOY_USER }}
+          PASS: ${{ secrets.DEPLOY_PASSWORD }}
+          DEST: ${{ secrets.DEPLOY_PATH }}
+          PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          set -euo pipefail
+          export SSHPASS="$PASS"
+          SSH="sshpass -e ssh -p ${PORT:-22} -o StrictHostKeyChecking=accept-new"
+          EXCLUDES=(--exclude=.git --exclude=.github --exclude=tests --exclude=tools
+                    --exclude=docs --exclude=README.md --exclude=.gitignore)
+          # 1) картинки: сравниваем по размеру (mtime после checkout всегда новый)
+          rsync -rlz --size-only --partial -e "$SSH" "${EXCLUDES[@]}" \
+            media/ "$USER_@$HOST:${DEST%/}/media/"
+          # 2) всё остальное: по контрольной сумме, чтобы не пропустить правку того же размера
+          rsync -rlzc -e "$SSH" "${EXCLUDES[@]}" --exclude=media/ \
+            ./ "$USER_@$HOST:${DEST%/}/"
