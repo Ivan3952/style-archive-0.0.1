@@ -354,7 +354,7 @@
 
       const response =
         await fetch(
-          "./data/danbooru.json"
+          "./data/danbooru.min.json"
         );
 
 

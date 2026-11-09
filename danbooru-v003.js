@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const DATA_URL = "./data/danbooru.json";
+  const DATA_URL = "./data/danbooru.min.json";
   const internal = window.STYLE_ARCHIVE_V003;
 
   const $ = (selector, root = document) => root.querySelector(selector);
