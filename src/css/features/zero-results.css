@@ -18,7 +18,7 @@
 
 .zero-result-title-v004,
 .zero-result-label-v004 {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 
   letter-spacing: 0.06em;
 }
@@ -72,7 +72,7 @@
 
   color: var(--muted);
 
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 
   font-size: 8px;
 

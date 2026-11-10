@@ -4,6 +4,11 @@
  * Дальше слои сливаются в нормальные модули (см. docs/CLEAN-SLATE.md).
  */
 
+// Шрифты (самохостинг через npm, только нужные начертания; подмножества подгружаются по кириллице/латинице)
+import "@fontsource-variable/geologica/wght.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+
 // Стили (порядок каскада сохранён)
 import "./css/style.css";
 import "./css/archives-v004.css";

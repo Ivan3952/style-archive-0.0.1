@@ -36,9 +36,9 @@
   function stylesWordRu(n) {
     const m10 = n % 10;
     const m100 = n % 100;
-    if (m10 === 1 && m100 !== 11) return "визуальный стиль";
-    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return "визуальных стиля";
-    return "визуальных стилей";
+    if (m10 === 1 && m100 !== 11) return "стиль с превью";
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return "стиля с превью";
+    return "стилей с превью";
   }
 
   function archivesHtml() {
@@ -48,18 +48,15 @@
         const visual = Number(archive.styleCount || 0);
         const supported =
           archive.supportedCount == null
-            ? tr(
-                "Отдельный список Supported пока не подключён.",
-                "A separate Supported index is not connected yet."
-              )
+            ? tr("Списка Supported для этого архива нет.", "This archive has no Supported list.")
             : tr(
-                `Список Supported: ${fmt(archive.supportedCount)}.`,
-                `Supported index: ${fmt(archive.supportedCount)}.`
+                `Supported: ${fmt(archive.supportedCount)}.`,
+                `Supported: ${fmt(archive.supportedCount)}.`
               );
         return `
           <article>
             <strong>${archive.label}</strong>
-            <p>${tr(`${fmt(visual)} ${stylesWordRu(visual)}.`, `${fmt(visual)} visual styles.`)} ${supported}</p>
+            <p>${tr(`${fmt(visual)} ${stylesWordRu(visual)}.`, `${fmt(visual)} styles with previews.`)} ${supported}</p>
           </article>`;
       })
       .join("");
@@ -90,8 +87,8 @@
 
       <div class="info-v004-intro">
         ${tr(
-          "STYLE / ARCHIVE — локальный каталог style-тегов с визуальными превью, отдельными архивами моделей и быстрым поиском. Здесь можно найти стиль, проверить доступные примеры и сразу скопировать нужный идентификатор.",
-          "STYLE / ARCHIVE is a local catalogue of style tags with visual previews, model-specific archives, and fast search. Find a style, inspect available examples, and copy the identifier immediately."
+          "Каталог стилей с превью: найти стиль, посмотреть, как он рисует, скопировать тег.",
+          "A catalogue of styles with previews: find a style, see how it draws, copy the tag."
         )}
       </div>
 
@@ -102,7 +99,7 @@
         </div>
 
         <div>
-          <span>${tr("ВИЗУАЛЬНЫХ СТИЛЕЙ", "VISUAL STYLES")}</span>
+          <span>${tr("С ПРЕВЬЮ", "WITH PREVIEWS")}</span>
           <strong>${fmt(archive.visual)}</strong>
         </div>
 
@@ -124,15 +121,15 @@
       </section>
 
       <section class="info-v004-section">
-        <h3>${tr("ПОИСК И ПОДБОРКИ", "SEARCH & DISCOVERY")}</h3>
+        <h3>${tr("ПОИСК И ПОДБОРКИ", "SEARCH & PICKS")}</h3>
 
         <div class="info-v004-feature-list">
           <div>
             <b>SMART / WORD / CONTAINS</b>
             <span>
               ${tr(
-                "Три режима поиска: ранжированный умный поиск, поиск по словам и прямое совпадение с частью названия.",
-                "Three search modes: ranked smart search, word matching, and direct substring matching."
+                "Три режима: умный (по релевантности), по словам и по части названия.",
+                "Three modes: smart (ranked), whole words, part of a name."
               )}
             </span>
           </div>
@@ -141,8 +138,8 @@
             <b>${tr("ПОДСКАЗКИ", "SUGGESTIONS")}</b>
             <span>
               ${tr(
-                "При опечатках сайт может предложить близкий визуальный стиль через «Возможно?».",
-                "Typos can produce a close visual-style suggestion through “Did you mean?”."
+                "Опечатку сайт постарается угадать и предложит похожий стиль.",
+                "A typo gets a suggestion for the closest style."
               )}
             </span>
           </div>
@@ -151,8 +148,8 @@
             <b>${tr("НЕДАВНИЕ ЗАПРОСЫ", "RECENT QUERIES")}</b>
             <span>
               ${tr(
-                "Последние поисковые запросы сохраняются локально и доступны прямо из поиска.",
-                "Recent search queries are stored locally and are available directly from search."
+                "Прошлые запросы лежат под строкой поиска. Хранятся только в этом браузере.",
+                "Past searches show up under the search box and stay in this browser."
               )}
             </span>
           </div>
@@ -161,8 +158,8 @@
             <b>${tr("ПРЯМЫЕ ССЫЛКИ", "DEEP LINKS")}</b>
             <span>
               ${tr(
-                "Можно скопировать ссылку на конкретный стиль или поисковый запрос; нужный архив сохраняется в URL.",
-                "Copy a direct link to a style or search query; the archive is preserved in the URL."
+                "Можно скопировать ссылку на стиль или на поиск. Архив записан в адрес.",
+                "You can copy a link to a style or a search. The archive is part of the address."
               )}
             </span>
           </div>
@@ -171,18 +168,18 @@
             <b>${tr("ПОДБОРКИ ПО 12", "DISCOVER 12")}</b>
             <span>
               ${tr(
-                "Случайные, новые, непросмотренные и стили с несколькими изображениями.",
-                "Random, newest, unseen, and multi-image style sets."
+                "Двенадцать стилей за раз: случайные, новые, ещё не открытые или с несколькими превью.",
+                "Twelve styles at a time: random, new, not opened yet, or with several previews."
               )}
             </span>
           </div>
 
           <div>
-            <b>${tr("НУЛЕВЫЕ РЕЗУЛЬТАТЫ", "ZERO RESULTS")}</b>
+            <b>${tr("НИЧЕГО НЕ НАШЛОСЬ", "NOTHING FOUND")}</b>
             <span>
               ${tr(
-                "Если точного результата нет, интерфейс предлагает очистить поиск или проверить другой архив.",
-                "When there is no exact result, the interface can clear the query or point you to another archive."
+                "Если совпадений нет, можно очистить поиск или поискать в другом архиве.",
+                "If nothing matches, clear the search or try another archive."
               )}
             </span>
           </div>
@@ -196,10 +193,7 @@
           <div>
             <b>${tr("ВИЗУАЛЬНЫЙ АРХИВ", "VISUAL ARCHIVE")}</b>
             <span>
-              ${tr(
-                "Показывает только стили, для которых уже есть изображения-превью.",
-                "Shows only styles that already have image previews."
-              )}
+              ${tr("Только стили, у которых есть превью.", "Only styles that have previews.")}
             </span>
           </div>
 
@@ -207,8 +201,8 @@
             <b>${tr("ВСЕ ПОДДЕРЖИВАЕМЫЕ", "ALL SUPPORTED")}</b>
             <span>
               ${tr(
-                "Отдельный индекс поддерживаемых style-тегов модели. Наличие в Supported не означает наличие превью.",
-                "A separate index of model-supported style tags. Being Supported does not imply that a preview exists."
+                "Все теги стилей, которые знает модель. Превью есть не у всех.",
+                "Every style tag the model knows. Not all of them have previews."
               )}
             </span>
           </div>
@@ -217,8 +211,8 @@
             <b>MAIN / ALT</b>
             <span>
               ${tr(
-                "Фильтры по пресетам, в которых были получены визуальные примеры.",
-                "Filters for the presets used to produce visual examples."
+                "Фильтр по пресету, на котором сделано превью.",
+                "Filter by the preset a preview was made with."
               )}
             </span>
           </div>
@@ -227,8 +221,8 @@
             <b>${tr("СОРТИРОВКА", "SORTING")}</b>
             <span>
               ${tr(
-                "Архивный порядок, новые, старые, A–Z, случайный порядок и сортировка сохранённых по времени добавления.",
-                "Archive order, newest, oldest, A–Z, random order, and Saved sorting by time added."
+                "Как в архиве, новые, старые, A–Z, случайно. В избранном ещё по времени добавления.",
+                "Archive order, newest, oldest, A–Z, random. In Saved, also by time added."
               )}
             </span>
           </div>
@@ -236,15 +230,15 @@
       </section>
 
       <section class="info-v004-section">
-        <h3>${tr("ИНСТРУМЕНТЫ СТИЛЕЙ", "STYLE TOOLS")}</h3>
+        <h3>${tr("СО СТИЛЯМИ", "WITH STYLES")}</h3>
 
         <div class="info-v004-feature-list">
           <div>
             <b>${tr("ИЗБРАННОЕ", "SAVED")}</b>
             <span>
               ${tr(
-                "Постоянный локальный список. Избранное открывается в отдельной вкладке, поэтому текущая позиция в архиве не теряется.",
-                "A persistent local list. Saved opens in a separate tab, so your current archive position is preserved."
+                "Хранится в браузере. Открывается в новой вкладке, поэтому место в архиве не теряется.",
+                "Kept in the browser. Opens in a new tab, so you do not lose your place."
               )}
             </span>
           </div>
@@ -253,8 +247,8 @@
             <b>${tr("ДОБАВЛЕННЫЕ", "ADDED")}</b>
             <span>
               ${tr(
-                "Временный рабочий список стилей, который можно скопировать одной строкой.",
-                "A temporary working list of styles that can be copied in one line."
+                "Временный список: набрать стили и скопировать одной строкой.",
+                "A scratch list: gather styles and copy them as one line."
               )}
             </span>
           </div>
@@ -263,8 +257,8 @@
             <b>${tr("НЕДАВНИЕ", "RECENT")}</b>
             <span>
               ${tr(
-                "Последние просмотренные стили с превью для быстрого возврата.",
-                "Recently viewed preview styles for quick return."
+                "Последние открытые стили, чтобы вернуться к ним.",
+                "Styles you opened recently, to get back to them."
               )}
             </span>
           </div>
@@ -273,8 +267,8 @@
             <b>${tr("КОПИРОВАНИЕ", "COPY")}</b>
             <span>
               ${tr(
-                "Название стиля копируется одним нажатием. В просмотрщике также доступна отдельная ссылка на стиль.",
-                "A style name copies with one click. The viewer also provides a direct style link."
+                "Клик по названию копирует тег. В просмотре есть ещё ссылка на стиль.",
+                "Click a name to copy the tag. The viewer also has a link to the style."
               )}
             </span>
           </div>
@@ -282,15 +276,15 @@
       </section>
 
       <section class="info-v004-section">
-        <h3>${tr("ПРОСМОТРЩИК", "VIEWER")}</h3>
+        <h3>${tr("ПРОСМОТР", "VIEWER")}</h3>
 
         <div class="info-v004-feature-list">
           <div>
             <b>${tr("ПОЛНЫЙ ЭКРАН", "FULL SCREEN")}</b>
             <span>
               ${tr(
-                "Изображение открывается в максимально доступном размере; несколько превью переключаются стрелками интерфейса.",
-                "Images open at the maximum available size; multiple previews use the on-screen arrows."
+                "Картинка открывается крупно. Если превью несколько, листать стрелками.",
+                "The image opens large. If there are several previews, flip through with the arrows."
               )}
             </span>
           </div>
@@ -299,8 +293,8 @@
             <b>${tr("ДЕЙСТВИЯ", "ACTIONS")}</b>
             <span>
               ${tr(
-                "Из просмотрщика можно сохранить стиль, добавить его во временный список и скопировать прямую ссылку.",
-                "From the viewer you can save a style, add it to the temporary list, and copy a direct link."
+                "В просмотре можно сохранить стиль, добавить его в список и скопировать ссылку.",
+                "In the viewer you can save a style, add it to the list, and copy a link."
               )}
             </span>
           </div>
@@ -308,15 +302,15 @@
       </section>
 
       <section class="info-v004-section info-v004-last">
-        <h3>${tr("ИНТЕРФЕЙС И УПРАВЛЕНИЕ", "INTERFACE & CONTROLS")}</h3>
+        <h3>${tr("ИНТЕРФЕЙС", "INTERFACE")}</h3>
 
         <div class="info-v004-feature-list">
           <div>
-            <b>${tr("РАЗМЕР СЕТКИ", "GRID SIZE")}</b>
+            <b>${tr("ВИД И ФИЛЬТРЫ", "VIEW & FILTERS")}</b>
             <span>
               ${tr(
-                "Компактный, обычный и крупный режимы карточек. ФОРМА переключает ровную сетку и исходные пропорции картинок.",
-                "Compact, Normal, and Large card layouts. SHAPE switches between an even grid and original image proportions."
+                "Размер и форма карточек, режим поиска и фильтры Danbooru лежат под кнопкой «Фильтры».",
+                "Card size and shape, the search mode and the Danbooru filters are under the Filters button."
               )}
             </span>
           </div>
@@ -325,8 +319,8 @@
             <b>RU / EN · LIGHT / DARK</b>
             <span>
               ${tr(
-                "Язык и тема сохраняются локально в браузере.",
-                "Language and theme preferences are stored locally in the browser."
+                "Язык и тема запоминаются в браузере.",
+                "Language and theme are remembered by the browser."
               )}
             </span>
           </div>
@@ -335,18 +329,18 @@
             <b>${tr("КЛАВИАТУРА", "KEYBOARD")}</b>
             <span>
               ${tr(
-                "Глобальные горячие клавиши отключены. Единственная специальная клавиша — Esc: она закрывает открытые окна и меню.",
-                "Global keyboard shortcuts are disabled. Esc is the only special key and closes open dialogs and menus."
+                "Горячих клавиш нет, кроме Esc: он закрывает окна и меню.",
+                "No shortcuts except Esc, which closes windows and menus."
               )}
             </span>
           </div>
 
           <div>
-            <b>${tr("ЛОКАЛЬНЫЕ ДАННЫЕ", "LOCAL DATA")}</b>
+            <b>${tr("ГДЕ ХРАНИТСЯ", "WHERE IT IS STORED")}</b>
             <span>
               ${tr(
-                "Избранное, Добавленные, Недавние, поисковая история, язык и тема хранятся только в вашем браузере.",
-                "Saved, Added, Recent, search history, language, and theme are stored only in your browser."
+                "Избранное, список, недавние, история поиска, язык и тема лежат только в этом браузере. Аккаунтов нет.",
+                "Saved, the list, recent, search history, language and theme live only in this browser. There are no accounts."
               )}
             </span>
           </div>

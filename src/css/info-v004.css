@@ -33,7 +33,7 @@
 .info-v004-stats span,
 .info-v004-section h3,
 .info-v004-footer {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.06em;
 }
 

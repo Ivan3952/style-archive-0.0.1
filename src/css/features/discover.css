@@ -64,7 +64,7 @@
 
 .discover-polish-menu-v004 span,
 .discover-polish-menu-v004 small {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 }
 
 .discover-polish-menu-v004 span {
