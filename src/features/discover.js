@@ -43,7 +43,30 @@ function closeMenu() {
   if (menu) menu.hidden = true;
 }
 
-function run(mode) {
+/*
+ * Меню лежит в <body>, а не в шапке: у .topbar есть backdrop-filter, и из-за него position: fixed
+ * внутри шапки считается от шапки, а не от экрана (на телефоне меню «Подборка» улетало вверх страницы).
+ */
+function positionMenu(button) {
+  if (window.matchMedia("(max-width: 760px)").matches) {
+    menu.style.top = menu.style.right = "";
+    return;
+  }
+  const rect = button.getBoundingClientRect();
+  menu.style.top = `${Math.round(rect.bottom + 7)}px`;
+  menu.style.right = `${Math.max(8, Math.round(window.innerWidth - rect.right))}px`;
+}
+
+async function ensureVisualMode() {
+  if (app.state.mode === "visual") return;
+  document.querySelector('[data-mode="visual"]')?.click();
+  for (let i = 0; i < 40 && app.state.mode !== "visual"; i += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+}
+
+async function run(mode) {
+  await ensureVisualMode();
   app.state.discoveryStyles = pickPool(mode);
   app.state.savedOnly = false;
   app.state.activePreset = "all";
@@ -85,7 +108,8 @@ function mountButton() {
       `<button type="button" data-discover-fix="${mode}"><span>${title}</span><small>${hint}</small></button>`
   ).join("");
 
-  wrap.append(button, menu);
+  wrap.append(button);
+  document.body.append(menu);
 
   // в шапку, перед кнопкой MENU
   const actions = document.querySelector(".top-actions");
@@ -102,6 +126,7 @@ function mountButton() {
   button.addEventListener("click", (event) => {
     event.stopPropagation();
     menu.hidden = !menu.hidden;
+    if (!menu.hidden) positionMenu(button);
   });
 
   menu.addEventListener("click", (event) => {
@@ -110,8 +135,11 @@ function mountButton() {
   });
 
   document.addEventListener("click", (event) => {
-    if (!event.target.closest(".discover-polish-wrap-v004")) closeMenu();
+    if (!event.target.closest(".discover-polish-wrap-v004, .discover-polish-menu-v004"))
+      closeMenu();
   });
+
+  window.addEventListener("resize", closeMenu);
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeMenu();
