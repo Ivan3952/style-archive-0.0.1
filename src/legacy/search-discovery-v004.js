@@ -1,3 +1,5 @@
+import { escapeHtml } from "../utils.js";
+
 (() => {
   "use strict";
 
@@ -60,14 +62,6 @@
     try {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(rows.slice(0, MAX_HISTORY)));
     } catch {}
-  }
-
-  function escapeHtml(value) {
-    return String(value || "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;");
   }
 
   function escapeRegex(value) {

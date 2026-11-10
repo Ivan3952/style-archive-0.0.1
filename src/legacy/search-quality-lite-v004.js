@@ -1,3 +1,5 @@
+import { escapeHtml } from "../utils.js";
+
 (() => {
   "use strict";
 
@@ -36,14 +38,6 @@
 
   function compact(value) {
     return norm(value).replace(/[\s\-_.()[\]{}'"`~:/\\]+/g, "");
-  }
-
-  function escapeHtml(value) {
-    return String(value || "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;");
   }
 
   /* ======================================================

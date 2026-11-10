@@ -117,31 +117,18 @@
     setAttr(input, "placeholder", "поиск стиля или команды", "search styles or type a command");
     setAttr(input, "aria-label", "Поиск стилей и команд", "Search styles or commands");
 
-    const archive = new URL(window.location.href).searchParams.get("archive") || "am";
+    const archivesApi = window.STYLE_ARCHIVE_ARCHIVES_V004;
+    const archive = archivesApi?.currentKey;
 
-    setCommand(
-      "archive-am",
-      "AM PREVIEW",
-      "AM PREVIEW",
-      archive === "am" ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
-      archive === "am" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
-    );
-
-    setCommand(
-      "archive-opus",
-      "OPUS",
-      "OPUS",
-      archive === "opus" ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
-      archive === "opus" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
-    );
-
-    setCommand(
-      "archive-sky",
-      "SKY",
-      "SKY",
-      archive === "sky" ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
-      archive === "sky" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
-    );
+    Object.values(archivesApi?.archives || {}).forEach(({ key, label }) => {
+      setCommand(
+        `archive-${key}`,
+        label,
+        label,
+        archive === key ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
+        archive === key ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
+      );
+    });
 
     setCommand(
       "random",

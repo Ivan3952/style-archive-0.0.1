@@ -1044,12 +1044,6 @@
     };
 
     state.supportedIndex.forEach((entry) => {
-      if (
-        window.STYLE_ARCHIVE_MODELS_V004 &&
-        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
-      )
-        return;
-
       counts.all += 1;
 
       const meta = previewMetaForName(entry.name);
@@ -1225,13 +1219,6 @@
     source.forEach((style) => {
       if (state.savedOnly && !state.saved.has(style.id)) return;
 
-      // V004_MODEL_FILTER
-      if (
-        window.STYLE_ARCHIVE_MODELS_V004 &&
-        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(style.copy_value || style.name)
-      )
-        return;
-
       const danbooruRecord =
         window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(style.copy_value || style.name) || null;
 
@@ -1324,12 +1311,7 @@
       if (state.mode !== "visual" || normalize(el.searchInput.value) !== queryNorm) return;
 
       const ranked = rankSupportedEntries(state.supportedIndex, queryNorm, queryCompact);
-      const additional = ranked.filter(
-        (entry) =>
-          !previewStyleForName(entry.name) &&
-          (!window.STYLE_ARCHIVE_MODELS_V004 ||
-            window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name))
-      );
+      const additional = ranked.filter((entry) => !previewStyleForName(entry.name));
 
       if (!additional.length) {
         el.searchSupported.hidden = true;
@@ -1538,13 +1520,6 @@
     let base = state.supportedIndex.filter((entry) => {
       if (state.supportedLetter !== "all" && entry.letter !== state.supportedLetter) return false;
       if (!supportedFilterMatch(entry)) return false;
-
-      // V004_MODEL_FILTER
-      if (
-        window.STYLE_ARCHIVE_MODELS_V004 &&
-        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
-      )
-        return false;
 
       const record = window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(entry.name) || null;
 
