@@ -35,6 +35,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 IGNORED_CONSOLE = ("favicon",)  # пока в репозитории нет favicon
 
+ARCHIVES_CONFIG = json.loads((ROOT / "data" / "archives.json").read_text(encoding="utf-8"))
 results: list[tuple[bool, str]] = []
 
 
@@ -157,6 +158,13 @@ def run(base: str) -> None:
             ok = wait_cards(page)
             counts[key] = page.inner_text("#brandVisualCount").strip()
             check(ok, f"архив {key.upper()}: карточки отрисованы", f"счётчик {counts[key]}")
+            declared = ARCHIVES_CONFIG["archives"][key]
+            want_visual = f"{declared['uniqueCount']:06d}"
+            want_supported = "------" if declared["supportedCount"] is None else f"{declared['supportedCount']:06d}"
+            got_supported = page.inner_text("#brandSupportedCount").strip()
+            check(counts[key] == want_visual and got_supported == want_supported,
+                  f"архив {key.upper()}: счётчики шапки совпадают с data/archives.json",
+                  f"получено {counts[key]}/{got_supported}, ожидалось {want_visual}/{want_supported}")
         check(len(set(counts.values())) == len(counts) and len(counts) == 3, "счётчики трёх архивов различаются", str(counts))
         page.locator('[data-archive-v004="am"]').first.click()
         page.wait_for_timeout(1200)
