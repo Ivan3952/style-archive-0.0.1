@@ -14,6 +14,7 @@ import "./css/grid-density-v004.css";
 import "./css/command-search-v004.css";
 import "./css/mobile.css";
 import "./css/info-v004.css";
+import "./css/usability-v005.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";
@@ -31,3 +32,4 @@ import "./features/discover.js";
 import "./legacy/saved-new-tab-v004.js";
 import "./legacy/locale-ru-v004.js";
 import "./legacy/info-v004.js";
+import "./legacy/usability-v005.js";

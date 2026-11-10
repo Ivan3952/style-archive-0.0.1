@@ -1,0 +1,370 @@
+/* =========================================================
+   УДОБСТВО 0.1.1
+   Подключается последним и только переопределяет: логика фильтров не трогается.
+   1) компактный верх, чтобы галерея была видна на первом экране;
+   2) панель поиска: строка поиска + «Фильтры», остальное в сворачиваемой панели;
+   3) читаемость: подписи не мельче 11px, контраст не ниже ~4.5:1, одинаковое активное состояние.
+   ========================================================= */
+
+:root {
+  --muted-2: #7c7a74; /* было #56544f, контраст на #0b0b0b ~2.6:1, стало ~4.6:1 */
+}
+
+html[data-theme="light"] {
+  --muted-2: #6f6a60;
+}
+
+/* ---------- 1. Компактный верх ---------- */
+
+.intro {
+  min-height: 0;
+  padding: clamp(22px, 3.2vw, 40px) 0 clamp(18px, 2.4vw, 28px);
+  gap: 24px;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-size: clamp(44px, 6.4vw, 96px);
+}
+
+.stat-value {
+  font-size: clamp(22px, 2.2vw, 32px);
+}
+
+.stat-block {
+  min-width: 80px;
+}
+
+.mode-tab {
+  padding: 13px 0 11px;
+}
+
+.mode-tab span {
+  font-size: clamp(16px, 1.5vw, 22px);
+}
+
+/* ---------- 2. Панель поиска ---------- */
+
+/* раньше панель была не липкой (занимала ~350px); теперь она компактная, и её можно закрепить */
+.toolbar {
+  position: sticky;
+  top: 66px;
+  z-index: 20;
+  padding: 10px 0 8px;
+  backdrop-filter: blur(14px);
+}
+
+.toolbar-bar-v005 {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.toolbar-bar-v005 .search-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#searchInput {
+  font-size: clamp(18px, 1.9vw, 26px);
+}
+
+.search-wrap {
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+}
+
+.filters-toggle-v005 {
+  appearance: none;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.filters-toggle-v005:hover,
+.filters-toggle-v005.open {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.filters-toggle-v005.has-active {
+  border-color: var(--accent);
+}
+
+.filters-toggle-count-v005 {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #0b0b0b;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.filters-panel-v005 {
+  display: grid;
+  min-width: 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 14px 0 6px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.filters-section-v005 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+  min-width: 0;
+}
+
+.filters-section-v005 > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.filters-panel-v005 .grid-density-v004,
+.filters-panel-v005 .search-mode-v004,
+.filters-panel-v005 .danbooru-filter-list {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+/* настройки визуального архива не показываем в режиме «Все поддерживаемые» */
+.toolbar:has(#visualFilters[hidden]) .visual-only-v005 {
+  display: none;
+}
+
+.filters-summary-v005 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.filters-summary-v005 span {
+  padding: 3px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.filters-row,
+.supported-tools {
+  margin-top: 8px;
+}
+
+/* ряд «пресет + сортировка» остаётся виден, на телефоне сортировка прокручивается в одну строку */
+.visual-filter-groups {
+  gap: 8px 18px;
+}
+
+/* ---------- 3. Читаемость и единый стиль ---------- */
+
+.eyebrow,
+.stat-label,
+.search-label,
+.search-count,
+.mode-tab small,
+.tool-label,
+.danbooru-sync-note,
+.archive-v004-label,
+.grid-density-label-v004 {
+  font-size: 11px;
+}
+
+.filter-chip,
+.sort-chip,
+.alphabet-button,
+.danbooru-filter-chip,
+.supported-filter-chip,
+.search-mode-v004 button,
+.grid-density-v004 button {
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.sort-chip,
+.danbooru-filter-chip,
+.supported-filter-chip,
+.search-mode-v004 button,
+.grid-density-v004 button {
+  padding: 6px 10px;
+}
+
+/* одно активное состояние для всех групп кнопок: залитая таблетка */
+.filters-panel-v005 .grid-density-v004 button,
+.filters-panel-v005 .search-mode-v004 button {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.filters-panel-v005 .grid-density-v004 button.active,
+.filters-panel-v005 .search-mode-v004 button.active {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.filters-panel-v005 .grid-density-v004 button:hover,
+.filters-panel-v005 .search-mode-v004 button:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.filters-panel-v005 .grid-density-v004 button.active:hover,
+.filters-panel-v005 .search-mode-v004 button.active:hover {
+  color: var(--bg);
+}
+
+.filters-panel-v005 .search-mode-v004 > span,
+.filters-panel-v005 .grid-density-label-v004 {
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+/* пресет и сортировка в одну строку, если помещаются */
+.visual-filter-groups {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* нули в шапке не нужны: счётчик появляется, когда есть что считать */
+.top-actions [data-zero="1"] {
+  display: none;
+}
+
+/* кнопка сброса: заметна только когда есть что сбрасывать (класс ставит qol-v003) */
+#clearButton:not(.qol-active),
+#supportedClearButton:not(.qol-active) {
+  visibility: hidden;
+}
+
+/* ---------- Телефон ---------- */
+
+@media (max-width: 720px) {
+  /* на телефоне шапка прокручивается вместе со страницей, закрепляется только панель поиска */
+  .topbar {
+    position: static;
+  }
+
+  .toolbar {
+    top: 0;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    padding-top: 10px;
+    padding-bottom: 8px;
+  }
+
+  .brand-mark {
+    white-space: nowrap;
+  }
+
+  .brand-count {
+    display: none; /* те же числа есть под заголовком */
+  }
+
+  .top-actions {
+    flex: 1 1 100%;
+    flex-wrap: nowrap;
+    min-height: 0;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .top-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-actions > * {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .intro {
+    padding: 18px 0 16px;
+  }
+
+  h1 {
+    font-size: clamp(40px, 15vw, 64px);
+  }
+
+  .intro-stats {
+    gap: 22px;
+  }
+
+  .toolbar {
+    padding: 8px 0 6px;
+  }
+
+  .toolbar-bar-v005 {
+    gap: 10px;
+  }
+
+  .search-wrap {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .search-label {
+    display: none;
+  }
+
+  .search-count {
+    min-width: 0;
+  }
+
+  .filters-toggle-v005 {
+    padding: 8px 12px;
+  }
+
+  /* сортировка в одну прокручиваемую строку, чтобы не занимать 3 строки */
+  .sort-list,
+  .supported-sort-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .sort-list::-webkit-scrollbar,
+  .supported-sort-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sort-list > *,
+  .supported-sort-list > * {
+    flex: 0 0 auto;
+  }
+
+  .filters-section-v005 {
+    gap: 8px 10px;
+  }
+}
