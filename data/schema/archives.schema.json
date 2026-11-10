@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "archives.schema.json",
+  "title": "Список архивов (data/archives.json): единственный источник правды",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "defaultArchive", "archives"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "defaultArchive": { "type": "string" },
+    "archives": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9]*$" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "styles", "media", "supported", "visualCount", "uniqueCount", "mediaCount", "supportedCount"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "aliases": { "type": "array", "items": { "type": "string" } },
+          "styles": { "type": "string", "pattern": "^\\./data/.+\\.json$" },
+          "media": { "type": "string", "pattern": "^\\./data/.+\\.json$" },
+          "supported": { "type": ["string", "null"], "pattern": "^\\./data/.+\\.json$" },
+          "visualCount": { "type": "integer", "minimum": 0, "description": "Записей в файле стилей" },
+          "uniqueCount": { "type": "integer", "minimum": 0, "description": "Стилей после склейки одинаковых названий (его видит посетитель)" },
+          "mediaCount": { "type": "integer", "minimum": 0 },
+          "supportedCount": { "type": ["integer", "null"], "minimum": 0 }
+        }
+      }
+    }
+  }
+}

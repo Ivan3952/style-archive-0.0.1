@@ -59,14 +59,24 @@ docs/                      заметки о состоянии проекта
 
 ## Проверки
 
-Перед каждым релизом:
+Перед каждым релизом (то же самое запускает GitHub Actions на каждый pull request, `.github/workflows/check.yml`):
 
 ```bash
-python3 tools/audit_data.py        # целостность данных (код 1 = есть ошибки)
-python3 tests/smoke.py             # соберёт сайт и проверит, что он работает (нужен playwright)
+python3 tools/audit_data.py        # целостность данных и соответствие схемам (код 1 = есть ошибки)
+python3 tests/smoke.py             # соберёт сайт и проверит, что он работает
+npm run format:check               # единый стиль кода (npm run format исправит)
 ```
 
-Один раз для смоук-теста: `pip install playwright && playwright install chromium`.
+Один раз: `pip install -r requirements-dev.txt && playwright install chromium`.
+
+При чистке оформления есть попиксельная проверка: `python3 tests/visual.py snap <папка>` до правки, затем после, и
+`python3 tests/visual.py diff <до> <после>`: код 1, если хоть один из 34 снимков отличается.
+
+### Схемы данных (`data/schema/`)
+
+`styles`, `media`, `supported`, `archives`: то, что есть сейчас. `mixes`, `events`, `characters`: заготовки под будущие
+разделы (данных ещё нет, файл проверяется, как только появится `data/mixes.json` и т. п.).
+Схема строгая: неизвестное поле считается ошибкой, поэтому новое поле сначала добавляют в схему.
 
 ## Инструменты (`tools/`)
 
