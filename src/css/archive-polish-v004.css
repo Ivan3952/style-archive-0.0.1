@@ -45,12 +45,8 @@
    MODEL IDENTITY
    ========================================================= */
 
-.archive-polish-badge[
-  data-archive="opus"
-],
-.archive-polish-badge[
-  data-archive="sky"
-] {
+.archive-polish-badge[data-archive="opus"],
+.archive-polish-badge[data-archive="sky"] {
   border-color:
     var(--accent);
 
@@ -59,9 +55,7 @@
 }
 
 
-.archive-polish-badge[
-  data-archive="am"
-] {
+.archive-polish-badge[data-archive="am"] {
   border-color:
     var(--line-strong);
 
@@ -111,12 +105,8 @@
    STATUS
    ========================================================= */
 
-#statusLine[
-  data-archive-prefix
-]::before,
-#supportedStatusLine[
-  data-archive-prefix
-]::before {
+#statusLine[data-archive-prefix]::before,
+#supportedStatusLine[data-archive-prefix]::before {
   content:
     attr(data-archive-prefix)
     " / ";
@@ -130,9 +120,7 @@
    RESULT COUNT
    ========================================================= */
 
-#resultCount[
-  data-archive
-]::before {
+#resultCount[data-archive]::before {
   content:
     attr(data-archive)
     " · ";

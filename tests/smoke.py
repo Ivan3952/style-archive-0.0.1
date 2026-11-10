@@ -2,7 +2,7 @@
 """Смоук-тест сайта: быстро проверяет, что главное работает и в консоли нет ошибок.
 
 Запуск из корня репозитория:
-  python3 tests/smoke.py                      # сам поднимет локальный сервер
+  python3 tests/smoke.py                      # соберёт сайт (npm run build) и поднимет локальный сервер
   python3 tests/smoke.py https://stylearchive.art   # проверить уже выложенный сайт
 
 Нужно (один раз):  pip install playwright && playwright install chromium
@@ -50,11 +50,32 @@ def free_port() -> int:
         return s.getsockname()[1]
 
 
+def build_site() -> Path:
+    """Собирает сайт (npm run build) и подкладывает media в dist ссылкой.
+
+    На хостинг media едет отдельно (см. workflow), поэтому в самой сборке её нет;
+    для локальной проверки достаточно символической ссылки dist/media -> ../media.
+    """
+    npm = "npm.cmd" if os.name == "nt" else "npm"
+    if not (ROOT / "node_modules").exists():
+        subprocess.run([npm, "install", "--no-audit", "--no-fund"], cwd=ROOT, check=True)
+    subprocess.run([npm, "run", "build"], cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
+    dist = ROOT / "dist"
+    link = dist / "media"
+    if not link.exists():
+        try:
+            link.symlink_to(ROOT / "media", target_is_directory=True)
+        except OSError as exc:  # Windows без прав на симлинки
+            raise SystemExit(f"Не удалось создать dist/media -> ../media: {exc}")
+    return dist
+
+
 def start_server() -> tuple[subprocess.Popen, str]:
     port = free_port()
+    dist = build_site()
     proc = subprocess.Popen(
         [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
-        cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        cwd=dist, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
     time.sleep(0.8)
     return proc, f"http://127.0.0.1:{port}"

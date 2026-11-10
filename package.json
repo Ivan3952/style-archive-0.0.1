@@ -1,0 +1,16 @@
+{
+  "name": "style-archive",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "STYLE / ARCHIVE: визуальный архив стилей (stylearchive.art)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "python3 tests/smoke.py"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

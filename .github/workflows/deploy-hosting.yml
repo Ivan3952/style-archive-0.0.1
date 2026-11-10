@@ -1,10 +1,17 @@
-# Заливка сайта на российский хостинг по SSH (rsync).
-# Секреты (Settings -> Secrets and variables -> Actions):
+# Сборка сайта (Vite) и заливка на российский хостинг по SSH (rsync).
+#
+# Секреты (Settings -> Secrets and variables -> Actions -> Secrets):
 #   DEPLOY_HOST      адрес сервера из панели хостинга
 #   DEPLOY_USER      логин SSH
 #   DEPLOY_PASSWORD  пароль SSH
-#   DEPLOY_PATH      папка сайта на сервере, например /home/u123/stylearchive.art/public_html/
+#   DEPLOY_PATH      папка сайта на сервере, например /var/www/u123/data/www/stylearchive.art/
 #   DEPLOY_PORT      (необязательно) порт SSH, по умолчанию 22
+#
+# Переменная (Settings -> Secrets and variables -> Actions -> Variables):
+#   SITE_LIVE = 1    сайт открыт для посетителей.
+#                    Если переменной нет или она не равна 1, на сайте остаётся заглушка
+#                    из maintenance/index.html (безопасное значение по умолчанию).
+#                    Перед каждым большим обновлением переменную удаляют, после проверки возвращают.
 name: Deploy to hosting
 
 on:
@@ -23,6 +30,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          test -f dist/index.html
+
       - name: Install tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass rsync
 
@@ -33,12 +51,12 @@ jobs:
           PASS: ${{ secrets.DEPLOY_PASSWORD }}
           DEST: ${{ secrets.DEPLOY_PATH }}
           PORT: ${{ secrets.DEPLOY_PORT }}
+          LIVE: ${{ vars.SITE_LIVE }}
         run: |
           set -uo pipefail
           export SSHPASS="$PASS"
           SSH="sshpass -e ssh -p ${PORT:-22} -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ServerAliveCountMax=6"
-          EXCLUDES=(--exclude=.git --exclude=.github --exclude=tests --exclude=tools
-                    --exclude=docs --exclude=README.md --exclude=.gitignore)
+          TARGET="$USER_@$HOST:${DEST%/}"
 
           # rsync с повторами: при обрыве соединения продолжает с места остановки
           sync() {  # sync <rsync-флаги> <откуда> <куда>
@@ -50,15 +68,31 @@ jobs:
             done
           }
 
+          # какой index.html поедет на сайт
+          if [ "${LIVE:-}" = "1" ]; then
+            echo "::notice::SITE_LIVE=1: на сайт выкладывается новая версия"
+          else
+            echo "::notice::SITE_LIVE не равна 1: на сайте остаётся заглушка (maintenance/index.html)"
+            cp maintenance/index.html dist/index.html
+          fi
+
           # 1) картинки по папкам. Сначала AM (thumb, web): сайт оживает раньше.
           #    WebP уже сжат, поэтому без -z; --size-only: mtime после checkout всегда новый
           for d in thumb web opus sky; do
             echo "=== media/$d ==="
             sync -rl --size-only --partial --timeout=180 --info=stats1 -e "$SSH" \
-              "media/$d/" "$USER_@$HOST:${DEST%/}/media/$d/" || exit 1
+              "media/$d/" "$TARGET/media/$d/" || exit 1
           done
 
-          # 2) остальное (html, js, css, data): по контрольной сумме, чтобы не пропустить правку того же размера
-          echo "=== остальные файлы ==="
-          sync -rlzc --timeout=180 --info=stats1 -e "$SSH" "${EXCLUDES[@]}" --exclude=media/ \
-            ./ "$USER_@$HOST:${DEST%/}/" || exit 1
+          # 2) сборка без index.html (assets с хэшами и data), по контрольной сумме
+          echo "=== сборка: assets и data ==="
+          sync -rlzc --timeout=180 --info=stats1 -e "$SSH" --exclude=/index.html --exclude=media/ \
+            dist/ "$TARGET/" || exit 1
+
+          # 3) index.html самым последним: он не должен ссылаться на ещё не загруженные файлы
+          echo "=== index.html ==="
+          sync -lzc --timeout=180 -e "$SSH" dist/index.html "$TARGET/index.html" || exit 1
+
+          # 4) убрать с сервера файлы прежней структуры (до сборки Vite), явным списком
+          echo "=== очистка устаревших файлов ==="
+          $SSH "$USER_@$HOST" "cd '${DEST%/}' && rm -f app.js style.css archives-v00*.js archives-v00*.css archive-polish-v00*.css command-search-v00*.js command-search-v00*.css danbooru-v00*.js final-polish-fix-v00*.js final-polish-fix-v00*.css final-polish-v00*.js final-polish-v00*.css grid-density-v00*.js grid-density-v00*.css info-v00*.js info-v00*.css locale-ru-v00*.js qol-v00*.js saved-new-tab-v00*.js search-discovery-v00*.js search-discovery-v00*.css search-quality-lite-v00*.js search-quality-lite-v00*.css search-v00*.js data/danbooru.json .nojekyll" || echo "::warning::очистка не выполнилась, это не критично"

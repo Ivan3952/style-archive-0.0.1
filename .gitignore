@@ -11,3 +11,5 @@ data/*.before_*.json
 # Служебное
 .DS_Store
 Thumbs.db
+node_modules/
+dist/
