@@ -14,8 +14,7 @@
 
   const tr = (ru, en) => (isRu() ? ru : en);
 
-  const fmt = (value) =>
-    Number(value || 0).toLocaleString(isRu() ? "ru-RU" : "en-US");
+  const fmt = (value) => Number(value || 0).toLocaleString(isRu() ? "ru-RU" : "en-US");
 
   function archiveState() {
     const api = window.STYLE_ARCHIVE_ARCHIVES_V004;
@@ -26,12 +25,10 @@
     return {
       key,
       label: current?.label || "",
-      visual:
-        Array.isArray(app?.state?.styles)
-          ? app.state.styles.length
-          : current?.styleCount || 0,
-      supported:
-        current?.supportedCount ?? null,
+      visual: Array.isArray(app?.state?.styles)
+        ? app.state.styles.length
+        : current?.styleCount || 0,
+      supported: current?.supportedCount ?? null,
     };
   }
 
@@ -51,8 +48,14 @@
         const visual = Number(archive.styleCount || 0);
         const supported =
           archive.supportedCount == null
-            ? tr("Отдельный список Supported пока не подключён.", "A separate Supported index is not connected yet.")
-            : tr(`Список Supported: ${fmt(archive.supportedCount)}.`, `Supported index: ${fmt(archive.supportedCount)}.`);
+            ? tr(
+                "Отдельный список Supported пока не подключён.",
+                "A separate Supported index is not connected yet."
+              )
+            : tr(
+                `Список Supported: ${fmt(archive.supportedCount)}.`,
+                `Supported index: ${fmt(archive.supportedCount)}.`
+              );
         return `
           <article>
             <strong>${archive.label}</strong>
@@ -66,8 +69,7 @@
     const archive = archiveState();
     const savedCount = app?.state?.saved?.size || 0;
 
-    const supportedValue =
-      archive.supported == null ? "—" : fmt(archive.supported);
+    const supportedValue = archive.supported == null ? "—" : fmt(archive.supported);
 
     return `
       <div class="info-v004-top">
@@ -387,16 +389,20 @@
       }
     });
 
-    document.addEventListener("click", (event) => {
-      if (event.target.closest("#infoButton, #languageButton")) {
-        window.setTimeout(render, 20);
-      }
-    }, true);
-
-    new MutationObserver(() => render()).observe(
-      document.documentElement,
-      { attributes: true, attributeFilter: ["lang", "data-archive-v004"] }
+    document.addEventListener(
+      "click",
+      (event) => {
+        if (event.target.closest("#infoButton, #languageButton")) {
+          window.setTimeout(render, 20);
+        }
+      },
+      true
     );
+
+    new MutationObserver(() => render()).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["lang", "data-archive-v004"],
+    });
 
     render();
 
@@ -413,10 +419,7 @@
   const timer = window.setInterval(() => {
     tries += 1;
 
-    if (
-      window.STYLE_ARCHIVE_V003?.state &&
-      document.querySelector("#infoDialog")
-    ) {
+    if (window.STYLE_ARCHIVE_V003?.state && document.querySelector("#infoDialog")) {
       window.clearInterval(timer);
       mount();
       return;

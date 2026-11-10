@@ -1,0 +1,117 @@
+/* Кнопка и меню DISCOVER в шапке (см. src/features/discover.js). */
+
+.discover-polish-wrap-v004 {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.discover-polish-button-v004 {
+  white-space: nowrap;
+}
+
+.discover-polish-menu-v004 {
+  position: absolute;
+
+  z-index: 150;
+
+  top: calc(100% + 7px);
+
+  right: 0;
+
+  width: min(310px, 86vw);
+
+  border: 1px solid var(--line);
+
+  background: var(--bg);
+
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.34);
+}
+
+.discover-polish-menu-v004[hidden] {
+  display: none;
+}
+
+.discover-polish-menu-v004 button {
+  appearance: none;
+
+  display: grid;
+
+  gap: 4px;
+
+  width: 100%;
+
+  padding: 11px 12px;
+
+  border: 0;
+
+  border-bottom: 1px solid var(--line-soft);
+
+  background: transparent;
+
+  color: var(--text);
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.discover-polish-menu-v004 button:last-child {
+  border-bottom: 0;
+}
+
+.discover-polish-menu-v004 button:hover {
+  background: rgba(214, 255, 63, 0.045);
+}
+
+.discover-polish-menu-v004 span,
+.discover-polish-menu-v004 small {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.discover-polish-menu-v004 span {
+  color: var(--text);
+
+  font-size: 9px;
+
+  letter-spacing: 0.04em;
+}
+
+.discover-polish-menu-v004 button:hover span {
+  color: var(--accent);
+}
+
+.discover-polish-menu-v004 small {
+  color: var(--muted);
+
+  font-size: 7px;
+}
+
+.discover-polish-wrap-v004 .discover-polish-menu-v004 {
+  display: block;
+}
+
+.discover-polish-wrap-v004 .discover-polish-menu-v004[hidden] {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  #discoverPolishButton {
+    min-height: 36px;
+  }
+
+  .discover-polish-menu-v004,
+  .discover-polish-wrap-v004 .discover-polish-menu-v004 {
+    position: fixed;
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  .discover-polish-menu-v004 button {
+    min-height: 58px;
+    padding: 12px 14px;
+  }
+}

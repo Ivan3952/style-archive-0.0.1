@@ -87,6 +87,11 @@ def first_style_name() -> str:
     return next(s["name"] for s in styles if s.get("media"))
 
 
+def first_style_id():
+    styles = json.loads((ROOT / "data" / "styles.json").read_text(encoding="utf-8"))
+    return next(s["id"] for s in styles if s.get("media"))
+
+
 def count_cards(page) -> int:
     return page.locator("#gallery .card-media").count()
 
@@ -195,6 +200,21 @@ def run(base: str) -> None:
         page.wait_for_timeout(500)
         closed = page.evaluate("document.querySelector('#viewer').open === false")
         check(closed, "вьювер закрывается по Esc")
+
+        # 6b. Ссылка на стиль (?style=<id>) открывает вьюер, внутри есть кнопка «скопировать ссылку»
+        deep_id = first_style_id()
+        page.goto(f"{base}/index.html?archive=am&style={deep_id}", wait_until="networkidle")
+        try:
+            page.wait_for_function("document.querySelector('dialog[open] img')", timeout=15000)
+            page.wait_for_timeout(900)
+            in_viewer = page.evaluate(
+                "!!document.querySelector('dialog[open] #styleDeepLinkCopyV004')"
+            )
+            check(in_viewer, "ссылка ?style= открывает вьюер с кнопкой «COPY STYLE LINK»")
+        except Exception:
+            check(False, "ссылка ?style= открывает вьюер с кнопкой «COPY STYLE LINK»", "вьюер не открылся")
+        page.goto(base + "/index.html", wait_until="networkidle")
+        wait_cards(page)
 
         # 7. Тема и язык
         t0 = page.evaluate("document.documentElement.dataset.theme")

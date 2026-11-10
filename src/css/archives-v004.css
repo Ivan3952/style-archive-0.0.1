@@ -21,12 +21,7 @@
 
   color: var(--muted-2);
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   font-size: 8px;
   letter-spacing: 0.08em;
@@ -52,12 +47,7 @@
   background: transparent;
   color: var(--muted);
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   font-size: 10px;
   letter-spacing: 0.065em;
@@ -96,7 +86,6 @@
   background: var(--accent);
 }
 
-
 /* =========================================================
    SKY / NO SUPPORTED LIST
    ========================================================= */
@@ -105,31 +94,25 @@
   grid-template-columns: 1fr;
 }
 
-.mode-switch.archive-v004-no-supported
-.mode-tab[data-mode="visual"] {
+.mode-switch.archive-v004-no-supported .mode-tab[data-mode="visual"] {
   padding-right: 0;
 }
-
 
 /* =========================================================
    ARCHIVE IDENTITY
    ========================================================= */
 
-body[data-archive-v004="opus"]
-.archive-v004-button[data-archive-v004="opus"] {
+body[data-archive-v004="opus"] .archive-v004-button[data-archive-v004="opus"] {
   font-weight: 700;
 }
 
-body[data-archive-v004="sky"]
-.archive-v004-button[data-archive-v004="sky"] {
+body[data-archive-v004="sky"] .archive-v004-button[data-archive-v004="sky"] {
   font-weight: 700;
 }
 
-body[data-archive-v004="am"]
-.archive-v004-button[data-archive-v004="am"] {
+body[data-archive-v004="am"] .archive-v004-button[data-archive-v004="am"] {
   font-weight: 700;
 }
-
 
 /* =========================================================
    MOBILE
@@ -145,10 +128,7 @@ body[data-archive-v004="am"]
   }
 
   .archive-v004-button {
-    padding:
-      13px
-      10px
-      12px;
+    padding: 13px 10px 12px;
 
     font-size: 8px;
 

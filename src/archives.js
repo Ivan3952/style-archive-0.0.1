@@ -148,9 +148,7 @@ function syncSupportedAvailability() {
   const available = Boolean(current.supported);
   tab.hidden = !available;
   tab.disabled = !available;
-  document
-    .querySelector(".mode-switch")
-    ?.classList.toggle("archive-v004-no-supported", !available);
+  document.querySelector(".mode-switch")?.classList.toggle("archive-v004-no-supported", !available);
 }
 
 function syncArchiveHeading() {
