@@ -36,5 +36,8 @@ jobs:
       - name: Data audit
         run: python3 tools/audit_data.py
 
+      - name: Importer test
+        run: python3 tests/test_import.py
+
       - name: Smoke test
         run: python3 tests/smoke.py
