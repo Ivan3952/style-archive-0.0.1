@@ -17,14 +17,16 @@ ROOT = Path(__file__).resolve().parent.parent
 TOOL = ROOT / "tools" / "import_telegram.py"
 
 
-def msg(mid, date, text="", photo=None):
-    m = {"id": mid, "type": "message", "date": date, "text": text}
+def msg(mid, date, text="", photo=None, fwd="K-Ran"):
+    m = {"id": mid, "type": "message", "date": date, "text": text, "forwarded_from": fwd}
     if photo:
         m["photo"] = photo
     return m
 
 
 def build(export: Path):
+    """Выдуманный чат в форме реального экспорта «Стили»: пересланные посты, подпись только у первого
+    сообщения альбома, остальные без текста, части альбома с разницей в секунду."""
     (export / "photos").mkdir(parents=True)
     n = 0
 
@@ -36,27 +38,32 @@ def build(export: Path):
         return name
 
     big = 900000
+    t = "2026-11-01T10:00:0"
     msgs = [
-        msg(big + 1, "2026-11-01T10:00:00", "просто новость"),
-        # 1 художник, 2 картинки, main
-        msg(big + 2, "2026-11-01T11:00:00", "#previewstyle\n@Test New One main", img("red")),
-        msg(big + 3, "2026-11-01T11:00:00", "", img("blue")),
-        # 2 художника, 2 картинки, alt
-        msg(big + 4, "2026-11-02T11:00:00", "#previewstyle alt\n@Pair A\n@Pair B", img("green")),
-        msg(big + 5, "2026-11-02T11:00:00", "", img("yellow")),
-        # 2 художника, 3 картинки: первая общая
-        msg(big + 6, "2026-11-03T11:00:00", "#previewstyle main\n@Ref A\n@Ref B", img("black")),
-        msg(big + 7, "2026-11-03T11:00:00", "", img("white")),
-        msg(big + 8, "2026-11-03T11:00:00", "", img("gray")),
+        msg(big + 1, t + "0", "просто сообщение без картинки"),
+        # формат «@имя → main»: каждое сообщение отдельный пост, дата одна и та же
+        msg(big + 2, t + "1", "@Test New One → main\n\n#previewstyle", img("red"), "Avri."),
+        msg(big + 3, t + "1", "@Test Second → main\n\n#previewstyle\nкомментарий", img("blue"), "Avri."),
+        # два художника, две картинки, preset мейн (русский), экранированные скобки
+        msg(big + 4, t + "2", "@Pair A \\(x1\\)\n@Pair B\n#previewstyle мейн", img("green")),
+        msg(big + 5, t + "3", "", img("yellow")),  # продолжение альбома через секунду
+        # два пресета: один художник, две картинки
+        msg(big + 6, t + "3", "#previewstyle main | alt\n@Both One", img("black"), "press elf"),
+        msg(big + 7, t + "3", "", img("white"), "press elf"),
+        # два пресета: два художника, четыре картинки
+        msg(big + 8, t + "4", "#previewstyle\nМэйн / Альт\n1-2 @Both A\n3-4 @Both B", img("gray"), "Leon"),
+        msg(big + 9, t + "4", "", img("pink"), "Leon"),
+        msg(big + 10, t + "4", "", img("cyan"), "Leon"),
+        msg(big + 11, t + "4", "", img("orange"), "Leon"),
         # без пресета
-        msg(big + 9, "2026-11-04T11:00:00", "#previewstyle\n@No Preset", img("pink")),
+        msg(big + 12, t + "5", "#previewstyle\n@No Preset", img("purple")),
         # сомнительный: 3 художника, 1 картинка
-        msg(big + 10, "2026-11-05T11:00:00", "#previewstyle main\n@X1\n@X2\n@X3", img("cyan")),
-        # без картинки (Photos не выгружены)
-        msg(big + 11, "2026-11-06T11:00:00", "#previewstyle main\n@No Photo"),
+        msg(big + 13, t + "6", "#previewstyle main\n@X1\n@X2\n@X3", img("brown")),
+        # без картинки
+        msg(big + 14, t + "7", "#previewstyle main\n@No Photo"),
     ]
     (export / "result.json").write_text(
-        json.dumps({"name": "Test", "type": "public_channel", "id": 1, "messages": msgs}, ensure_ascii=False),
+        json.dumps({"name": "Стили", "type": "private_supergroup", "id": 42, "messages": msgs}, ensure_ascii=False),
         encoding="utf-8",
     )
 
@@ -90,10 +97,10 @@ def main():
         assert not (root / "media").exists(), "dry-run создал media"
         assert "сомнительн" in out.lower() and "нет пресета" in out, out
 
-        # добавим пост про уже существующий стиль
+        # пост про уже существующий стиль (другое написание регистра) с пресетом alt
         data = json.loads((export / "result.json").read_text())
         data["messages"] += [
-            msg(900020, "2026-11-07T11:00:00", f"#previewstyle\n{existing} alt", "photos/photo_1.jpg")
+            msg(900020, "2026-11-07T11:00:00", f"#previewstyle\n{existing.upper()}\nalt", "photos/photo_1.jpg")
         ]
         (export / "result.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
@@ -104,20 +111,23 @@ def main():
         arch = json.loads((root / "data" / "archives.json").read_text())
         by_id = {s["id"]: s for s in styles}
 
-        one = by_id["900002"]
-        assert one["name"] == "@Test New One" and one["presets"] == ["main"] and len(one["media"]) == 2, one
-        assert by_id["900004-1"]["presets"] == ["alt"] and by_id["900004-2"]["name"] == "@Pair B"
-        assert by_id["900006-1"]["reference_media"] == by_id["900006-2"]["reference_media"] != []
-        assert len(by_id["900006-1"]["media"]) == 1
-        assert not any(i.startswith(("900009", "900010", "900011")) for i in by_id), "лишние посты попали в архив"
-        assert len(by_id) == len(styles0) + 1 + 2 + 2, len(by_id)  # +1 +2 +2 новых записи
-        assert "updated_at" in styles[0] or any("updated_at" in s for s in styles)
+        assert by_id["g900002"]["name"] == "@Test New One" and by_id["g900002"]["presets"] == ["main"]
+        assert by_id["g900003"]["name"] == "@Test Second"
+        a, b = by_id["g900004-1"], by_id["g900004-2"]
+        assert (a["name"], b["name"]) == ("@Pair A (x1)", "@Pair B") and len(a["media"]) == len(b["media"]) == 1
+        one = by_id["g900006"]
+        assert one["presets"] == ["main", "alt"] and len(one["media"]) == 2, one
+        ba, bb = by_id["g900008-1"], by_id["g900008-2"]
+        assert ba["presets"] == bb["presets"] == ["main", "alt"] and len(ba["media"]) == len(bb["media"]) == 2
+        assert not any(i.startswith(("g900012", "g900013", "g900014")) for i in by_id), "лишние посты попали в архив"
+        assert len(by_id) == len(styles0) + 2 + 2 + 1 + 2, len(by_id)
+        old = next(s for s in styles if s["id"] == styles0[0]["id"])
+        assert "alt" in old["presets"] and "updated_at" in old and len(old["media"]) == len(styles0[0]["media"]) + 1
         for s in styles:
             for m in [*s["media"], *s["reference_media"]]:
                 assert m in media, m
-        for mid in ("p006585",):
-            assert (root / "media" / "web" / f"{mid}.webp").exists()
-            assert (root / "media" / "thumb" / f"{mid}.webp").exists()
+        assert (root / "media" / "web" / "p006585.webp").exists()
+        assert (root / "media" / "thumb" / "p006585.webp").exists()
         assert arch["archives"]["am"]["visualCount"] == len(styles)
         assert arch["archives"]["am"]["mediaCount"] == len(media)
 
