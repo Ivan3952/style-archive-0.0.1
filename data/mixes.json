@@ -1,0 +1,964 @@
+[
+  {
+    "id": "mix_3826",
+    "origin": "mixing_post",
+    "prompt_raw": "@tp p pt, @kagoya1219, @stu dts, @vlfdus 0, @daenarys",
+    "artists": [
+      {
+        "tag": "@tp p pt",
+        "style_id": "37702"
+      },
+      {
+        "tag": "@kagoya1219",
+        "style_id": "37753"
+      },
+      {
+        "tag": "@stu dts",
+        "style_id": "37755"
+      },
+      {
+        "tag": "@vlfdus 0",
+        "style_id": "37905"
+      },
+      {
+        "tag": "@daenarys",
+        "style_id": "37891-1"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006746",
+      "p006747",
+      "p006748",
+      "p006749",
+      "p006750"
+    ],
+    "published_at": "2026-11-09T19:22:48+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3826,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3831",
+    "origin": "mixing_post",
+    "prompt_raw": "@[(b_spa_gyoreva:1.2|suda_ayaka|(big squid man:0.7)], @wengwengchim",
+    "artists": [
+      {
+        "tag": "@b_spa_gyoreva",
+        "group": 1,
+        "weight": 1.2,
+        "style_id": "38308"
+      },
+      {
+        "tag": "@suda_ayaka",
+        "group": 1,
+        "style_id": "38361"
+      },
+      {
+        "tag": "@big squid man",
+        "group": 1,
+        "weight": 0.7,
+        "style_id": "37740"
+      },
+      {
+        "tag": "@wengwengchim",
+        "style_id": "38307"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006751",
+      "p006752",
+      "p006753",
+      "p006754",
+      "p006755"
+    ],
+    "published_at": "2026-11-09T19:22:48+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3831,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3836",
+    "origin": "mixing_post",
+    "prompt_raw": "@yu zhezhe, oil painting (medium), faux traditional media, @guaisanmu, @b_spa_gyoreva, @vanxllavina",
+    "artists": [
+      {
+        "tag": "@yu zhezhe",
+        "style_id": "38609"
+      },
+      {
+        "tag": "@guaisanmu",
+        "style_id": "38597"
+      },
+      {
+        "tag": "@b_spa_gyoreva",
+        "style_id": "38308"
+      },
+      {
+        "tag": "@vanxllavina",
+        "style_id": "38335"
+      }
+    ],
+    "tags": [
+      {
+        "tag": "oil painting (medium)"
+      },
+      {
+        "tag": "faux traditional media"
+      }
+    ],
+    "media": [
+      "p006756",
+      "p006757",
+      "p006758",
+      "p006759"
+    ],
+    "published_at": "2026-11-09T19:22:48+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3836,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3840",
+    "origin": "mixing_post",
+    "prompt_raw": "@keibleh, @kalmahul, @qunqing123, (@nat_the_lich:1.3), @blackbox (blackbox9158)",
+    "artists": [
+      {
+        "tag": "@keibleh",
+        "style_id": "38888"
+      },
+      {
+        "tag": "@kalmahul",
+        "style_id": "38957"
+      },
+      {
+        "tag": "@qunqing123",
+        "style_id": "37873"
+      },
+      {
+        "tag": "@nat_the_lich",
+        "weight": 1.3,
+        "style_id": "37861"
+      },
+      {
+        "tag": "@blackbox (blackbox9158)",
+        "style_id": "37855"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006760",
+      "p006761",
+      "p006762",
+      "p006763",
+      "p006764"
+    ],
+    "published_at": "2026-11-09T19:22:48+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3840,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3845",
+    "origin": "mixing_post",
+    "prompt_raw": "@toboso yana, @tp p pt, hatching texture, @xbsx, @atie1225, (@akramness:0.8)",
+    "artists": [
+      {
+        "tag": "@toboso yana",
+        "style_id": "38978"
+      },
+      {
+        "tag": "@tp p pt",
+        "style_id": "37702"
+      },
+      {
+        "tag": "@xbsx",
+        "style_id": "37832"
+      },
+      {
+        "tag": "@atie1225",
+        "style_id": "39391"
+      },
+      {
+        "tag": "@akramness",
+        "weight": 0.8,
+        "style_id": "37759"
+      }
+    ],
+    "tags": [
+      {
+        "tag": "hatching texture"
+      }
+    ],
+    "media": [
+      "p006765",
+      "p006766",
+      "p006767",
+      "p006768",
+      "p006769"
+    ],
+    "published_at": "2026-11-09T19:22:48+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3845,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3850",
+    "origin": "mixing_post",
+    "prompt_raw": "@ibuki satsuki, @serafleur, @[muryo|(vlfdus 0:1.2)|daenarys], faux traditional media",
+    "artists": [
+      {
+        "tag": "@ibuki satsuki",
+        "style_id": "39200"
+      },
+      {
+        "tag": "@serafleur",
+        "style_id": "38834"
+      },
+      {
+        "tag": "@muryo",
+        "group": 1,
+        "style_id": "38518"
+      },
+      {
+        "tag": "@vlfdus 0",
+        "group": 1,
+        "weight": 1.2,
+        "style_id": "37905"
+      },
+      {
+        "tag": "@daenarys",
+        "group": 1,
+        "style_id": "37891-1"
+      }
+    ],
+    "tags": [
+      {
+        "tag": "faux traditional media"
+      }
+    ],
+    "media": [
+      "p006770",
+      "p006771",
+      "p006772",
+      "p006773"
+    ],
+    "published_at": "2026-11-09T19:22:49+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3850,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3854",
+    "origin": "mixing_post",
+    "prompt_raw": "(@2400db), (@amuii:1.3), ((@spearmintaii)), (@drowsyww:1.2), @noriuma",
+    "artists": [
+      {
+        "tag": "@2400db",
+        "style_id": "39161"
+      },
+      {
+        "tag": "@amuii",
+        "weight": 1.3,
+        "style_id": "39102"
+      },
+      {
+        "tag": "@spearmintaii",
+        "style_id": "38968"
+      },
+      {
+        "tag": "@drowsyww",
+        "weight": 1.2,
+        "style_id": "38932"
+      },
+      {
+        "tag": "@noriuma",
+        "style_id": "39036"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006774",
+      "p006775",
+      "p006776",
+      "p006777"
+    ],
+    "published_at": "2026-11-09T19:22:49+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3854,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3858",
+    "origin": "mixing_post",
+    "prompt_raw": "@tixnen, @wlop, @kdash, @keibleh, faux traditional media, oil painting (medium), @kalmahul",
+    "artists": [
+      {
+        "tag": "@tixnen",
+        "style_id": "39401"
+      },
+      {
+        "tag": "@wlop",
+        "style_id": "37785"
+      },
+      {
+        "tag": "@kdash",
+        "style_id": "39175"
+      },
+      {
+        "tag": "@keibleh",
+        "style_id": "38888"
+      },
+      {
+        "tag": "@kalmahul",
+        "style_id": "38957"
+      }
+    ],
+    "tags": [
+      {
+        "tag": "faux traditional media"
+      },
+      {
+        "tag": "oil painting (medium)"
+      }
+    ],
+    "media": [
+      "p006778",
+      "p006779",
+      "p006780",
+      "p006781",
+      "p006782"
+    ],
+    "published_at": "2026-11-09T19:22:49+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3858,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3863",
+    "origin": "mixing_post",
+    "prompt_raw": "@[(seika_okawari:1.2)|(milon cas:1.3)|(paddy field:1.2)], (@eleanor (ohmyeleanor):1.4), @spearmintaii",
+    "artists": [
+      {
+        "tag": "@seika_okawari",
+        "group": 1,
+        "weight": 1.2,
+        "style_id": "39447"
+      },
+      {
+        "tag": "@milon cas",
+        "group": 1,
+        "weight": 1.3,
+        "style_id": "39132"
+      },
+      {
+        "tag": "@paddy field",
+        "group": 1,
+        "weight": 1.2,
+        "style_id": "39149"
+      },
+      {
+        "tag": "@eleanor (ohmyeleanor)",
+        "weight": 1.4,
+        "style_id": "38940"
+      },
+      {
+        "tag": "@spearmintaii",
+        "style_id": "38968"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006783",
+      "p006784",
+      "p006785",
+      "p006786",
+      "p006787",
+      "p006788",
+      "p006789"
+    ],
+    "published_at": "2026-11-09T19:22:49+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3863,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_3870",
+    "origin": "mixing_post",
+    "prompt_raw": "@[(spearmintaii:1.4)|(nixeu:1.3)|(hanaseto:1.5)|(wlop:1.3)|(marceline2174:1.4)], (painterly, oil painting \\(medium\\), brushwork texture, loose brushstrokes:1.4), (chiaroscuro:1.3), (intricate details:1.5)",
+    "artists": [
+      {
+        "tag": "@spearmintaii",
+        "group": 1,
+        "weight": 1.4,
+        "style_id": "38968"
+      },
+      {
+        "tag": "@nixeu",
+        "group": 1,
+        "weight": 1.3,
+        "style_id": "38185"
+      },
+      {
+        "tag": "@hanaseto",
+        "group": 1,
+        "weight": 1.5,
+        "style_id": "41294"
+      },
+      {
+        "tag": "@wlop",
+        "group": 1,
+        "weight": 1.3,
+        "style_id": "37785"
+      },
+      {
+        "tag": "@marceline2174",
+        "group": 1,
+        "weight": 1.4,
+        "style_id": "41250"
+      }
+    ],
+    "tags": [
+      {
+        "tag": "painterly",
+        "weight": 1.4
+      },
+      {
+        "tag": "oil painting (medium)",
+        "weight": 1.4
+      },
+      {
+        "tag": "brushwork texture",
+        "weight": 1.4
+      },
+      {
+        "tag": "loose brushstrokes",
+        "weight": 1.4
+      },
+      {
+        "tag": "chiaroscuro",
+        "weight": 1.3
+      },
+      {
+        "tag": "intricate details",
+        "weight": 1.5
+      }
+    ],
+    "media": [
+      "p006790",
+      "p006791",
+      "p006792",
+      "p006793",
+      "p006794",
+      "p006795",
+      "p006796",
+      "p006797"
+    ],
+    "published_at": "2026-11-09T22:22:40+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 3870,
+      "imported_at": "2026-11-10T11:35:14+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2261",
+    "origin": "generation_post",
+    "prompt_raw": "(@thenintlichen96), @feefal, (@kensight328:1.4), (@graceart0518)",
+    "artists": [
+      {
+        "tag": "@thenintlichen96",
+        "style_id": "37823"
+      },
+      {
+        "tag": "@feefal",
+        "style_id": "37742"
+      },
+      {
+        "tag": "@kensight328",
+        "weight": 1.4,
+        "style_id": "39480"
+      },
+      {
+        "tag": "@graceart0518",
+        "style_id": "43317"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006798"
+    ],
+    "published_at": "2026-10-28T10:43:04+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2261,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2262",
+    "origin": "generation_post",
+    "prompt_raw": "@taro-k, @tacfigure, (@constellor:0.9)",
+    "artists": [
+      {
+        "tag": "@taro-k",
+        "style_id": "38546"
+      },
+      {
+        "tag": "@tacfigure",
+        "style_id": "40959"
+      },
+      {
+        "tag": "@constellor",
+        "weight": 0.9,
+        "style_id": null
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006799"
+    ],
+    "published_at": "2026-10-28T14:14:05+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2262,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2263",
+    "origin": "generation_post",
+    "prompt_raw": "@shieriru, @kamizakana iriko, @shirone \\(coxo ii\\), @yutaan, @rikuwo, @orie h, (@nat the lich:1.3)",
+    "artists": [
+      {
+        "tag": "@shieriru",
+        "style_id": "41428"
+      },
+      {
+        "tag": "@kamizakana iriko",
+        "style_id": "42433"
+      },
+      {
+        "tag": "@shirone (coxo ii)",
+        "style_id": "38653"
+      },
+      {
+        "tag": "@yutaan",
+        "style_id": "43340"
+      },
+      {
+        "tag": "@rikuwo",
+        "style_id": "38658"
+      },
+      {
+        "tag": "@orie h",
+        "style_id": "37809"
+      },
+      {
+        "tag": "@nat the lich",
+        "weight": 1.3,
+        "style_id": "37861"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006800"
+    ],
+    "published_at": "2026-10-30T01:20:29+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2263,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2264",
+    "origin": "generation_post",
+    "prompt_raw": "(@inukkomaru, @shizumu (shi zumu), @nao (bestrollever), @shimizu en (shimizuen3310):1.2), (@cocri), @ibuki satsuki, @astrocatsama, (@aleksi remes:1.3), (@otonoha aika:1.15), (@tp p pt:1.2)",
+    "artists": [
+      {
+        "tag": "@inukkomaru",
+        "weight": 1.2,
+        "style_id": "39347"
+      },
+      {
+        "tag": "@shizumu (shi zumu)",
+        "weight": 1.2,
+        "style_id": "39501"
+      },
+      {
+        "tag": "@nao (bestrollever)",
+        "weight": 1.2,
+        "style_id": "40519"
+      },
+      {
+        "tag": "@shimizu en (shimizuen3310)",
+        "weight": 1.2,
+        "style_id": "39190"
+      },
+      {
+        "tag": "@cocri",
+        "style_id": "39241"
+      },
+      {
+        "tag": "@ibuki satsuki",
+        "style_id": "39200"
+      },
+      {
+        "tag": "@astrocatsama",
+        "style_id": "39566"
+      },
+      {
+        "tag": "@aleksi remes",
+        "weight": 1.3,
+        "style_id": "40104"
+      },
+      {
+        "tag": "@otonoha aika",
+        "weight": 1.15,
+        "style_id": "38659"
+      },
+      {
+        "tag": "@tp p pt",
+        "weight": 1.2,
+        "style_id": "37702"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006801"
+    ],
+    "published_at": "2026-10-31T18:59:54+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2264,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2265",
+    "origin": "generation_post",
+    "prompt_raw": "@vincent van gogh, @liowig, @fukomo, @qyzhiaiyisheng, @red medicine, @nodori710",
+    "artists": [
+      {
+        "tag": "@vincent van gogh",
+        "style_id": null
+      },
+      {
+        "tag": "@liowig",
+        "style_id": "37916"
+      },
+      {
+        "tag": "@fukomo",
+        "style_id": "39520"
+      },
+      {
+        "tag": "@qyzhiaiyisheng",
+        "style_id": "39667"
+      },
+      {
+        "tag": "@red medicine",
+        "style_id": "39589"
+      },
+      {
+        "tag": "@nodori710",
+        "style_id": "38950"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006802"
+    ],
+    "published_at": "2026-11-02T22:13:05+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2265,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2266",
+    "origin": "generation_post",
+    "prompt_raw": "@luoman19921, @rororogi_mogera, @atie1225, @lanserongjie, @rikuwo",
+    "artists": [
+      {
+        "tag": "@luoman19921",
+        "style_id": "37846"
+      },
+      {
+        "tag": "@rororogi_mogera",
+        "style_id": "40825-1"
+      },
+      {
+        "tag": "@atie1225",
+        "style_id": "39391"
+      },
+      {
+        "tag": "@lanserongjie",
+        "style_id": "40504"
+      },
+      {
+        "tag": "@rikuwo",
+        "style_id": "38658"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006803"
+    ],
+    "published_at": "2026-11-03T13:13:35+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2266,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2267",
+    "origin": "generation_post",
+    "prompt_raw": "@(monokubo:1.4), (@huangdanlan:1.3), (@haku (sabosoda):1.2), (@kyezzzz:1.2), (@orie h:1.3), @qyzhiaiyisheng, (@v1v404:1.1), @chan8016, @liowig, (@dr mise:0.5)",
+    "artists": [
+      {
+        "tag": "@monokubo",
+        "weight": 1.4,
+        "style_id": "37775"
+      },
+      {
+        "tag": "@huangdanlan",
+        "weight": 1.3,
+        "style_id": "37720"
+      },
+      {
+        "tag": "@haku (sabosoda)",
+        "weight": 1.2,
+        "style_id": "37838"
+      },
+      {
+        "tag": "@kyezzzz",
+        "weight": 1.2,
+        "style_id": "38966"
+      },
+      {
+        "tag": "@orie h",
+        "weight": 1.3,
+        "style_id": "37809"
+      },
+      {
+        "tag": "@qyzhiaiyisheng",
+        "style_id": "39667"
+      },
+      {
+        "tag": "@v1v404",
+        "weight": 1.1,
+        "style_id": "37819"
+      },
+      {
+        "tag": "@chan8016",
+        "style_id": "37821"
+      },
+      {
+        "tag": "@liowig",
+        "style_id": "37916"
+      },
+      {
+        "tag": "@dr mise",
+        "weight": 0.5,
+        "style_id": null
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006804"
+    ],
+    "published_at": "2026-11-03T13:13:46+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2267,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2268",
+    "origin": "generation_post",
+    "prompt_raw": "@rikuwo, @memuro, @xinzoruo, (@sema vivaviva 02:1.2)",
+    "artists": [
+      {
+        "tag": "@rikuwo",
+        "style_id": "38658"
+      },
+      {
+        "tag": "@memuro",
+        "style_id": "39090"
+      },
+      {
+        "tag": "@xinzoruo",
+        "style_id": "38487"
+      },
+      {
+        "tag": "@sema vivaviva 02",
+        "weight": 1.2,
+        "style_id": null
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006805"
+    ],
+    "published_at": "2026-11-03T13:13:59+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2268,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2269",
+    "origin": "generation_post",
+    "prompt_raw": "(@christian_angel:1.8), (@calendulamew:1.1), (@orie h:1.8), (@qyzhiaiyisheng)",
+    "artists": [
+      {
+        "tag": "@christian_angel",
+        "weight": 1.8,
+        "style_id": null
+      },
+      {
+        "tag": "@calendulamew",
+        "weight": 1.1,
+        "style_id": "43143"
+      },
+      {
+        "tag": "@orie h",
+        "weight": 1.8,
+        "style_id": "37809"
+      },
+      {
+        "tag": "@qyzhiaiyisheng",
+        "style_id": "39667"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006806"
+    ],
+    "published_at": "2026-11-03T13:14:26+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2269,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  },
+  {
+    "id": "mix_2270",
+    "origin": "generation_post",
+    "prompt_raw": "@cogecha, @spearmintaii, @paddy field, @umi_(oneinchswing), (@zishengtian123:1.2), (@mzet), (@monokubo:1.4), (@huangdanlan:1.3), (@haku (sabosoda):1.2), (@kyezzzz:1.2), (@orie h:1.3), @qyzhiaiyisheng, (@nat_the_lich)",
+    "artists": [
+      {
+        "tag": "@cogecha",
+        "style_id": "38401"
+      },
+      {
+        "tag": "@spearmintaii",
+        "style_id": "38968"
+      },
+      {
+        "tag": "@paddy field",
+        "style_id": "39149"
+      },
+      {
+        "tag": "@umi_(oneinchswing)",
+        "style_id": null
+      },
+      {
+        "tag": "@zishengtian123",
+        "weight": 1.2,
+        "style_id": "39578"
+      },
+      {
+        "tag": "@mzet",
+        "style_id": "37872"
+      },
+      {
+        "tag": "@monokubo",
+        "weight": 1.4,
+        "style_id": "37775"
+      },
+      {
+        "tag": "@huangdanlan",
+        "weight": 1.3,
+        "style_id": "37720"
+      },
+      {
+        "tag": "@haku (sabosoda)",
+        "weight": 1.2,
+        "style_id": "37838"
+      },
+      {
+        "tag": "@kyezzzz",
+        "weight": 1.2,
+        "style_id": "38966"
+      },
+      {
+        "tag": "@orie h",
+        "weight": 1.3,
+        "style_id": "37809"
+      },
+      {
+        "tag": "@qyzhiaiyisheng",
+        "style_id": "39667"
+      },
+      {
+        "tag": "@nat_the_lich",
+        "style_id": "37861"
+      }
+    ],
+    "tags": [],
+    "media": [
+      "p006807"
+    ],
+    "published_at": "2026-11-05T15:00:25+03:00",
+    "source": {
+      "kind": "telegram",
+      "message_id": 2270,
+      "imported_at": "2026-11-10T11:35:33+03:00",
+      "chat": "Мешанины"
+    }
+  }
+]

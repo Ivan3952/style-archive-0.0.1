@@ -161,6 +161,12 @@ def site_key(name: str) -> str:
     return re.sub(r"\s+", " ", value)
 
 
+def match_key(name: str) -> str:
+    """Ключ поиска уже существующего стиля: как на сайте, но «_» и пробел считаются одним и тем же
+    (в подписях бывает «@aya_(lezon)», а в архиве уже лежит «@aya (lezon)»: это один художник)."""
+    return site_key(name).replace("_", " ")
+
+
 STATE_FILE = "import_state.json"
 CANON_ORDER = {"main": 0, "alt": 1}
 
@@ -226,7 +232,7 @@ def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, stat
     counter = next_media_number(media)
     by_name: dict[str, list[dict]] = {}
     for s in styles:
-        by_name.setdefault(site_key(s["name"]), []).append(s)
+        by_name.setdefault(match_key(s["name"]), []).append(s)
     new_by_name: dict[str, dict] = {}
     now = dt.datetime.now(MSK).isoformat(timespec="seconds")
     processed = set(state["chat"]["processed"])
@@ -282,7 +288,7 @@ def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, stat
                 plan.media_jobs.append((mid, f))
                 media_ids.append(mid)
 
-            key = site_key(name)
+            key = match_key(name)
             existing = [new_by_name[key]] if key in new_by_name else by_name.get(key)
             if existing:
                 target = max(existing, key=lambda s: s.get("published_at") or "")
