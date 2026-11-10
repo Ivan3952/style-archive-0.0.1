@@ -34,7 +34,15 @@
     const danbooruPosts = toolbar?.querySelector("#danbooruFilterList");
     const danbooruData = toolbar?.querySelector("#danbooruPresenceList");
 
-    if (!toolbar || !searchWrap || !groups || !mode || !density || !danbooruPosts || !danbooruData) {
+    if (
+      !toolbar ||
+      !searchWrap ||
+      !groups ||
+      !mode ||
+      !density ||
+      !danbooruPosts ||
+      !danbooruData
+    ) {
       return false;
     }
 
@@ -121,7 +129,11 @@
       };
 
       const activeMode = mode.querySelector("button.active");
-      if (activeMode && activeMode.dataset.searchModeV004 && activeMode.dataset.searchModeV004 !== "smart") {
+      if (
+        activeMode &&
+        activeMode.dataset.searchModeV004 &&
+        activeMode.dataset.searchModeV004 !== "smart"
+      ) {
         labels.push(`${tr("РЕЖИМ", "MODE")} ${activeMode.textContent.trim()}`);
       }
 
@@ -161,8 +173,17 @@
     };
 
     const observer = new MutationObserver(schedule);
-    observer.observe(panel, { subtree: true, attributes: true, attributeFilter: ["class", "disabled"], childList: true, characterData: true });
-    new MutationObserver(schedule).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    observer.observe(panel, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "disabled"],
+      childList: true,
+      characterData: true,
+    });
+    new MutationObserver(schedule).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["lang"],
+    });
     panel.addEventListener("click", schedule);
 
     setOpen(readOpen());
@@ -180,7 +201,11 @@
         if (node.dataset.zero !== zero) node.dataset.zero = zero;
       };
       sync();
-      new MutationObserver(sync).observe(node, { childList: true, characterData: true, subtree: true });
+      new MutationObserver(sync).observe(node, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
     });
   }
 
