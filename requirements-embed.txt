@@ -1,0 +1,4 @@
+# Для tools/embed_styles.py на ПК с видеокартой. torch ставится отдельно (см. docs/INTELLIGENCE.md).
+transformers>=4.49
+pillow
+numpy
