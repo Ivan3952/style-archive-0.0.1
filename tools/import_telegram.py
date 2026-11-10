@@ -1,39 +1,32 @@
 #!/usr/bin/env python3
 """Импорт новых стилей из экспорта Telegram (Telegram Desktop -> Export chat history -> JSON).
 
-Ежемесячное обновление архива:
-  1. В Telegram Desktop экспортировать канал: формат JSON, отметить Photos (размер можно не ограничивать).
-     Можно экспортировать только новый период, а можно весь канал: уже импортированное пропускается.
-  2. Пробный прогон (ничего не пишет, только отчёт):
-       python3 tools/import_telegram.py путь/к/ChatExport --archive am
-  3. Если отчёт устраивает, повторить с --apply. Скрипт добавит записи в data/styles.json и data/media.json,
-     положит картинки в media/web и media/thumb и обновит счётчики в data/archives.json.
-  4. python3 tools/audit_data.py  и  python3 tests/smoke.py, затем коммит.
+Порядок ежемесячного обновления: docs/UPDATING.md. Кратко:
+  python3 tools/import_telegram.py путь/к/ChatExport --inspect 20   # как разобраны первые посты, ничего не пишет
+  python3 tools/import_telegram.py путь/к/ChatExport                # пробный прогон: отчёт без записи
+  python3 tools/import_telegram.py путь/к/ChatExport --apply        # записать
+  python3 tools/audit_data.py && python3 tests/smoke.py             # проверить
 
-Полезно при первом запуске на настоящем экспорте:
-  python3 tools/import_telegram.py путь/к/ChatExport --inspect 20
-  покажет, как разобраны первые 20 постов (текст, теги, художники, картинки), без какой-либо записи.
+Формат источника (сверен с реальным экспортом чата «Стили» от 10.11.2026: 166 сообщений, пересланные посты):
+  - Пост = подписанное сообщение + идущие за ним сообщения без текста от того же пересылавшего (альбом).
+    Telegram Desktop не отдаёт media_group_id, поэтому границу альбома задаёт следующая подпись.
+  - Стилевой пост содержит хештег #previewstyle (--tag меняет).
+  - Художники: теги «@имя» в подписи, по одному и более. Имя может содержать пробелы и скобки;
+    экранированные скобки Telegram превращаются в обычные. Хвосты «→ main» и «-> alt» отбрасываются.
+  - Пресет: main/мейн/мэйн и alt/альт в подписи (в порядке появления). Нет пресета: пост не импортируется
+    (решение владельца: арт перегенерируется).
+  - Один пресет:   1 художник, k картинок -> одна запись с k картинками;
+                   n художников, n картинок -> n записей по одной картинке.
+  - Два пресета (main и alt): 2 картинки на каждого художника, подряд: «main, alt» в порядке подписи.
+  - Другое соотношение: пост не импортируется, попадает в «Сомнительные».
+  - Стиль с таким названием уже есть: картинки добавляются к старой записи, пресеты объединяются,
+    ставится updated_at (решение владельца).
+  - Дата записи = дата сообщения в чате (когда стиль попал в коллекцию), а не дата исходной публикации.
+  - Идентификаторы записей: <префикс><номер сообщения> (префикс по умолчанию «g»), для нескольких
+    художников в посте «g1385-1» … «g1385-6». Старые числовые id (номера сообщений канала) не затрагиваются.
+  - Повторный запуск безопасен: data/import_state.json хранит для каждого чата обработанные посты.
 
-Правила (всё, что помечено «допущение», выведено из текущих данных и подтверждается на реальном экспорте):
-  - Пост = альбом: подряд идущие сообщения с одной датой (или одним media_group_id/grouped_id), подпись берётся
-    из первого сообщения, где она есть.
-  - Стилевой пост содержит хештег #previewstyle (--tag меняет). Остальные посты пропускаются.
-  - Художники: все теги «@имя» в подписи; имя может содержать пробелы и скобки («@zippo (3756c)»).
-  - Пресет: слова main / alt в подписи (допущение), хештег #previewstyle_alt означает alt.
-    Пост без пресета не импортируется (решение владельца: арт перегенерируется).
-  - 1 художник, k картинок -> одна запись с k картинками, id = номер первого сообщения.
-  - n художников, n картинок -> n записей «<сообщение>-1» … «<сообщение>-n» по одной картинке.
-  - n художников, n+1 картинок -> первая картинка общая (reference_media), остальные по порядку (допущение:
-    так устроен пост 37750 в текущих данных).
-  - Иначе (картинок меньше, чем художников, и т. п.) пост НЕ импортируется и попадает в отчёт «сомнительные»:
-    правило для таких постов ещё не принято.
-  - Стиль с таким названием уже есть в архиве -> картинки добавляются к старой записи (решение владельца);
-    если записей с таким названием несколько, берётся самая свежая. В запись пишется updated_at.
-  - Повторный запуск безопасен: data/import_state.json хранит границу (всё, что не новее, уже в архиве)
-    и номера уже обработанных постов. --from-id переопределяет границу.
-
-Скрипт работает только с архивом AM: у OPUS и SKY другая схема id и источник данных.
-Нужно: pip install pillow
+Только архив AM. Нужно: pip install pillow
 """
 from __future__ import annotations
 
@@ -56,9 +49,14 @@ THUMB_QUALITY = 82
 MSK = dt.timezone(dt.timedelta(hours=3))
 
 HASHTAG_RE = re.compile(r"#[\w]+", re.UNICODE)
-ARTIST_RE = re.compile(r"@[^@#,;\n]+")
-PRESET_RE = re.compile(r"(?<![\w@])(main|alt)(?![\w])", re.IGNORECASE)
-TRAILING_MARK_RE = re.compile(r"\s+(main|alt)$", re.IGNORECASE)
+ARTIST_RE = re.compile(r"@[^@#,;\n→]+")
+ESCAPED_PAREN_RE = re.compile(r"\\+(?=[()])")
+PRESET_WORDS = {
+    "main": "main", "мейн": "main", "мэйн": "main", "майн": "main", "мэин": "main",
+    "alt": "alt", "альт": "alt",
+}
+PRESET_RE = re.compile(r"(?<![\w@])(" + "|".join(PRESET_WORDS) + r")(?![\w])", re.IGNORECASE)
+ARROW_TAIL_RE = re.compile(r"\s*(?:->|-|—|:)?\s*$")
 
 
 # ----------------------------------------------------------------------------------------------
@@ -82,10 +80,11 @@ class Post:
     text: str
     photos: list[Path]
     message_ids: list[int] = field(default_factory=list)
+    forwarded_from: str = ""
 
 
-def load_messages(export: Path) -> tuple[list[dict], Path, str]:
-    """Возвращает (сообщения, папка экспорта, название чата)."""
+def load_messages(export: Path) -> tuple[list[dict], Path, dict]:
+    """Возвращает (сообщения, папка экспорта, {"id": ..., "name": ...})."""
     result = export / "result.json" if export.is_dir() else export
     if not result.exists():
         raise SystemExit(f"Не найден result.json: {result}")
@@ -93,57 +92,59 @@ def load_messages(export: Path) -> tuple[list[dict], Path, str]:
     messages = data.get("messages")
     if not isinstance(messages, list):
         raise SystemExit("В result.json нет списка messages: это не экспорт чата Telegram Desktop (формат JSON)?")
-    return messages, result.parent, str(data.get("name") or data.get("id") or "")
+    return messages, result.parent, {"id": str(data.get("id", "")), "name": str(data.get("name") or "")}
+
+
+ALBUM_GAP_SECONDS = 5  # части одного пересланного альбома приходят с разницей в секунду-две
+
+
+def as_time(value) -> float:
+    try:
+        return dt.datetime.fromisoformat(str(value)).timestamp()
+    except ValueError:
+        return 0.0
 
 
 def group_posts(messages: list[dict], base: Path) -> list[Post]:
-    """Склеивает сообщения альбома в один пост."""
+    """Склеивает сообщения альбома в пост: подпись открывает пост, безымянные сообщения дополняют его."""
     posts: list[Post] = []
-    prev_key = None
     for m in messages:
         if m.get("type") != "message":
-            prev_key = None
             continue
         mid = int(m["id"])
-        group = m.get("media_group_id") or m.get("grouped_id")
-        key = ("g", group) if group else ("d", m.get("date"))
         photo = m.get("photo")
         text = flatten_text(m.get("text")).strip()
-
-        same = posts and prev_key == key and (group or (mid - posts[-1].message_ids[-1] == 1))
-        if same:
-            post = posts[-1]
-            post.message_ids.append(mid)
-            if text and not post.text:
-                post.text = text
-            if photo:
-                post.photos.append(base / photo)
+        fwd = str(m.get("forwarded_from") or m.get("from") or "")
+        prev = posts[-1] if posts else None
+        continues = (
+            prev is not None
+            and not text
+            and photo
+            and fwd == prev.forwarded_from
+            and abs(as_time(m.get("date")) - as_time(prev.date)) <= ALBUM_GAP_SECONDS
+        )
+        if continues:
+            prev.message_ids.append(mid)
+            prev.photos.append(base / photo)
         else:
-            posts.append(Post(mid, m.get("date", ""), text, [base / photo] if photo else [], [mid]))
-        prev_key = key
+            posts.append(Post(mid, m.get("date", ""), text, [base / photo] if photo else [], [mid], fwd))
     return posts
 
 
 def parse_caption(text: str) -> dict:
+    text = ESCAPED_PAREN_RE.sub("", text)
     hashtags = [h.lower() for h in HASHTAG_RE.findall(text)]
     artists = []
-    presets = []
-
-    def add_preset(word: str) -> None:
-        word = word.lower()
-        if word not in presets:
-            presets.append(word)
-
     for raw in ARTIST_RE.findall(text):
-        raw = raw.strip()
-        mark = TRAILING_MARK_RE.search(raw)
-        if mark:  # «@имя main» / «@имя alt»
-            add_preset(mark.group(1))
-        name = TRAILING_MARK_RE.sub("", raw).strip()
-        if len(name) > 1:
+        name = ARROW_TAIL_RE.sub("", raw.strip()).strip()
+        if len(name) > 1 and name not in artists:
             artists.append(name)
-    for word in PRESET_RE.findall(ARTIST_RE.sub(" ", HASHTAG_RE.sub(" ", text))):
-        add_preset(word)
+    presets: list[str] = []
+    rest = ARTIST_RE.sub(" ", HASHTAG_RE.sub(" ", text))
+    for word in PRESET_RE.findall(rest):
+        value = PRESET_WORDS[word.lower()]
+        if value not in presets:
+            presets.append(value)
     if "#previewstyle_alt" in hashtags and "alt" not in presets:
         presets.append("alt")
     return {"hashtags": hashtags, "artists": artists, "presets": presets}
@@ -161,17 +162,17 @@ def site_key(name: str) -> str:
 
 
 STATE_FILE = "import_state.json"
+CANON_ORDER = {"main": 0, "alt": 1}
 
 
-def load_state(root: Path, styles: list[dict]) -> dict:
-    """Состояние импорта: baseline_message_id (всё, что не новее, уже в архиве) и processed (номера обработанных постов).
-
-    Первый запуск: baseline = максимальный номер сообщения среди записей архива."""
+def load_state(root: Path, chat_id: str) -> dict:
+    """Состояние импорта для одного чата: baseline_message_id (всё, что не новее, пропускается)
+    и processed (номера уже обработанных постов)."""
     path = root / "data" / STATE_FILE
-    if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
-    ids = [int(m.group()) for s in styles if (m := re.match(r"\d+", s["id"]))]
-    return {"baseline_message_id": max(ids, default=0), "processed": []}
+    full = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    chat = full.setdefault("chats", {}).setdefault(chat_id or "unknown", {"baseline_message_id": 0, "processed": []})
+    state = {"full": full, "chat": chat}
+    return state
 
 
 def iso(date_str: str) -> str:
@@ -203,7 +204,24 @@ def next_media_number(media: dict) -> int:
     return max(nums, default=0) + 1
 
 
-def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, state: dict, chat: str) -> Plan:
+def merge_presets(old: list[str], extra: list[str]) -> list[str]:
+    return sorted({*old, *extra}, key=lambda p: CANON_ORDER.get(p, 9))
+
+
+def split_post(artists: list[str], photos: list, presets: list[str]):
+    """Возвращает [(художник, [картинки], [пресеты])] или None, если соотношение не поддерживается."""
+    n, k, p = len(artists), len(photos), len(presets)
+    if p == 1:
+        if n == 1:
+            return [(artists[0], photos, presets)]
+        if k == n:
+            return [(a, [ph], presets) for a, ph in zip(artists, photos)]
+    elif p == 2 and k == 2 * n:
+        return [(a, photos[2 * i : 2 * i + 2], presets) for i, a in enumerate(artists)]
+    return None
+
+
+def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, state: dict, chat: dict, prefix: str) -> Plan:
     plan = Plan()
     counter = next_media_number(media)
     by_name: dict[str, list[dict]] = {}
@@ -211,7 +229,8 @@ def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, stat
         by_name.setdefault(site_key(s["name"]), []).append(s)
     new_by_name: dict[str, dict] = {}
     now = dt.datetime.now(MSK).isoformat(timespec="seconds")
-    processed = set(state["processed"])
+    processed = set(state["chat"]["processed"])
+    baseline = state["chat"]["baseline_message_id"]
 
     def new_media_id() -> str:
         nonlocal counter
@@ -222,8 +241,8 @@ def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, stat
     for post in posts:
         plan.seen_posts += 1
         plan.max_message_id = max(plan.max_message_id, *post.message_ids)
-        if post.first_id <= state["baseline_message_id"] or post.first_id in processed:
-            plan.skip("уже импортировано (номер сообщения не новее последнего в архиве)", post)
+        if post.first_id <= baseline or post.first_id in processed:
+            plan.skip("уже импортировано", post)
             continue
         info = parse_caption(post.text)
         if f"#{tag}" not in info["hashtags"] and f"#{tag}_alt" not in info["hashtags"]:
@@ -245,32 +264,18 @@ def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, stat
             plan.skip(f"файл картинки не найден в экспорте ({missing[0].name})", post)
             continue
 
-        n, k = len(artists), len(photos)
-        reference = None
-        if n == 1:
-            pairs = [(artists[0], photos)]
-            ids = [str(post.first_id)]
-        elif k == n:
-            pairs = [(a, [p]) for a, p in zip(artists, photos)]
-            ids = [f"{post.first_id}-{i}" for i in range(1, n + 1)]
-        elif k == n + 1:
-            reference, rest = photos[0], photos[1:]
-            pairs = [(a, [p]) for a, p in zip(artists, rest)]
-            ids = [f"{post.first_id}-{i}" for i in range(1, n + 1)]
-        else:
+        parts = split_post(artists, photos, info["presets"])
+        if parts is None:
             plan.suspicious.append(
-                f"сообщение {post.first_id}: художников {n}, картинок {k}: правило для такого соотношения не принято, пост пропущен"
+                f"сообщение {post.first_id}: художников {len(artists)}, картинок {len(photos)}, "
+                f"пресеты {'/'.join(info['presets'])}: правило для такого соотношения не принято, пост пропущен"
             )
-            plan.skip("сомнительное соотношение художников и картинок", post)
+            plan.skip("сомнительное соотношение художников, картинок и пресетов", post)
             continue
 
-        ref_id = None
-        if reference is not None:
-            ref_id = new_media_id()
-            plan.media_jobs.append((ref_id, reference))
-
         published = iso(post.date)
-        for (name, files), record_id in zip(pairs, ids):
+        for index, (name, files, presets) in enumerate(parts, 1):
+            record_id = f"{prefix}{post.first_id}" if len(parts) == 1 else f"{prefix}{post.first_id}-{index}"
             media_ids = []
             for f in files:
                 mid = new_media_id()
@@ -278,12 +283,13 @@ def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, stat
                 media_ids.append(mid)
 
             key = site_key(name)
-            existing = (new_by_name.get(key) and [new_by_name[key]]) or by_name.get(key)
+            existing = [new_by_name[key]] if key in new_by_name else by_name.get(key)
             if existing:
                 target = max(existing, key=lambda s: s.get("published_at") or "")
                 target["media"] = [*target["media"], *media_ids]
+                target["presets"] = merge_presets(target["presets"], presets)
                 target["updated_at"] = now
-                plan.appended.append((target["id"], media_ids))
+                plan.appended.append((f"{target['id']} {target['name']}", media_ids))
                 continue
 
             record = {
@@ -291,15 +297,15 @@ def make_plan(posts: list[Post], styles: list[dict], media: dict, tag: str, stat
                 "name": name,
                 "copy_value": name,
                 "section": "preview-am",
-                "presets": info["presets"],
+                "presets": presets,
                 "is_mix": False,
                 "media": media_ids,
-                "reference_media": [ref_id] if ref_id else [],
+                "reference_media": [],
                 "published_at": published,
                 "source": {"kind": "telegram", "message_id": post.first_id, "imported_at": now},
             }
-            if chat:
-                record["source"]["chat"] = chat
+            if chat.get("name"):
+                record["source"]["chat"] = chat["name"]
             plan.new_styles.append(record)
             new_by_name[key] = record
         plan.done_posts.append(post.first_id)
@@ -360,7 +366,7 @@ def report(plan: Plan, apply: bool) -> str:
             lines.append(f"  ... и ещё {len(plan.new_styles) - 40}")
     if plan.appended:
         lines.append("\nКартинки добавлены к уже существующим стилям:")
-        lines += [f"  {rid}: +{len(ms)}" for rid, ms in plan.appended[:40]]
+        lines += [f"  {rid}: +{len(ms)}" for rid, ms in plan.appended[:60]]
     if plan.suspicious:
         lines.append("\nСОМНИТЕЛЬНЫЕ посты (не импортированы, нужно решение):")
         lines += [f"  {s}" for s in plan.suspicious]
@@ -391,6 +397,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--archive", default="am", help="только am")
     ap.add_argument("--tag", default="previewstyle", help="хештег стилевых постов без # (по умолчанию previewstyle)")
     ap.add_argument("--from-id", type=int, default=None, help="импортировать только сообщения новее этого номера")
+    ap.add_argument("--id-prefix", default="g", help="префикс id новых записей (по умолчанию g)")
     ap.add_argument("--apply", action="store_true", help="записать изменения (без флага: пробный прогон)")
     ap.add_argument("--inspect", type=int, metavar="N", help="показать разбор первых N постов и выйти")
     ap.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
@@ -411,10 +418,11 @@ def main(argv: list[str] | None = None) -> int:
     media = json.loads((root / "data" / "media.json").read_text(encoding="utf-8"))
     archives = json.loads((root / "data" / "archives.json").read_text(encoding="utf-8"))
 
-    state = load_state(root, styles)
+    state = load_state(root, chat["id"])
     if args.from_id is not None:
-        state["baseline_message_id"] = args.from_id
-    plan = make_plan(posts, styles, media, args.tag, state, chat)
+        state["chat"]["baseline_message_id"] = args.from_id
+    state["chat"]["name"] = chat["name"]
+    plan = make_plan(posts, styles, media, args.tag, state, chat, args.id_prefix)
     print(report(plan, args.apply))
 
     if args.apply and (plan.new_styles or plan.appended):
@@ -424,8 +432,8 @@ def main(argv: list[str] | None = None) -> int:
         dump(root / "data" / "styles.json", styles)
         dump(root / "data" / "media.json", media)
         dump(root / "data" / "archives.json", archives)
-        state["processed"] = sorted({*state["processed"], *plan.done_posts})
-        dump(root / "data" / STATE_FILE, state)
+        state["chat"]["processed"] = sorted({*state["chat"]["processed"], *plan.done_posts})
+        dump(root / "data" / STATE_FILE, state["full"])
     return 0
 
 
