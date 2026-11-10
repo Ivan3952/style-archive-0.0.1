@@ -71,7 +71,8 @@ def check_import():
         mixes = json.loads((root / "data" / "mixes.json").read_text())
         by = {m["id"]: m for m in mixes}
         m = by["mix_10"]
-        assert m["title"] == "test_mixing" and len(m["media"]) == 3 and m["note"] == "Привет!", m
+        assert len(m["media"]) == 3 and "note" not in m and "title" not in m, m
+        assert "Привет" not in json.dumps(m, ensure_ascii=False) and "test_mixing" not in json.dumps(m)
         assert m["artists"][0]["style_id"] is not None and m["artists"][1]["style_id"] is None
         assert [a.get("group") for a in m["artists"]] == [None, 1, 1]
         g = by["mix_14"]

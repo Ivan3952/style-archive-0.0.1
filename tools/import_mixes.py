@@ -5,8 +5,8 @@
   python3 tools/import_mixes.py путь/к/ChatExport --apply    # записать data/mixes.json и картинки
 
 Два вида постов (сверены с реальными экспортами от 10.11.2026):
-  - «mixing»: подпись с хештегом вида #автор_mixing; строки с @художниками и есть микс, остальное
-    (приветствие) попадает в note; к посту идут 4-8 превью (сообщения без текста следом).
+  - «mixing»: подпись с хештегом вида #автор_mixing; строки с @художниками и есть микс, приветствие и
+    хештег не сохраняются; к посту идут 4-8 превью (сообщения без текста следом).
   - «generation»: одиночная генерация из блога (#ampreview ...): миксом считаются токены с @ из текста,
     остальной промпт (персонаж, сцена, обрезан на «...») не сохраняется, теги не разбираются.
     Идентификатор пользователя бота (#s123...) не сохраняется.
@@ -143,19 +143,9 @@ def style_lookup(styles: list[dict]):
     return find
 
 
-def split_caption(text: str) -> tuple[str, str]:
-    """(prompt_raw, note): строки с @ — микс, строки с буквами без @ и хештегов — авторский текст."""
-    prompt_lines, note_lines = [], []
-    for line in text.splitlines():
-        stripped = line.strip()
-        if "@" in stripped:
-            prompt_lines.append(stripped)
-        else:
-            text_only = re.sub(r"#\w+", " ", stripped)
-            text_only = re.sub(r"^[^\w«\"(]+|[^\w.!?»\")]+$", "", text_only.strip())
-            if re.search(r"[A-Za-zА-Яа-яЁё]{3,}", text_only):
-                note_lines.append(text_only.strip())
-    return " ".join(prompt_lines), " ".join(note_lines)
+def mixing_prompt(text: str) -> str:
+    """Строки с @ — это микс; приветствие автора и хештег отбрасываются."""
+    return " ".join(line.strip() for line in text.splitlines() if "@" in line)
 
 
 AUTHOR_ID_RE = re.compile(r"\(?#s\d+\)?")
@@ -198,11 +188,9 @@ def build_mixes(posts: list[Post], styles: list[dict], media: dict, state: dict,
             skip("не пост-микс (нет #…_mixing и #ampreview)", post)
             continue
         if mixing:
-            prompt, note = split_caption(post.text)
-            title, origin = mixing.group(1), "mixing_post"
+            prompt, origin = mixing_prompt(post.text), "mixing_post"
         else:
-            prompt, note = generation_prompt(post.text), ""
-            title, origin = "generation", "generation_post"
+            prompt, origin = generation_prompt(post.text), "generation_post"
         if not prompt:
             skip("не нашёл строку с @художниками", post)
             continue
@@ -225,7 +213,6 @@ def build_mixes(posts: list[Post], styles: list[dict], media: dict, state: dict,
             media_ids.append(mid)
         mix = {
             "id": f"mix_{post.first_id}",
-            "title": title,
             "origin": origin,
             "prompt_raw": prompt,
             "artists": artists,
@@ -236,8 +223,6 @@ def build_mixes(posts: list[Post], styles: list[dict], media: dict, state: dict,
         }
         if chat.get("name"):
             mix["source"]["chat"] = chat["name"]
-        if note:
-            mix["note"] = note
         mixes.append(mix)
     return mixes, jobs, skipped, unknown
 
