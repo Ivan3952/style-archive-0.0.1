@@ -315,8 +315,8 @@
             <b>${tr("РАЗМЕР СЕТКИ", "GRID SIZE")}</b>
             <span>
               ${tr(
-                "Компактный, обычный и крупный режимы карточек.",
-                "Compact, Normal, and Large card layouts."
+                "Компактный, обычный и крупный режимы карточек. ФОРМА переключает ровную сетку и исходные пропорции картинок.",
+                "Compact, Normal, and Large card layouts. SHAPE switches between an even grid and original image proportions."
               )}
             </span>
           </div>
