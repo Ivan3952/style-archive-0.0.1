@@ -288,8 +288,8 @@
 
       <p class="danbooru-info-copy">
         ${t(
-          "Post counts come from matched Danbooru artist tags. They count Danbooru posts, not unique artworks. The data is used only for archive statistics, sorting and filtering.",
-          "Количество постов берётся из сопоставленных artist tags Danbooru. Это число постов на Danbooru, а не уникальных работ художника. Данные используются только для статистики, сортировки и фильтров."
+          "Danbooru post counts for each artist tag, not the number of unique artworks. Used only for stats, sorting and filters.",
+          "Сколько постов на Danbooru у тега художника. Это не число его работ. Нужно только для статистики, сортировки и фильтров."
         )}
       </p>
 
@@ -297,7 +297,7 @@
         <div class="danbooru-coverage-item">
           <b>${fmt(visualMatched)} / ${fmt(visualRows.length)}</b>
           <span>
-            ${t("VISUAL COVERAGE", "ПОКРЫТИЕ VISUAL")}
+            ${t("WITH PREVIEWS, FOUND ON DANBOORU", "С ПРЕВЬЮ, НАЙДЕНО В DANBOORU")}
             · ${pct(visualMatched, visualRows.length)}
           </span>
         </div>
@@ -305,7 +305,7 @@
         <div class="danbooru-coverage-item">
           <b>${fmt(matchedRows.length)} / ${fmt(all.length)}</b>
           <span>
-            ${t("ALL LOCAL STYLES", "ВСЕ ЛОКАЛЬНЫЕ СТИЛИ")}
+            ${t("ALL STYLES, FOUND ON DANBOORU", "ВСЕ СТИЛИ, НАЙДЕНО В DANBOORU")}
             · ${pct(matchedRows.length, all.length)}
           </span>
         </div>

@@ -10,6 +10,8 @@
   --accent: #8fd3ff;
   --max: 1680px;
   --pad: clamp(18px, 3vw, 52px);
+  --font-sans: "Geologica Variable", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 * {
@@ -23,7 +25,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 button,
@@ -73,7 +75,7 @@ button {
 .drawer-primary,
 .viewer-related-label,
 .viewer-related-item {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.045em;
 }
 
@@ -358,7 +360,7 @@ h1 {
   padding: 4px 6px;
   background: rgba(10, 14, 20, 0.72);
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
 }
 .card-bottom {
@@ -568,7 +570,7 @@ h2 {
   border: 1px solid var(--line);
   background: var(--text);
   color: var(--bg);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.05em;
   opacity: 0;
@@ -871,7 +873,7 @@ body.viewer-open {
   border-bottom: 1px solid var(--line-soft);
   background: transparent;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
   text-align: left;
   cursor: pointer;
@@ -1554,7 +1556,7 @@ html[data-theme="light"] ::selection {
 .info-stats span,
 .info-label,
 .info-version {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.045em;
 }
 .info-stats span {
@@ -1672,7 +1674,7 @@ html[data-theme="light"] .info-header {
   padding-bottom: 10px;
   border-bottom: 1px solid var(--line);
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.055em;
 }
@@ -1809,7 +1811,7 @@ html[data-theme="light"] .skeleton-block::after {
 .state-kicker {
   display: block;
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.05em;
 }
@@ -1827,7 +1829,7 @@ html[data-theme="light"] .skeleton-block::after {
   border: 1px solid var(--line);
   background: transparent;
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.045em;
   cursor: pointer;
@@ -1868,7 +1870,7 @@ kbd {
   border-bottom-width: 2px;
   background: var(--surface);
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   line-height: 1;
 }
@@ -1894,7 +1896,7 @@ kbd {
   padding: 22px var(--pad) max(24px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.045em;
 }
@@ -2070,7 +2072,7 @@ kbd {
   padding: 6px 9px;
   background: transparent;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.045em;
   text-transform: uppercase;
@@ -2096,7 +2098,7 @@ kbd {
 .danbooru-sync-note {
   margin-left: 4px;
   color: var(--muted-2);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.045em;
 }
@@ -2106,7 +2108,7 @@ kbd {
   align-items: baseline;
   gap: 4px;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: inherit;
   letter-spacing: 0.045em;
   white-space: nowrap;
@@ -2140,7 +2142,7 @@ kbd {
 .danbooru-info-title {
   margin-bottom: 9px;
   color: var(--accent);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.045em;
 }
@@ -2159,7 +2161,7 @@ kbd {
   gap: 10px 20px;
   margin-top: 14px;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.035em;
 }
@@ -2199,7 +2201,7 @@ kbd {
   display: block;
   margin-bottom: 8px;
   color: var(--accent);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.045em;
 }
@@ -2228,7 +2230,7 @@ kbd {
 .danbooru-coverage-item b {
   display: block;
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 16px;
   font-weight: 500;
 }
@@ -2237,7 +2239,7 @@ kbd {
   display: block;
   margin-top: 5px;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.035em;
   text-transform: uppercase;

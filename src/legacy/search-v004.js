@@ -699,12 +699,7 @@
       .search-mode-v004 > span {
         margin-right:2px;
         color:var(--muted-2);
-        font-family:
-          ui-monospace,
-          SFMono-Regular,
-          Menlo,
-          Consolas,
-          monospace;
+        font-family: var(--font-mono);
         font-size:9px;
         letter-spacing:.045em;
       }
@@ -718,12 +713,7 @@
         border-radius:999px;
         background:transparent;
         color:var(--muted);
-        font-family:
-          ui-monospace,
-          SFMono-Regular,
-          Menlo,
-          Consolas,
-          monospace;
+        font-family: var(--font-mono);
         font-size:9px;
         cursor:pointer;
       }

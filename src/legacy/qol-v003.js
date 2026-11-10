@@ -50,12 +50,7 @@
       background: transparent;
       color: var(--muted);
 
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Consolas,
-        monospace;
+      font-family: var(--font-mono);
 
       font-size: 17px;
       line-height: 1;
@@ -142,12 +137,7 @@
 
       color: var(--text);
 
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Consolas,
-        monospace;
+      font-family: var(--font-mono);
 
       font-size: 19px;
 

@@ -147,7 +147,7 @@
       "OPEN RANDOM VISUAL"
     );
 
-    setCommand("discover", "ПОДБОРКИ 12", "DISCOVER 12", "ПОДБОРКА СТИЛЕЙ", "CURATED RANDOM SET");
+    setCommand("discover", "ПОДБОРКИ 12", "DISCOVER 12", "12 СТИЛЕЙ ЗА РАЗ", "12 AT A TIME");
 
     setCommand("saved", "ИЗБРАННОЕ", "SAVED", "ПОКАЗАТЬ ИЗБРАННОЕ", "SHOW SAVED STYLES");
 
@@ -184,8 +184,8 @@
       const hint = empty.querySelector("span");
       setText(
         hint,
-        "попробуйте имя стиля, opus, sky, random, saved…",
-        "try a style name, opus, sky, random, saved…"
+        "имя стиля, opus, sky, random, saved…",
+        "a style name, opus, sky, random, saved…"
       );
 
       const textNode = [...empty.childNodes].find(
@@ -209,18 +209,13 @@
         "случайные стили из текущего архива",
         "anything from this archive",
       ],
-      newest: ["НОВЫЕ 12", "NEWEST 12", "последние добавленные превью", "latest visual additions"],
-      unseen: [
-        "НЕПРОСМОТРЕННЫЕ 12",
-        "UNSEEN 12",
-        "без избранного и недавних",
-        "skip saved + recent",
-      ],
+      newest: ["НОВЫЕ 12", "NEWEST 12", "свежие превью", "latest additions"],
+      unseen: ["НЕ ОТКРЫВАЛИ 12", "UNSEEN 12", "то, что ещё не открывали", "not opened yet"],
       multi: [
-        "С НЕСКОЛЬКИМИ ПРЕВЬЮ",
-        "MULTI-IMAGE 12",
-        "стили с двумя и более превью",
-        "styles with 2+ previews",
+        "НЕСКОЛЬКО ПРЕВЬЮ",
+        "SEVERAL PREVIEWS 12",
+        "стили с несколькими превью",
+        "styles with several previews",
       ],
     };
 
@@ -241,7 +236,7 @@
       if (value === "ALIAS" || value === "АЛИАС") {
         setText(span, "АЛИАС", "ALIAS");
       } else if (value.includes("DID YOU MEAN") || value.includes("ВОЗМОЖНО")) {
-        setText(span, "ВОЗМОЖНО?", "DID YOU MEAN?");
+        setText(span, "МОЖЕТ, ЭТО?", "DID YOU MEAN?");
       }
     });
   }
@@ -251,10 +246,12 @@
     if (!root) return;
 
     const pairs = new Map([
-      ["NO EXACT RESULTS", ["ТОЧНЫХ СОВПАДЕНИЙ НЕТ", "NO EXACT RESULTS"]],
-      ["ТОЧНЫХ СОВПАДЕНИЙ НЕТ", ["ТОЧНЫХ СОВПАДЕНИЙ НЕТ", "NO EXACT RESULTS"]],
-      ["MAYBE YOU MEANT", ["ВОЗМОЖНО, ВЫ ИМЕЛИ В ВИДУ", "MAYBE YOU MEANT"]],
-      ["ВОЗМОЖНО, ВЫ ИМЕЛИ В ВИДУ", ["ВОЗМОЖНО, ВЫ ИМЕЛИ В ВИДУ", "MAYBE YOU MEANT"]],
+      ["NO EXACT RESULTS", ["ТАКОГО СТИЛЯ НЕТ", "NO EXACT RESULTS"]],
+      ["ТАКОГО СТИЛЯ НЕТ", ["ТАКОГО СТИЛЯ НЕТ", "NO EXACT RESULTS"]],
+      ["ТОЧНЫХ СОВПАДЕНИЙ НЕТ", ["ТАКОГО СТИЛЯ НЕТ", "NO EXACT RESULTS"]],
+      ["MAYBE YOU MEANT", ["МОЖЕТ, ЭТО", "MAYBE YOU MEANT"]],
+      ["МОЖЕТ, ЭТО", ["МОЖЕТ, ЭТО", "MAYBE YOU MEANT"]],
+      ["ВОЗМОЖНО, ВЫ ИМЕЛИ В ВИДУ", ["МОЖЕТ, ЭТО", "MAYBE YOU MEANT"]],
       ["TRY ANOTHER ARCHIVE", ["ПОИСКАТЬ В ДРУГОМ АРХИВЕ", "TRY ANOTHER ARCHIVE"]],
       ["ПОИСКАТЬ В ДРУГОМ АРХИВЕ", ["ПОИСКАТЬ В ДРУГОМ АРХИВЕ", "TRY ANOTHER ARCHIVE"]],
       ["CLEAR SEARCH", ["ОЧИСТИТЬ ПОИСК", "CLEAR SEARCH"]],

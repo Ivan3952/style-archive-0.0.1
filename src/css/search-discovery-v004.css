@@ -28,7 +28,7 @@
 .search-discovery-label-v004 {
   color: var(--muted-2);
 
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 
   font-size: 7px;
 
@@ -67,7 +67,7 @@
 
   color: var(--muted);
 
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 
   cursor: pointer;
 

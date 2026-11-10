@@ -102,7 +102,7 @@ body.command-search-open-v004 {
 .command-section-label-v004,
 .command-item-type-v004,
 .command-item-meta-v004 {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 
   letter-spacing: 0.055em;
 }
@@ -156,7 +156,7 @@ body.command-search-open-v004 {
 .command-input-wrap-v004 > span {
   color: var(--accent);
 
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 
   font-size: 18px;
 }
@@ -297,7 +297,7 @@ body.command-search-open-v004 {
 
   color: var(--muted);
 
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
 
   font-size: 9px;
 

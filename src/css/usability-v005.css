@@ -79,7 +79,7 @@ h1 {
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   cursor: pointer;
@@ -154,7 +154,7 @@ h1 {
   border: 1px solid var(--accent);
   border-radius: 999px;
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
 }
@@ -359,4 +359,22 @@ h1 {
   .filters-section-v005 {
     gap: 8px 10px;
   }
+}
+
+/* ---------- Шрифты ----------
+   Geologica (переменная) на штатных весах выглядит плотнее Helvetica, поэтому веса чуть облегчены. */
+
+h1 {
+  font-weight: 400;
+  letter-spacing: -0.05em;
+}
+
+#searchInput,
+.search-wrap #searchInput::placeholder,
+.mode-tab span {
+  font-weight: 350;
+}
+
+.stat-value {
+  font-weight: 400;
 }
