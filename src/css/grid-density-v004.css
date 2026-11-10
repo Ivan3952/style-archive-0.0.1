@@ -112,49 +112,37 @@
    COMPACT
    ========================================================= */
 
-html[
-  data-grid-density-v004="compact"
-]
+html[data-grid-density-v004="compact"]
 .gallery {
   column-gap:
     9px;
 }
 
 
-html[
-  data-grid-density-v004="compact"
-]
+html[data-grid-density-v004="compact"]
 .card {
   margin-bottom:
     19px;
 }
 
 
-html[
-  data-grid-density-v004="compact"
-]
+html[data-grid-density-v004="compact"]
 .card-bottom {
   padding-top:
     6px;
 }
 
 
-html[
-  data-grid-density-v004="compact"
-]
+html[data-grid-density-v004="compact"]
 .card-name {
   font-size:
     13px;
 }
 
 
-html[
-  data-grid-density-v004="compact"
-]
+html[data-grid-density-v004="compact"]
 .card-meta,
-html[
-  data-grid-density-v004="compact"
-]
+html[data-grid-density-v004="compact"]
 .card-index {
   font-size:
     8px;
@@ -165,36 +153,28 @@ html[
    LARGE
    ========================================================= */
 
-html[
-  data-grid-density-v004="large"
-]
+html[data-grid-density-v004="large"]
 .gallery {
   column-gap:
     18px;
 }
 
 
-html[
-  data-grid-density-v004="large"
-]
+html[data-grid-density-v004="large"]
 .card {
   margin-bottom:
     34px;
 }
 
 
-html[
-  data-grid-density-v004="large"
-]
+html[data-grid-density-v004="large"]
 .card-bottom {
   padding-top:
     10px;
 }
 
 
-html[
-  data-grid-density-v004="large"
-]
+html[data-grid-density-v004="large"]
 .card-name {
   font-size:
     17px;
@@ -224,18 +204,14 @@ html[
   }
 
 
-  html[
-    data-grid-density-v004="compact"
-  ]
+  html[data-grid-density-v004="compact"]
   .card-name {
     font-size:
       14px;
   }
 
 
-  html[
-    data-grid-density-v004="large"
-  ]
+  html[data-grid-density-v004="large"]
   .card-name {
     font-size:
       15px;
