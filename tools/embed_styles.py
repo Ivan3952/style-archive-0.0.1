@@ -63,6 +63,8 @@ def build_model(name: str, device: str):
                 out = model(pixel_values=pv).last_hidden_state[:, 0]  # CLS-токен
             else:
                 out = model.get_image_features(pixel_values=pv)
+                if not hasattr(out, "float"):  # transformers 5: объект вывода вместо тензора
+                    out = out.pooler_output
             return out.float().cpu().numpy()
 
     return processor, encode
