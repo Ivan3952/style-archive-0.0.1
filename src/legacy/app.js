@@ -127,7 +127,7 @@
       supportedLoadFailed: "SUPPORTED INDEX COULD NOT BE LOADED",
       supportedLoadFailedHint: "The supported style list is unavailable. Try again.",
       retry: "RETRY",
-      localBuildDate: "RELEASE · 22.09.2026",
+      localBuildDate: `RELEASE · ${__BUILD_DATE__}`,
       verifiedStylesThrough: "VERIFIED STYLES THROUGH",
       shortcutSearch: "Focus search",
       shortcutRandom: "Random style",
@@ -282,7 +282,7 @@
       supportedLoadFailedHint:
         "Полный список поддерживаемых стилей сейчас недоступен. Повторите попытку.",
       retry: "ПОВТОРИТЬ",
-      localBuildDate: "РЕЛИЗ · 22.09.2026",
+      localBuildDate: `РЕЛИЗ · ${__BUILD_DATE__}`,
       verifiedStylesThrough: "ПРОВЕРЕННЫЕ СТИЛИ ДО",
       shortcutSearch: "Перейти к поиску",
       shortcutRandom: "Случайный стиль",
@@ -570,7 +570,7 @@
     document.documentElement.dataset.theme = state.theme;
 
     if (el.themeColor) {
-      el.themeColor.setAttribute("content", state.theme === "light" ? "#f4f2ed" : "#0b0b0b");
+      el.themeColor.setAttribute("content", state.theme === "light" ? "#f2f6fa" : "#0a0e14");
     }
 
     if (persist) {

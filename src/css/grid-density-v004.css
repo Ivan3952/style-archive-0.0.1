@@ -58,7 +58,7 @@
 .grid-density-v004 button.active {
   border-color: var(--accent);
 
-  background: rgba(214, 255, 63, 0.055);
+  background: rgba(143, 211, 255, 0.055);
 
   color: var(--accent);
 }

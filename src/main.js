@@ -15,6 +15,7 @@ import "./css/command-search-v004.css";
 import "./css/mobile.css";
 import "./css/info-v004.css";
 import "./css/usability-v005.css";
+import "./css/winter-v005.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";
