@@ -68,9 +68,25 @@ def build_model(name: str, device: str):
     return processor, encode
 
 
+class ImageSet:
+    """Map-style датасет. Объявлен на уровне модуля: на Windows воркеры DataLoader
+    запускаются через spawn, и локальный класс из run() не сериализуется."""
+
+    def __init__(self, ids, media, processor):
+        self.ids, self.media, self.processor = ids, media, processor
+
+    def __len__(self):
+        return len(self.ids)
+
+    def __getitem__(self, i):
+        from PIL import Image
+
+        with Image.open(media_file(ROOT, self.media, self.ids[i], "src")) as im:
+            return self.processor(images=im.convert("RGB"), return_tensors="pt")["pixel_values"][0]
+
+
 def run(archive: str, model_name: str, batch: int, workers: int, limit: int | None) -> None:
     import torch
-    from PIL import Image
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     if device == "cpu":
@@ -88,15 +104,7 @@ def run(archive: str, model_name: str, batch: int, workers: int, limit: int | No
 
     processor, encode = build_model(model_name, device)
 
-    class DS(torch.utils.data.Dataset):
-        def __len__(self):
-            return len(todo)
-
-        def __getitem__(self, i):
-            with Image.open(media_file(ROOT, media, todo[i], "src")) as im:
-                return processor(images=im.convert("RGB"), return_tensors="pt")["pixel_values"][0]
-
-    loader = torch.utils.data.DataLoader(DS(), batch_size=batch, num_workers=workers, shuffle=False)
+    loader = torch.utils.data.DataLoader(ImageSet(todo, media, processor), batch_size=batch, num_workers=workers, shuffle=False)
     ids_done, chunks, started, since_save = list(existing), [np.stack(list(existing.values()))] if existing else [], time.time(), 0
     n = 0
     try:
