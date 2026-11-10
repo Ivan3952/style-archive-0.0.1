@@ -7,14 +7,16 @@
       "styles": "./data/styles.json",
       "media": "./data/media.json",
       "supported": "./data/supported.json",
-      "visualCount": 5393,
-      "uniqueCount": 5240,
-      "mediaCount": 6579,
+      "visualCount": 5494,
+      "uniqueCount": 5341,
+      "mediaCount": 6802,
       "supportedCount": 59676
     },
     "opus": {
       "label": "OPUS",
-      "aliases": ["neko"],
+      "aliases": [
+        "neko"
+      ],
       "styles": "./data/opus-styles.json",
       "media": "./data/opus-media.json",
       "supported": "./data/opus-supported.json",
