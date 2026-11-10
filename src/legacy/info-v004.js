@@ -19,32 +19,47 @@
 
   function archiveState() {
     const api = window.STYLE_ARCHIVE_ARCHIVES_V004;
-    const key =
-      api?.currentKey ||
-      document.documentElement.dataset.archiveV004 ||
-      new URL(location.href).searchParams.get("archive") ||
-      "am";
-
-    const fallback = {
-      am: { label: "AM PREVIEW", visual: 5393, supported: 59676 },
-      opus: { label: "OPUS", visual: 3973, supported: 51264 },
-      sky: { label: "SKY", visual: 7239, supported: null },
-    };
+    const key = api?.currentKey || "";
 
     const current = api?.current;
 
     return {
       key,
-      label: current?.label || fallback[key]?.label || "AM PREVIEW",
+      label: current?.label || "",
       visual:
         Array.isArray(app?.state?.styles)
           ? app.state.styles.length
-          : fallback[key]?.visual || 0,
+          : current?.styleCount || 0,
       supported:
-        current?.supportedCount ??
-        fallback[key]?.supported ??
-        null,
+        current?.supportedCount ?? null,
     };
+  }
+
+  // Карточки архивов строятся из data/archives.json (через src/archives.js)
+  function stylesWordRu(n) {
+    const m10 = n % 10;
+    const m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return "визуальный стиль";
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return "визуальных стиля";
+    return "визуальных стилей";
+  }
+
+  function archivesHtml() {
+    const archives = Object.values(window.STYLE_ARCHIVE_ARCHIVES_V004?.archives || {});
+    return archives
+      .map((archive) => {
+        const visual = Number(archive.styleCount || 0);
+        const supported =
+          archive.supportedCount == null
+            ? tr("Отдельный список Supported пока не подключён.", "A separate Supported index is not connected yet.")
+            : tr(`Список Supported: ${fmt(archive.supportedCount)}.`, `Supported index: ${fmt(archive.supportedCount)}.`);
+        return `
+          <article>
+            <strong>${archive.label}</strong>
+            <p>${tr(`${fmt(visual)} ${stylesWordRu(visual)}.`, `${fmt(visual)} visual styles.`)} ${supported}</p>
+          </article>`;
+      })
+      .join("");
   }
 
   function infoHtml() {
@@ -103,37 +118,7 @@
       <section class="info-v004-section">
         <h3>${tr("АРХИВЫ", "ARCHIVES")}</h3>
 
-        <div class="info-v004-grid">
-          <article>
-            <strong>AM PREVIEW</strong>
-            <p>
-              ${tr(
-                "5 393 визуальных стиля. Отдельный полный список Supported: 59 676.",
-                "5,393 visual styles. Separate Supported index: 59,676."
-              )}
-            </p>
-          </article>
-
-          <article>
-            <strong>OPUS</strong>
-            <p>
-              ${tr(
-                "3 973 визуальных стиля. Собственный список Supported: 51 264.",
-                "3,973 visual styles. Its own Supported index: 51,264."
-              )}
-            </p>
-          </article>
-
-          <article>
-            <strong>SKY</strong>
-            <p>
-              ${tr(
-                "7 239 визуальных стилей. Отдельный Supported-список пока не подключён.",
-                "7,239 visual styles. A separate Supported index is not connected yet."
-              )}
-            </p>
-          </article>
-        </div>
+        <div class="info-v004-grid">${archivesHtml()}</div>
       </section>
 
       <section class="info-v004-section">

@@ -8,10 +8,12 @@
   - id стилей не уникальны;
   - стиль ссылается на media-id, которого нет в media*.json;
   - файл src или thumb из media*.json отсутствует на диске;
-  - число стилей / медиа не совпадает с заявленным в data/archives.json;
+  - число стилей / медиа не совпадает с заявленным в data/archives.json
+    (в том числе uniqueCount: сколько стилей остаётся после склейки одинаковых названий);
   - у media-записи нет ширины/высоты (ломает раскладку сетки).
 ПРЕДУПРЕЖДЕНИЯ (стоит посмотреть, но сайт работает):
   - у стиля нет ни одного изображения;
+  - в файле есть записи с одинаковым названием (сайт склеивает их в одну карточку);
   - есть media-записи, на которые не ссылается ни один стиль;
   - одно и то же имя написано по-разному (регистр, «_» вместо пробела);
   - файлы в media/ без записи в media*.json.
@@ -23,6 +25,7 @@ import collections
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -34,6 +37,14 @@ def load(rel: str):
 
 def key(name: str) -> str:
     return re.sub(r"[\s_]+", " ", name.replace("\\", "").lower()).strip()
+
+
+
+def site_name_key(style: dict, index: int) -> str:
+    """Ключ склейки как на сайте: NFKC, нижний регистр, ё=е, пробелы схлопнуты."""
+    value = unicodedata.normalize("NFKC", str(style.get("name") or style.get("copy_value") or ""))
+    value = re.sub(r"\s+", " ", value.lower().replace("ё", "е").strip())
+    return value or f"__record_{style.get('id') or index}"
 
 
 def main() -> int:
@@ -86,6 +97,13 @@ def main() -> int:
 
         if a.get("visualCount") != len(styles):
             errors.append(f"{tag} visualCount={a.get('visualCount')}, а в файле {len(styles)} стилей")
+        # Сколько стилей видит посетитель: сайт склеивает записи с одинаковым названием
+        # (та же нормализация, что normalizeStyleName в src/legacy/app.js).
+        unique = len({site_name_key(s, i) for i, s in enumerate(styles)})
+        if a.get("uniqueCount") != unique:
+            errors.append(f"{tag} uniqueCount={a.get('uniqueCount')}, а после склейки одинаковых названий {unique}")
+        if unique != len(styles):
+            warnings.append(f"{tag} записей с повторяющимся названием: {len(styles) - unique} (на сайте склеиваются в одну карточку)")
         if a.get("mediaCount") != len(media):
             errors.append(f"{tag} mediaCount={a.get('mediaCount')}, а в файле {len(media)} записей")
         if a.get("supported"):

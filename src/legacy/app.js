@@ -1,7 +1,9 @@
 (() => {
   const VISUAL_PAGE_SIZE = window.innerWidth <= 680 ? 24 : 48;
   const SUPPORTED_PAGE_SIZE = window.innerWidth <= 680 ? 120 : 240;
-  const SUPPORTED_TOTAL_FALLBACK = 59676;
+  // Архив и его заявленные счётчики берутся из data/archives.json (см. src/archives.js)
+  const ARCHIVE = window.STYLE_ARCHIVE_ARCHIVES_V004?.current || {};
+  const SUPPORTED_TOTAL_FALLBACK = ARCHIVE.supportedCount ?? null;
   const VISUAL_SUPPORTED_PREVIEW_LIMIT = window.innerWidth <= 680 ? 10 : 18;
   const RECENT_LIMIT = 24;
 
@@ -1024,6 +1026,11 @@
     `).join("");
   }
 
+  function showSupportedCount(count) {
+    el.brandSupportedCount.textContent = count == null ? "------" : pad(count);
+    el.supportedStat.textContent = count == null ? "—" : prettyNumber(count);
+  }
+
   async function loadSupported() {
     if (state.supported) return state.supported;
     if (state.supportedPromise) return state.supportedPromise;
@@ -1040,9 +1047,8 @@
           .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
         state.supportedIndex = state.supported.map(makeNameIndex);
 
-        const count = state.supported.length;
-        el.brandSupportedCount.textContent = pad(count);
-        el.supportedStat.textContent = prettyNumber(count);
+        // у архива без списка Supported (SKY) счётчики остаются прочерками
+        if (ARCHIVE.supported) showSupportedCount(state.supported.length);
         buildSupportedFilters();
         return state.supported;
       })
@@ -2198,8 +2204,7 @@ if (searchV004) {
       const visualCount = state.styles.length;
       el.brandVisualCount.textContent = pad(visualCount);
       el.visualStat.textContent = prettyNumber(visualCount);
-      el.brandSupportedCount.textContent = pad(SUPPORTED_TOTAL_FALLBACK);
-      el.supportedStat.textContent = prettyNumber(SUPPORTED_TOTAL_FALLBACK);
+      showSupportedCount(SUPPORTED_TOTAL_FALLBACK);
 
       buildFilters();
       buildAlphabet();

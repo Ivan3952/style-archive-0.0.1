@@ -18,7 +18,7 @@ import "./css/info-v004.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";
-import "./legacy/archives-v004.js";
+import "./archives.js";
 import "./legacy/app.js";
 import "./legacy/danbooru-v003.js";
 import "./legacy/qol-v003.js";
