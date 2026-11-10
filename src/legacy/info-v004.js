@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const RELEASE = "v0.0.4 · RC1 · 07.10.2026";
+  const RELEASE = __APP_RELEASE__;
 
   let app = null;
   let dialog = null;
