@@ -86,7 +86,7 @@
 .search-lite-hint-v004:hover {
   border-color: var(--accent);
 
-  background: rgba(214, 255, 63, 0.035);
+  background: rgba(143, 211, 255, 0.035);
 
   color: var(--accent);
 }

@@ -243,13 +243,13 @@ body.command-search-open-v004 {
 }
 
 .command-item-v004:hover {
-  background: rgba(214, 255, 63, 0.045);
+  background: rgba(143, 211, 255, 0.045);
 
   color: var(--accent);
 }
 
 .command-item-v004.is-current {
-  background: rgba(214, 255, 63, 0.025);
+  background: rgba(143, 211, 255, 0.025);
 }
 
 .command-item-type-v004 {

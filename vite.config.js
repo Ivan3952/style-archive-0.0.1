@@ -5,6 +5,32 @@ import { dirname, resolve } from "node:path";
 const pkg = JSON.parse(readFileSync(resolve(process.cwd(), "package.json"), "utf8"));
 const CODENAME = "Clean Slate";
 
+/* Дата релиза = день сборки (по Москве); «проверенные стили до» = самая поздняя дата публикации в данных. */
+const BUILD_DATE = new Intl.DateTimeFormat("ru-RU", {
+  timeZone: "Europe/Moscow",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+}).format(new Date());
+
+function dataDate() {
+  const root = process.cwd();
+  const config = JSON.parse(readFileSync(resolve(root, "data/archives.json"), "utf8"));
+  let latest = "";
+  for (const archive of Object.values(config.archives)) {
+    if (!archive.styles) continue;
+    const styles = JSON.parse(readFileSync(resolve(root, archive.styles), "utf8"));
+    for (const style of styles) {
+      const day = String(style.published_at || "").slice(0, 10);
+      if (day > latest) latest = day;
+    }
+  }
+  const [y, m, d] = latest.split("-");
+  return latest ? `${d}.${m}.${y}` : BUILD_DATE;
+}
+
+const DATA_DATE = dataDate();
+
 /*
  * Сайт читает данные запросами (fetch), поэтому JSON лежит в dist/data как есть.
  * Копируем только то, что реально нужно в браузере: список берём из data/archives.json,
@@ -38,7 +64,11 @@ function copyRuntimeData() {
 function injectVersion() {
   return {
     name: "inject-version",
-    transformIndexHtml: (html) => html.replaceAll("%APP_VERSION%", pkg.version),
+    transformIndexHtml: (html) =>
+      html
+        .replaceAll("%APP_VERSION%", pkg.version)
+        .replaceAll("%BUILD_DATE%", BUILD_DATE)
+        .replaceAll("%DATA_DATE%", DATA_DATE),
   };
 }
 
@@ -48,6 +78,7 @@ export default defineConfig({
   define: {
     // единственный источник версии: поле version в package.json
     __APP_RELEASE__: JSON.stringify(`v${pkg.version} · ${CODENAME}`),
+    __BUILD_DATE__: JSON.stringify(BUILD_DATE),
   },
   plugins: [injectVersion(), copyRuntimeData()],
   build: {

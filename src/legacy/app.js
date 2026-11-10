@@ -126,7 +126,7 @@
       supportedLoadFailed: "THE LIST DID NOT LOAD",
       supportedLoadFailedHint: "The list is not opening right now. Reload the page.",
       retry: "RETRY",
-      localBuildDate: "RELEASE · 22.09.2026",
+      localBuildDate: `RELEASE · ${__BUILD_DATE__}`,
       verifiedStylesThrough: "VERIFIED STYLES THROUGH",
       shortcutSearch: "Focus search",
       shortcutRandom: "Random style",
@@ -279,7 +279,7 @@
       supportedLoadFailed: "СПИСОК НЕ ЗАГРУЗИЛСЯ",
       supportedLoadFailedHint: "Список сейчас не открывается. Обновите страницу.",
       retry: "ПОВТОРИТЬ",
-      localBuildDate: "РЕЛИЗ · 22.09.2026",
+      localBuildDate: `РЕЛИЗ · ${__BUILD_DATE__}`,
       verifiedStylesThrough: "ПРОВЕРЕННЫЕ СТИЛИ ДО",
       shortcutSearch: "Перейти к поиску",
       shortcutRandom: "Случайный стиль",
@@ -567,7 +567,7 @@
     document.documentElement.dataset.theme = state.theme;
 
     if (el.themeColor) {
-      el.themeColor.setAttribute("content", state.theme === "light" ? "#f4f2ed" : "#0b0b0b");
+      el.themeColor.setAttribute("content", state.theme === "light" ? "#f2f6fa" : "#0a0e14");
     }
 
     if (persist) {
