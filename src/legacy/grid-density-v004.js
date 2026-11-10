@@ -5,10 +5,28 @@
 
   const MODES = new Set(["compact", "normal", "large"]);
 
-  let mode = localStorage.getItem(STORAGE_KEY) || "normal";
+  /* Форма карточек: "even" (ровная сетка, один формат 2:3) или "original" (как есть, masonry). */
+  const SHAPE_KEY = "style-archive:grid-shape-v004";
+  const SHAPES = new Set(["even", "original"]);
+
+  function readStored(key, fallback) {
+    try {
+      return localStorage.getItem(key) || fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  let mode = readStored(STORAGE_KEY, "normal");
 
   if (!MODES.has(mode)) {
     mode = "normal";
+  }
+
+  let shape = readStored(SHAPE_KEY, "even");
+
+  if (!SHAPES.has(shape)) {
+    shape = "even";
   }
 
   /* ======================================================
@@ -17,6 +35,7 @@
 
   function applyRootMode() {
     document.documentElement.dataset.gridDensityV004 = mode;
+    document.documentElement.dataset.gridShapeV004 = shape;
   }
 
   applyRootMode();
@@ -26,8 +45,16 @@
      ====================================================== */
 
   function updateButtons() {
-    document.querySelectorAll("[data-grid-density-v004]").forEach((button) => {
+    document.querySelectorAll("button[data-grid-density-v004]").forEach((button) => {
       const active = button.dataset.gridDensityV004 === mode;
+
+      button.classList.toggle("active", active);
+
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+
+    document.querySelectorAll("button[data-grid-shape-v004]").forEach((button) => {
+      const active = button.dataset.gridShapeV004 === shape;
 
       button.classList.toggle("active", active);
 
@@ -77,6 +104,25 @@
 
     updateButtons();
 
+    rebuildGallery();
+  }
+
+  function setShape(next) {
+    if (!SHAPES.has(next) || next === shape) {
+      return;
+    }
+
+    shape = next;
+
+    try {
+      localStorage.setItem(SHAPE_KEY, shape);
+    } catch {}
+
+    applyRootMode();
+
+    updateButtons();
+
+    /* высоты карточек поменялись, раскладка по колонкам считается заново */
     rebuildGallery();
   }
 
@@ -131,12 +177,42 @@
       >
         LARGE
       </button>
+
+      <span
+        class="grid-density-label-v004 grid-shape-label-v004"
+      >
+        SHAPE
+      </span>
+
+      <button
+        type="button"
+        data-grid-shape-v004="even"
+        aria-pressed="false"
+      >
+        EVEN
+      </button>
+
+      <button
+        type="button"
+        data-grid-shape-v004="original"
+        aria-pressed="false"
+      >
+        ORIGINAL
+      </button>
     `;
 
     sortList.insertAdjacentElement("afterend", density);
 
     density.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-grid-density-v004]");
+      const shapeButton = event.target.closest("button[data-grid-shape-v004]");
+
+      if (shapeButton) {
+        setShape(shapeButton.dataset.gridShapeV004);
+
+        return;
+      }
+
+      const button = event.target.closest("button[data-grid-density-v004]");
 
       if (!button) {
         return;
@@ -162,5 +238,11 @@
     },
 
     setMode,
+
+    getShape() {
+      return shape;
+    },
+
+    setShape,
   };
 })();

@@ -68,6 +68,15 @@
         const row = labels[button.dataset.gridDensityV004];
         if (row) setText(button, row[0], row[1]);
       });
+
+    setText(document.querySelector(".grid-shape-label-v004"), "ФОРМА", "SHAPE");
+
+    const shapes = { even: ["РОВНО", "EVEN"], original: ["КАК ЕСТЬ", "ORIGINAL"] };
+
+    document.querySelectorAll("button[data-grid-shape-v004]").forEach((button) => {
+      const row = shapes[button.dataset.gridShapeV004];
+      if (row) setText(button, row[0], row[1]);
+    });
   }
 
   function translateSearchDiscovery() {

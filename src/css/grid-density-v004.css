@@ -64,6 +64,30 @@
 }
 
 /* =========================================================
+   SHAPE: ровная сетка
+   Все превью в одном формате 2:3 (у 95% картинок архива пропорции
+   0.58–0.80, так что обрезается немного; в просмотрщике картинка целиком).
+   Подпись в одну строку, чтобы низы карточек в колонках совпадали.
+   ========================================================= */
+
+html[data-grid-shape-v004="even"] .card-media {
+  aspect-ratio: 2 / 3 !important;
+}
+
+html[data-grid-shape-v004="even"] .card-name {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+html[data-grid-shape-v004="even"] .card-meta {
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* =========================================================
    COMPACT
    ========================================================= */
 
