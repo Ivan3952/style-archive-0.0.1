@@ -111,6 +111,9 @@ def main() -> int:
         if missing:
             errors.append(f"{tag} ссылки на несуществующие media-id: {missing[:5]} (всего {len(missing)})")
 
+        if tag == "[am]" and (ROOT / "data" / "mixes.json").exists():  # превью миксов тоже используются
+            for mix in json.loads((ROOT / "data" / "mixes.json").read_text(encoding="utf-8")):
+                used.update(mix.get("media", []))
         unused = sorted(m for m in media if m not in used)
         if unused:
             warnings.append(f"{tag} media без стиля: {len(unused)} шт., например {unused[:3]}")

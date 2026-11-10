@@ -89,6 +89,7 @@ def main():
         styles0 = json.loads((root / "data" / "styles.json").read_text())
         existing = styles0[0]["name"]  # для проверки «к старой записи»
         before = (root / "data" / "styles.json").read_bytes()
+        media0 = json.loads((root / "data" / "media.json").read_text())
 
         # пробный прогон ничего не пишет
         code, out = run(root, export)
@@ -126,8 +127,11 @@ def main():
         for s in styles:
             for m in [*s["media"], *s["reference_media"]]:
                 assert m in media, m
-        assert (root / "media" / "web" / "p006585.webp").exists()
-        assert (root / "media" / "thumb" / "p006585.webp").exists()
+        new_ids = sorted(set(media) - set(media0))
+        assert len(new_ids) == 11, new_ids  # 1+1+2+2+4 в новые записи и 1 к старой
+        for mid in new_ids:
+            assert (root / "media" / "web" / f"{mid}.webp").exists()
+            assert (root / "media" / "thumb" / f"{mid}.webp").exists()
         assert arch["archives"]["am"]["visualCount"] == len(styles)
         assert arch["archives"]["am"]["mediaCount"] == len(media)
 
