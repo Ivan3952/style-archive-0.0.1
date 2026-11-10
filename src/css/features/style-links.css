@@ -1,0 +1,60 @@
+/* Кнопка «COPY STYLE LINK». Живёт в панели действий вьюера рядом с ADD / SAVE (см. src/features/style-links.js). */
+
+.style-link-copy-v004 {
+  position: fixed;
+  z-index: 10020;
+  right: 18px;
+  bottom: 18px;
+  display: none;
+  padding: 9px 11px;
+  border: 1px solid var(--accent);
+  background: var(--bg);
+  color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 8px;
+  letter-spacing: 0.055em;
+  cursor: pointer;
+}
+
+body.viewer-open .style-link-copy-v004 {
+  display: block;
+}
+
+.style-link-copy-v004:hover {
+  background: rgba(214, 255, 63, 0.06);
+}
+
+/* Внутри панели действий вьюера кнопка становится обычным элементом строки */
+.viewer-deeplink-host-v004 .viewer-actions {
+  flex-wrap: wrap;
+}
+
+.viewer-deeplink-host-v004 .viewer-actions .style-link-copy-v004 {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 118px;
+  min-height: 38px;
+  margin: 0;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .style-link-copy-v004 {
+    right: 10px;
+    bottom: 10px;
+    min-height: 40px;
+    padding: 9px 11px;
+  }
+}
+
+@media (max-width: 680px) {
+  .viewer-deeplink-host-v004 .viewer-actions .style-link-copy-v004 {
+    width: 100%;
+    min-width: 0;
+  }
+}
