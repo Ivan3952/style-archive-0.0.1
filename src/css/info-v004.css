@@ -34,7 +34,7 @@
 .info-v004-section h3,
 .info-v004-footer {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  letter-spacing: .06em;
+  letter-spacing: 0.06em;
 }
 
 .info-v004-kicker {
@@ -46,8 +46,8 @@
   margin: 7px 0 5px;
   color: var(--text);
   font-size: clamp(30px, 5vw, 52px);
-  line-height: .95;
-  letter-spacing: -.04em;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
 }
 
 .info-v004-version {
@@ -175,7 +175,7 @@
   border-right: 0;
 }
 
-.info-v004-feature-list > div:nth-last-child(-n+2) {
+.info-v004-feature-list > div:nth-last-child(-n + 2) {
   border-bottom: 0;
 }
 
@@ -235,7 +235,7 @@
   .info-v004-grid article,
   .info-v004-feature-list > div,
   .info-v004-feature-list > div:nth-child(2n),
-  .info-v004-feature-list > div:nth-last-child(-n+2) {
+  .info-v004-feature-list > div:nth-last-child(-n + 2) {
     border-right: 0;
     border-bottom: 1px solid var(--line-soft);
   }

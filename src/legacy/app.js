@@ -28,7 +28,8 @@
       aboutTitle: "ABOUT",
       aboutLead: "A visual archive and searchable index of model-supported styles.",
       archiveOriginTitle: "ABOUT THE ARCHIVE",
-      archiveOriginDesc: "All styles featured in the Visual Archive were tested by members of the Stable Waifu community using the AM Preview model. The previews in the archive are results of those tests.",
+      archiveOriginDesc:
+        "All styles featured in the Visual Archive were tested by members of the Stable Waifu community using the AM Preview model. The previews in the archive are results of those tests.",
       visualArchiveDesc: "Styles with visual previews available in the archive.",
       allSupportedDesc: "The complete searchable list of style identifiers supported by the model.",
       presetsDesc: "Available preview presets for a style.",
@@ -36,31 +37,49 @@
       infoGroupTools: "STYLE TOOLS",
       infoGroupViewer: "PREVIEW VIEWER",
       infoGroupInterface: "INTERFACE",
-      visualArchiveFullDesc: "Browse only styles that already have visual previews. Click an image to open the full-screen viewer; click a style name to copy it.",
-      allSupportedFullDesc: "Browse the complete list of model-supported style identifiers, including styles without previews. Styles with available previews are highlighted.",
-      searchFullDesc: "Search across the archive and the full supported index. The search tolerates minor typos and close spellings.",
-      presetsFullDesc: "Filter previews by the preset in which they were generated. In the full index you can also show styles with MAIN, ALT, both presets, previews, or no previews.",
-      sortFullDesc: "Reorder the visual archive by archive order, newest, oldest, A–Z, or a new random order.",
+      visualArchiveFullDesc:
+        "Browse only styles that already have visual previews. Click an image to open the full-screen viewer; click a style name to copy it.",
+      allSupportedFullDesc:
+        "Browse the complete list of model-supported style identifiers, including styles without previews. Styles with available previews are highlighted.",
+      searchFullDesc:
+        "Search across the archive and the full supported index. The search tolerates minor typos and close spellings.",
+      presetsFullDesc:
+        "Filter previews by the preset in which they were generated. In the full index you can also show styles with MAIN, ALT, both presets, previews, or no previews.",
+      sortFullDesc:
+        "Reorder the visual archive by archive order, newest, oldest, A–Z, or a new random order.",
       alphabetInfoTitle: "A–Z INDEX",
-      alphabetInfoDesc: "Use alphabet navigation in All Supported to jump directly to styles beginning with a specific letter or symbol.",
-      randomFullDesc: "Open a random visual style. The menu can limit the random pool to ANY, MAIN, ALT, or your SAVED styles.",
-      addedFullDesc: "Build a temporary working list of style names. Add styles from cards, the supported index, Recent, or the viewer, then copy the whole list at once.",
-      savedFullDesc: "Save styles to a persistent local favourites list. Press SAVED in the header to show only saved visual styles. In Saved mode, ADDED ↓ shows the most recently saved styles first, while ADDED ↑ shows the oldest saved styles first.",
-      recentFullDesc: "Keeps the latest viewed preview styles so you can quickly return to something you opened earlier.",
+      alphabetInfoDesc:
+        "Use alphabet navigation in All Supported to jump directly to styles beginning with a specific letter or symbol.",
+      randomFullDesc:
+        "Open a random visual style. The menu can limit the random pool to ANY, MAIN, ALT, or your SAVED styles.",
+      addedFullDesc:
+        "Build a temporary working list of style names. Add styles from cards, the supported index, Recent, or the viewer, then copy the whole list at once.",
+      savedFullDesc:
+        "Save styles to a persistent local favourites list. Press SAVED in the header to show only saved visual styles. In Saved mode, ADDED ↓ shows the most recently saved styles first, while ADDED ↑ shows the oldest saved styles first.",
+      recentFullDesc:
+        "Keeps the latest viewed preview styles so you can quickly return to something you opened earlier.",
       copyInfoTitle: "ONE-CLICK COPY",
-      copyInfoDesc: "Click a style name anywhere in the interface to copy its identifier. Added can copy several selected styles in one line.",
+      copyInfoDesc:
+        "Click a style name anywhere in the interface to copy its identifier. Added can copy several selected styles in one line.",
       localStorageInfoTitle: "LOCAL STORAGE",
-      localStorageInfoDesc: "Saved, Added, Recent, language, and theme are stored only in your browser. No account is required.",
+      localStorageInfoDesc:
+        "Saved, Added, Recent, language, and theme are stored only in your browser. No account is required.",
       viewerInfoTitle: "FULL-SCREEN PREVIEW",
-      viewerInfoDesc: "Open an image at maximum available size. If a style has several previews, use the arrows to move between them.",
-      relatedFullDesc: "Shows additional previewed styles that share an available preset with the current style. This is preset-based related content, not visual-similarity search.",
+      viewerInfoDesc:
+        "Open an image at maximum available size. If a style has several previews, use the arrows to move between them.",
+      relatedFullDesc:
+        "Shows additional previewed styles that share an available preset with the current style. This is preset-based related content, not visual-similarity search.",
       previewMetaInfoTitle: "PREVIEW INFO",
-      previewMetaInfoDesc: "The viewer shows the archive position, preset, publication date, and the number of available preview images.",
+      previewMetaInfoDesc:
+        "The viewer shows the archive position, preset, publication date, and the number of available preview images.",
       themeInfoTitle: "LIGHT / DARK",
-      themeInfoDesc: "Use the ◐ button to switch between light and dark themes. Your choice is remembered by the browser.",
-      languageInfoDesc: "Switch the interface between Russian and English without changing style identifiers or preset names.",
+      themeInfoDesc:
+        "Use the ◐ button to switch between light and dark themes. Your choice is remembered by the browser.",
+      languageInfoDesc:
+        "Switch the interface between Russian and English without changing style identifiers or preset names.",
       shortcutsInfoTitle: "KEYBOARD",
-      shortcutsInfoDesc: "/ focuses search, R opens a random style, C copies the current style in the viewer, ← / → switch preview images, and Esc closes the side panel.",
+      shortcutsInfoDesc:
+        "/ focuses search, R opens a random style, C copies the current style in the viewer, ← / → switch preview images, and Esc closes the side panel.",
       version: "VERSION",
       visualArchive: "VISUAL ARCHIVE",
       stylesWithPreviews: "styles with previews",
@@ -103,7 +122,8 @@
       nothingFoundHint: "Try another query or reset the active filters.",
       resetFilters: "RESET FILTERS",
       archiveLoadFailed: "ARCHIVE COULD NOT BE LOADED",
-      archiveLoadFailedHint: "Check that the site is running through a local HTTP server and try again.",
+      archiveLoadFailedHint:
+        "Check that the site is running through a local HTTP server and try again.",
       supportedLoadFailed: "SUPPORTED INDEX COULD NOT BE LOADED",
       supportedLoadFailedHint: "The supported style list is unavailable. Try again.",
       retry: "RETRY",
@@ -135,7 +155,8 @@
       untitled: "Untitled",
       styleAlt: "Style",
       archiveDataError: "ERROR / ARCHIVE DATA NOT FOUND",
-      archiveDataHint: "Could not load <code>./data/styles.json</code> and <code>./data/media.json</code>. Run the site through a local HTTP server instead of opening index.html directly.",
+      archiveDataHint:
+        "Could not load <code>./data/styles.json</code> and <code>./data/media.json</code>. Run the site through a local HTTP server instead of opening index.html directly.",
       switchToRussian: "Switch to Russian",
       switchToEnglish: "Switch to English",
       switchTheme: "Switch theme",
@@ -160,39 +181,59 @@
       aboutTitle: "О ПРОЕКТЕ",
       aboutLead: "Визуальный архив и поисковый индекс стилей, поддерживаемых моделью.",
       archiveOriginTitle: "ОБ АРХИВЕ",
-      archiveOriginDesc: "Все стили, представленные в Визуальном архиве, были проверены участниками чата Stable Waifu на модели AM Preview. Превью в архиве являются результатами этих проверок.",
+      archiveOriginDesc:
+        "Все стили, представленные в Визуальном архиве, были проверены участниками чата Stable Waifu на модели AM Preview. Превью в архиве являются результатами этих проверок.",
       visualArchiveDesc: "Стили, для которых в архиве доступны визуальные превью.",
-      allSupportedDesc: "Полный доступный для поиска список идентификаторов стилей, поддерживаемых моделью.",
+      allSupportedDesc:
+        "Полный доступный для поиска список идентификаторов стилей, поддерживаемых моделью.",
       presetsDesc: "Доступные варианты превью для конкретного стиля.",
       infoGroupExplore: "ПОИСК И ПРОСМОТР",
       infoGroupTools: "ИНСТРУМЕНТЫ",
       infoGroupViewer: "ПРОСМОТР ПРЕВЬЮ",
       infoGroupInterface: "ИНТЕРФЕЙС",
-      visualArchiveFullDesc: "Здесь находятся только стили, для которых уже есть визуальные превью. Нажмите на изображение, чтобы открыть полноэкранный просмотр, или на название стиля, чтобы сразу его скопировать.",
-      allSupportedFullDesc: "Полный список идентификаторов стилей, поддерживаемых моделью, включая стили без превью. Стили с доступными визуальными примерами выделяются отдельно.",
-      searchFullDesc: "Поиск работает одновременно по визуальному архиву и полному списку поддерживаемых стилей. Допускаются небольшие опечатки и близкие варианты написания.",
-      presetsFullDesc: "Позволяют отфильтровать превью по пресету, в котором они были получены. В полном списке также доступны фильтры MAIN, ALT, MAIN + ALT, с превью и без превью.",
-      sortFullDesc: "Визуальный архив можно сортировать по исходному порядку, от новых к старым, от старых к новым, по алфавиту или в случайном порядке.",
+      visualArchiveFullDesc:
+        "Здесь находятся только стили, для которых уже есть визуальные превью. Нажмите на изображение, чтобы открыть полноэкранный просмотр, или на название стиля, чтобы сразу его скопировать.",
+      allSupportedFullDesc:
+        "Полный список идентификаторов стилей, поддерживаемых моделью, включая стили без превью. Стили с доступными визуальными примерами выделяются отдельно.",
+      searchFullDesc:
+        "Поиск работает одновременно по визуальному архиву и полному списку поддерживаемых стилей. Допускаются небольшие опечатки и близкие варианты написания.",
+      presetsFullDesc:
+        "Позволяют отфильтровать превью по пресету, в котором они были получены. В полном списке также доступны фильтры MAIN, ALT, MAIN + ALT, с превью и без превью.",
+      sortFullDesc:
+        "Визуальный архив можно сортировать по исходному порядку, от новых к старым, от старых к новым, по алфавиту или в случайном порядке.",
       alphabetInfoTitle: "АЛФАВИТ A–Z",
-      alphabetInfoDesc: "Во вкладке «Все поддерживаемые» можно быстро перейти к стилям, начинающимся с нужной буквы или символа.",
-      randomFullDesc: "Открывает случайный стиль с превью. В меню можно ограничить выбор всеми стилями, только MAIN, только ALT или только сохранёнными стилями.",
-      addedFullDesc: "Временная рабочая подборка стилей. Стили можно добавлять из карточек, полного списка, «Недавних» и полноэкранного просмотра, а затем скопировать весь список одной строкой.",
-      savedFullDesc: "Постоянное локальное избранное. Кнопка «Избранное» в шапке позволяет показать только сохранённые визуальные стили.",
-      recentFullDesc: "Автоматически сохраняет последние просмотренные стили с превью, чтобы к ним можно было быстро вернуться.",
+      alphabetInfoDesc:
+        "Во вкладке «Все поддерживаемые» можно быстро перейти к стилям, начинающимся с нужной буквы или символа.",
+      randomFullDesc:
+        "Открывает случайный стиль с превью. В меню можно ограничить выбор всеми стилями, только MAIN, только ALT или только сохранёнными стилями.",
+      addedFullDesc:
+        "Временная рабочая подборка стилей. Стили можно добавлять из карточек, полного списка, «Недавних» и полноэкранного просмотра, а затем скопировать весь список одной строкой.",
+      savedFullDesc:
+        "Постоянное локальное избранное. Кнопка «Избранное» в шапке позволяет показать только сохранённые визуальные стили.",
+      recentFullDesc:
+        "Автоматически сохраняет последние просмотренные стили с превью, чтобы к ним можно было быстро вернуться.",
       copyInfoTitle: "КОПИРОВАНИЕ В ОДИН КЛИК",
-      copyInfoDesc: "Нажмите на название стиля в любой части сайта, чтобы скопировать его идентификатор. Через «Добавленные» можно скопировать сразу несколько выбранных стилей одной строкой.",
+      copyInfoDesc:
+        "Нажмите на название стиля в любой части сайта, чтобы скопировать его идентификатор. Через «Добавленные» можно скопировать сразу несколько выбранных стилей одной строкой.",
       localStorageInfoTitle: "ЛОКАЛЬНОЕ ХРАНЕНИЕ",
-      localStorageInfoDesc: "Избранное, Добавленные, Недавние, язык и тема сохраняются только в вашем браузере. Регистрация и аккаунт не требуются.",
+      localStorageInfoDesc:
+        "Избранное, Добавленные, Недавние, язык и тема сохраняются только в вашем браузере. Регистрация и аккаунт не требуются.",
       viewerInfoTitle: "ПОЛНОЭКРАННЫЙ ПРОСМОТР",
-      viewerInfoDesc: "Открывает изображение в максимально доступном размере. Если у стиля несколько превью, между ними можно переключаться стрелками.",
-      relatedFullDesc: "Показывает дополнительные стили с превью, у которых совпадает доступный пресет с текущим стилем. Сейчас это подборка по пресету, а не поиск по визуальному сходству.",
+      viewerInfoDesc:
+        "Открывает изображение в максимально доступном размере. Если у стиля несколько превью, между ними можно переключаться стрелками.",
+      relatedFullDesc:
+        "Показывает дополнительные стили с превью, у которых совпадает доступный пресет с текущим стилем. Сейчас это подборка по пресету, а не поиск по визуальному сходству.",
       previewMetaInfoTitle: "ИНФОРМАЦИЯ О ПРЕВЬЮ",
-      previewMetaInfoDesc: "В просмотрщике отображаются позиция в архиве, пресет, дата публикации и количество доступных изображений стиля.",
+      previewMetaInfoDesc:
+        "В просмотрщике отображаются позиция в архиве, пресет, дата публикации и количество доступных изображений стиля.",
       themeInfoTitle: "СВЕТЛАЯ / ТЁМНАЯ ТЕМА",
-      themeInfoDesc: "Кнопка ◐ переключает светлую и тёмную тему. Выбранный вариант запоминается браузером.",
-      languageInfoDesc: "Кнопка RU / EN переключает интерфейс между русским и английским языком, не изменяя названия стилей и пресетов.",
+      themeInfoDesc:
+        "Кнопка ◐ переключает светлую и тёмную тему. Выбранный вариант запоминается браузером.",
+      languageInfoDesc:
+        "Кнопка RU / EN переключает интерфейс между русским и английским языком, не изменяя названия стилей и пресетов.",
       shortcutsInfoTitle: "КЛАВИАТУРА",
-      shortcutsInfoDesc: "/ переводит курсор в поиск, R открывает случайный стиль, C копирует текущий стиль в просмотрщике, ← / → переключают превью, Esc закрывает боковую панель.",
+      shortcutsInfoDesc:
+        "/ переводит курсор в поиск, R открывает случайный стиль, C копирует текущий стиль в просмотрщике, ← / → переключают превью, Esc закрывает боковую панель.",
       version: "ВЕРСИЯ",
       visualArchive: "ВИЗУАЛЬНЫЙ АРХИВ",
       stylesWithPreviews: "стили с доступными превью",
@@ -235,9 +276,11 @@
       nothingFoundHint: "Попробуйте изменить запрос или сбросить активные фильтры.",
       resetFilters: "СБРОСИТЬ ФИЛЬТРЫ",
       archiveLoadFailed: "НЕ УДАЛОСЬ ЗАГРУЗИТЬ АРХИВ",
-      archiveLoadFailedHint: "Проверьте, что сайт запущен через локальный HTTP-сервер, и повторите попытку.",
+      archiveLoadFailedHint:
+        "Проверьте, что сайт запущен через локальный HTTP-сервер, и повторите попытку.",
       supportedLoadFailed: "НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК",
-      supportedLoadFailedHint: "Полный список поддерживаемых стилей сейчас недоступен. Повторите попытку.",
+      supportedLoadFailedHint:
+        "Полный список поддерживаемых стилей сейчас недоступен. Повторите попытку.",
       retry: "ПОВТОРИТЬ",
       localBuildDate: "РЕЛИЗ · 22.09.2026",
       verifiedStylesThrough: "ПРОВЕРЕННЫЕ СТИЛИ ДО",
@@ -267,7 +310,8 @@
       untitled: "Без названия",
       styleAlt: "Стиль",
       archiveDataError: "ОШИБКА / ДАННЫЕ АРХИВА НЕ НАЙДЕНЫ",
-      archiveDataHint: "Не удалось загрузить <code>./data/styles.json</code> и <code>./data/media.json</code>. Запускай сайт через локальный HTTP-сервер, а не двойным кликом по index.html.",
+      archiveDataHint:
+        "Не удалось загрузить <code>./data/styles.json</code> и <code>./data/media.json</code>. Запускай сайт через локальный HTTP-сервер, а не двойным кликом по index.html.",
       switchToRussian: "Переключить на русский",
       switchToEnglish: "Переключить на английский",
       switchTheme: "Переключить тему",
@@ -282,7 +326,11 @@
       const saved = localStorage.getItem(LANG_KEY);
       if (saved === "ru" || saved === "en") return saved;
     } catch {}
-    return String(navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en";
+    return String(navigator.language || "en")
+      .toLowerCase()
+      .startsWith("ru")
+      ? "ru"
+      : "en";
   })();
 
   const initialTheme = (() => {
@@ -300,8 +348,9 @@
     }
   };
 
-  const initialSavedIds = readStoredArray("style-archive:saved")
-    .filter((value) => typeof value === "string" && value);
+  const initialSavedIds = readStoredArray("style-archive:saved").filter(
+    (value) => typeof value === "string" && value
+  );
 
   const readSavedAt = (savedIds) => {
     const map = new Map();
@@ -352,7 +401,9 @@
     discoveryStyles: null,
     saved: new Set(initialSavedIds),
     savedAt: initialSavedAt,
-    tray: readStoredArray("style-archive:tray").filter((value) => typeof value === "string" && value.trim()),
+    tray: readStoredArray("style-archive:tray").filter(
+      (value) => typeof value === "string" && value.trim()
+    ),
     recent: readStoredArray("style-archive:recent").filter((value) => typeof value === "string"),
     drawerTab: "tray",
     viewerStyle: null,
@@ -504,7 +555,10 @@
     if (el.languageButton) {
       const nextLang = state.lang === "ru" ? "en" : "ru";
       el.languageButton.textContent = nextLang.toUpperCase();
-      el.languageButton.setAttribute("aria-label", state.lang === "ru" ? t("switchToEnglish") : t("switchToRussian"));
+      el.languageButton.setAttribute(
+        "aria-label",
+        state.lang === "ru" ? t("switchToEnglish") : t("switchToRussian")
+      );
       el.languageButton.title = state.lang === "ru" ? t("switchToEnglish") : t("switchToRussian");
     }
 
@@ -520,7 +574,9 @@
     }
 
     if (persist) {
-      try { localStorage.setItem(THEME_KEY, state.theme); } catch {}
+      try {
+        localStorage.setItem(THEME_KEY, state.theme);
+      } catch {}
     }
 
     updateThemeButton();
@@ -541,7 +597,9 @@
   function setLanguage(lang) {
     if (lang !== "ru" && lang !== "en") return;
     state.lang = lang;
-    try { localStorage.setItem(LANG_KEY, lang); } catch {}
+    try {
+      localStorage.setItem(LANG_KEY, lang);
+    } catch {}
 
     applyStaticLocale();
     buildFilters();
@@ -580,8 +638,7 @@
       if (!style || typeof style !== "object") return;
 
       const key =
-        normalizeStyleName(style.name || style.copy_value || "") ||
-        `__record_${style.id || index}`;
+        normalizeStyleName(style.name || style.copy_value || "") || `__record_${style.id || index}`;
 
       const existing = map.get(key);
 
@@ -599,39 +656,19 @@
         return;
       }
 
-      existing.media = [
-        ...new Set([
-          ...(existing.media || []),
-          ...(style.media || []),
-        ])
-      ];
+      existing.media = [...new Set([...(existing.media || []), ...(style.media || [])])];
 
-      existing.presets = [
-        ...new Set([
-          ...(existing.presets || []),
-          ...(style.presets || []),
-        ])
-      ];
+      existing.presets = [...new Set([...(existing.presets || []), ...(style.presets || [])])];
 
-      existing.tags = [
-        ...new Set([
-          ...(existing.tags || []),
-          ...(style.tags || []),
-        ])
-      ];
+      existing.tags = [...new Set([...(existing.tags || []), ...(style.tags || [])])];
 
-      if (
-        style.id &&
-        !existing.source_ids.includes(String(style.id))
-      ) {
+      if (style.id && !existing.source_ids.includes(String(style.id))) {
         existing.source_ids.push(String(style.id));
       }
 
-      const currentPosts =
-        Number(existing.danbooru_post_count || 0);
+      const currentPosts = Number(existing.danbooru_post_count || 0);
 
-      const incomingPosts =
-        Number(style.danbooru_post_count || 0);
+      const incomingPosts = Number(style.danbooru_post_count || 0);
 
       if (incomingPosts > currentPosts) {
         existing.danbooru_post_count = incomingPosts;
@@ -704,11 +741,7 @@
       let rowMin = current[0];
       for (let j = 1; j <= b.length; j += 1) {
         const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-        const value = Math.min(
-          previous[j] + 1,
-          current[j - 1] + 1,
-          previous[j - 1] + cost,
-        );
+        const value = Math.min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + cost);
         current[j] = value;
         rowMin = Math.min(rowMin, value);
       }
@@ -735,7 +768,8 @@
     for (const candidate of candidates) {
       if (!candidate) continue;
       if (Math.abs(candidate.length - queryCompact.length) > maxDistance) continue;
-      if (candidate[0] !== queryCompact[0] && !candidate.includes(queryCompact.slice(0, 2))) continue;
+      if (candidate[0] !== queryCompact[0] && !candidate.includes(queryCompact.slice(0, 2)))
+        continue;
       const distance = boundedLevenshtein(queryCompact, candidate, maxDistance);
       if (distance < best) best = distance;
       if (best === 0) break;
@@ -756,9 +790,10 @@
 
   function savePersistentState() {
     localStorage.setItem("style-archive:saved", JSON.stringify([...state.saved]));
-    localStorage.setItem("style-archive:saved-at", JSON.stringify(
-      [...state.savedAt.entries()].filter(([id]) => state.saved.has(id))
-    ));
+    localStorage.setItem(
+      "style-archive:saved-at",
+      JSON.stringify([...state.savedAt.entries()].filter(([id]) => state.saved.has(id)))
+    );
     localStorage.setItem("style-archive:tray", JSON.stringify(state.tray));
     localStorage.setItem("style-archive:recent", JSON.stringify(state.recent));
     updateUtilityCounts();
@@ -830,7 +865,9 @@
       state.archiveOrder.set(style.id, index);
       state.visualSearchIndex.set(style.id, makeNameIndex(style.name || style.copy_value || ""));
 
-      const aliases = [...new Set([style.name, style.copy_value].filter(Boolean).map(normalizeStyleName))];
+      const aliases = [
+        ...new Set([style.name, style.copy_value].filter(Boolean).map(normalizeStyleName)),
+      ];
       aliases.forEach((key) => {
         if (!key) return;
 
@@ -925,8 +962,10 @@
     document.querySelectorAll("[data-tray-name]").forEach((button) => {
       const active = isInTray(button.dataset.trayName);
       button.classList.toggle("added", active);
-      if (button.classList.contains("card-tray")) button.textContent = active ? t("added") : t("add");
-      else if (button.classList.contains("supported-action")) button.textContent = active ? t("added") : t("add");
+      if (button.classList.contains("card-tray"))
+        button.textContent = active ? t("added") : t("add");
+      else if (button.classList.contains("supported-action"))
+        button.textContent = active ? t("added") : t("add");
     });
   }
 
@@ -949,17 +988,27 @@
       });
     });
 
-    const items = [["all", t("all")], ...[...presets.entries()]
-      .sort((a, b) => a[1].localeCompare(b[1]))
-      .map(([key, label]) => [key, String(label).toUpperCase()])];
+    const items = [
+      ["all", t("all")],
+      ...[...presets.entries()]
+        .sort((a, b) => a[1].localeCompare(b[1]))
+        .map(([key, label]) => [key, String(label).toUpperCase()]),
+    ];
 
     el.filterList.innerHTML = items
-      .map(([key, label]) => `<button class="filter-chip${key === "all" ? " active" : ""}" data-preset="${escapeHtml(key)}" type="button">${escapeHtml(label)}</button>`)
+      .map(
+        ([key, label]) =>
+          `<button class="filter-chip${key === "all" ? " active" : ""}" data-preset="${escapeHtml(key)}" type="button">${escapeHtml(label)}</button>`
+      )
       .join("");
   }
 
   function buildAlphabet() {
-    const letters = [{ key: "all", label: t("all") }, { key: "#", label: "#" }, ...[..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((letter) => ({ key: letter, label: letter }))];
+    const letters = [
+      { key: "all", label: t("all") },
+      { key: "#", label: "#" },
+      ...[..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((letter) => ({ key: letter, label: letter })),
+    ];
     el.alphabet.innerHTML = letters
       .map(({ key, label }) => {
         return `<button class="alphabet-button${key === state.supportedLetter ? " active" : ""}" data-letter="${key}" type="button">${label}</button>`;
@@ -998,7 +1047,8 @@
       if (
         window.STYLE_ARCHIVE_MODELS_V004 &&
         !window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
-      ) return;
+      )
+        return;
 
       counts.all += 1;
 
@@ -1019,11 +1069,15 @@
       ["both", "MAIN + ALT"],
     ];
 
-    el.supportedFilterList.innerHTML = items.map(([key, label]) => `
+    el.supportedFilterList.innerHTML = items
+      .map(
+        ([key, label]) => `
       <button class="supported-filter-chip${key === state.supportedFilter ? " active" : ""}" data-supported-filter="${key}" type="button">
         <span>${label}</span><small>${prettyNumber(counts[key])}</small>
       </button>
-    `).join("");
+    `
+      )
+      .join("");
   }
 
   function showSupportedCount(count) {
@@ -1041,7 +1095,7 @@
         return response.json();
       })
       .then((data) => {
-        const rows = Array.isArray(data) ? data : (data.styles || []);
+        const rows = Array.isArray(data) ? data : data.styles || [];
         state.supported = rows
           .filter((name) => typeof name === "string" && name.trim())
           .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }));
@@ -1063,24 +1117,20 @@
   }
 
   function visualSearchMatch(style, queryNorm, queryCompact) {
-    const searchV004 =
-      window.STYLE_ARCHIVE_SEARCH_V004;
+    const searchV004 = window.STYLE_ARCHIVE_SEARCH_V004;
 
-if (searchV004) {
-  return searchV004.matchVisual(
-    style,
-    state.visualSearchIndex.get(style.id),
-    el.searchInput.value
-  );
-}
+    if (searchV004) {
+      return searchV004.matchVisual(
+        style,
+        state.visualSearchIndex.get(style.id),
+        el.searchInput.value
+      );
+    }
     if (!queryNorm) return { match: true, rank: 0 };
 
-    const haystack = normalize([
-      style.name,
-      style.copy_value,
-      ...(style.presets || []),
-      ...(style.tags || []),
-    ].join(" "));
+    const haystack = normalize(
+      [style.name, style.copy_value, ...(style.presets || []), ...(style.tags || [])].join(" ")
+    );
 
     if (haystack.includes(queryNorm)) return { match: true, rank: 0 };
 
@@ -1101,31 +1151,34 @@ if (searchV004) {
       state.visualSort !== "danbooru-desc" &&
       state.visualSort !== "danbooru-asc"
     ) {
-      result.sort((a, b) =>
-        (a.rank - b.rank) ||
-        ((state.archiveOrder.get(a.style.id) || 0) -
-         (state.archiveOrder.get(b.style.id) || 0))
+      result.sort(
+        (a, b) =>
+          a.rank - b.rank ||
+          (state.archiveOrder.get(a.style.id) || 0) - (state.archiveOrder.get(b.style.id) || 0)
       );
       return result.map((row) => row.style);
     }
 
     const styles = result.map((row) => row.style);
     if (state.visualSort === "saved-newest") {
-      return styles.sort((a, b) =>
-        ((state.savedAt.get(b.id) || 0) - (state.savedAt.get(a.id) || 0)) ||
-        ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0))
+      return styles.sort(
+        (a, b) =>
+          (state.savedAt.get(b.id) || 0) - (state.savedAt.get(a.id) || 0) ||
+          (state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0)
       );
     }
     if (state.visualSort === "saved-oldest") {
-      return styles.sort((a, b) =>
-        ((state.savedAt.get(a.id) || 0) - (state.savedAt.get(b.id) || 0)) ||
-        ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0))
+      return styles.sort(
+        (a, b) =>
+          (state.savedAt.get(a.id) || 0) - (state.savedAt.get(b.id) || 0) ||
+          (state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0)
       );
     }
     if (state.visualSort === "danbooru-desc") {
-      return styles.sort((a, b) =>
-        (Number(b.danbooru_post_count || 0) - Number(a.danbooru_post_count || 0)) ||
-        ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0))
+      return styles.sort(
+        (a, b) =>
+          Number(b.danbooru_post_count || 0) - Number(a.danbooru_post_count || 0) ||
+          (state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0)
       );
     }
     if (state.visualSort === "danbooru-asc") {
@@ -1136,8 +1189,7 @@ if (searchV004) {
         if (!av && bv) return 1;
         if (av && !bv) return -1;
 
-        return (av - bv) ||
-          ((state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0));
+        return av - bv || (state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0);
       });
     }
 
@@ -1148,12 +1200,20 @@ if (searchV004) {
       return styles.sort((a, b) => new Date(a.published_at || 0) - new Date(b.published_at || 0));
     }
     if (state.visualSort === "az") {
-      return styles.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "en", { sensitivity: "base" }));
+      return styles.sort((a, b) =>
+        String(a.name || "").localeCompare(String(b.name || ""), "en", { sensitivity: "base" })
+      );
     }
     if (state.visualSort === "random") {
-      return styles.sort((a, b) => hashString(`${state.randomSortSeed}:${a.id}`) - hashString(`${state.randomSortSeed}:${b.id}`));
+      return styles.sort(
+        (a, b) =>
+          hashString(`${state.randomSortSeed}:${a.id}`) -
+          hashString(`${state.randomSortSeed}:${b.id}`)
+      );
     }
-    return styles.sort((a, b) => (state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0));
+    return styles.sort(
+      (a, b) => (state.archiveOrder.get(a.id) || 0) - (state.archiveOrder.get(b.id) || 0)
+    );
   }
 
   function applyVisualFilters(reset = false) {
@@ -1168,25 +1228,20 @@ if (searchV004) {
       // V004_MODEL_FILTER
       if (
         window.STYLE_ARCHIVE_MODELS_V004 &&
-        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(
-          style.copy_value || style.name
-        )
-      ) return;
+        !window.STYLE_ARCHIVE_MODELS_V004.matchesName(style.copy_value || style.name)
+      )
+        return;
 
       const danbooruRecord =
-        window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(
-          style.copy_value || style.name
-        ) || null;
+        window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(style.copy_value || style.name) || null;
 
       const danbooruMatched = danbooruRecord?.status === "matched";
 
       if (state.danbooruPresence === "on" && !danbooruMatched) return;
       if (state.danbooruPresence === "no-data" && danbooruMatched) return;
 
-      if (
-        state.danbooruMin > 0 &&
-        Number(style?.danbooru_post_count || 0) < state.danbooruMin
-      ) return;
+      if (state.danbooruMin > 0 && Number(style?.danbooru_post_count || 0) < state.danbooruMin)
+        return;
 
       if (state.activePreset !== "all") {
         const presets = (style.presets || []).map(normalize);
@@ -1225,22 +1280,21 @@ if (searchV004) {
   }
 
   function rankSupportedEntries(entries, queryNorm, queryCompact) {
-const searchV004 =
-  window.STYLE_ARCHIVE_SEARCH_V004;
+    const searchV004 = window.STYLE_ARCHIVE_SEARCH_V004;
 
-if (searchV004) {
-  return searchV004.rankEntries(
-    entries,
-    el.searchInput.value
-  );
-}
+    if (searchV004) {
+      return searchV004.rankEntries(entries, el.searchInput.value);
+    }
     if (!queryNorm) return entries;
 
     const exact = [];
     const exactNames = new Set();
 
     entries.forEach((entry) => {
-      if (entry.norm.includes(queryNorm) || (queryCompact && entry.compact.includes(queryCompact))) {
+      if (
+        entry.norm.includes(queryNorm) ||
+        (queryCompact && entry.compact.includes(queryCompact))
+      ) {
         exact.push(entry);
         exactNames.add(entry.name);
       }
@@ -1256,7 +1310,11 @@ if (searchV004) {
       fuzzy.push({ entry, distance });
     });
 
-    fuzzy.sort((a, b) => (a.distance - b.distance) || a.entry.name.localeCompare(b.entry.name, "en", { sensitivity: "base" }));
+    fuzzy.sort(
+      (a, b) =>
+        a.distance - b.distance ||
+        a.entry.name.localeCompare(b.entry.name, "en", { sensitivity: "base" })
+    );
     return [...exact, ...fuzzy.slice(0, Math.max(0, 80 - exact.length)).map((row) => row.entry)];
   }
 
@@ -1266,12 +1324,11 @@ if (searchV004) {
       if (state.mode !== "visual" || normalize(el.searchInput.value) !== queryNorm) return;
 
       const ranked = rankSupportedEntries(state.supportedIndex, queryNorm, queryCompact);
-      const additional = ranked.filter((entry) =>
-        !previewStyleForName(entry.name) &&
-        (
-          !window.STYLE_ARCHIVE_MODELS_V004 ||
-          window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
-        )
+      const additional = ranked.filter(
+        (entry) =>
+          !previewStyleForName(entry.name) &&
+          (!window.STYLE_ARCHIVE_MODELS_V004 ||
+            window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name))
       );
 
       if (!additional.length) {
@@ -1280,7 +1337,9 @@ if (searchV004) {
       }
 
       el.searchSupported.hidden = false;
-      el.searchSupportedTitle.textContent = t("moreSupportedMatches", { count: prettyNumber(additional.length) });
+      el.searchSupportedTitle.textContent = t("moreSupportedMatches", {
+        count: prettyNumber(additional.length),
+      });
       el.searchSupportedList.innerHTML = additional
         .slice(0, VISUAL_SUPPORTED_PREVIEW_LIMIT)
         .map((entry, index) => supportedRowHtml(entry.name, index + 1, false))
@@ -1293,22 +1352,11 @@ if (searchV004) {
 
   // V004_GRID_DENSITY
   function getColumnCount() {
-    const width =
-      window.innerWidth;
+    const width = window.innerWidth;
 
-    const density =
-      document
-        .documentElement
-        .dataset
-        .gridDensityV004
-      ||
-      "normal";
+    const density = document.documentElement.dataset.gridDensityV004 || "normal";
 
-
-    if (
-      density ===
-      "compact"
-    ) {
+    if (density === "compact") {
       if (width <= 390) return 1;
       if (width <= 680) return 2;
       if (width <= 980) return 4;
@@ -1318,11 +1366,7 @@ if (searchV004) {
       return 7;
     }
 
-
-    if (
-      density ===
-      "large"
-    ) {
+    if (density === "large") {
       if (width <= 390) return 1;
       if (width <= 680) return 1;
       if (width <= 980) return 2;
@@ -1330,7 +1374,6 @@ if (searchV004) {
 
       return 4;
     }
-
 
     /*
       NORMAL = original v0.0.4
@@ -1363,9 +1406,10 @@ if (searchV004) {
 
   function shortestColumn() {
     if (!state.columns.length) setupGalleryColumns(true);
-    return state.columns.reduce((best, column) =>
-      column.offsetHeight < best.offsetHeight ? column : best
-    , state.columns[0]);
+    return state.columns.reduce(
+      (best, column) => (column.offsetHeight < best.offsetHeight ? column : best),
+      state.columns[0]
+    );
   }
 
   function renderVisualMore() {
@@ -1396,12 +1440,10 @@ if (searchV004) {
 
     const mediaWidth = Number(media.width) || 0;
     const mediaHeight = Number(media.height) || 0;
-    const ratioStyle = mediaWidth > 0 && mediaHeight > 0
-      ? ` style="aspect-ratio:${mediaWidth}/${mediaHeight}"`
-      : "";
-    const sizeAttrs = mediaWidth > 0 && mediaHeight > 0
-      ? ` width="${mediaWidth}" height="${mediaHeight}"`
-      : "";
+    const ratioStyle =
+      mediaWidth > 0 && mediaHeight > 0 ? ` style="aspect-ratio:${mediaWidth}/${mediaHeight}"` : "";
+    const sizeAttrs =
+      mediaWidth > 0 && mediaHeight > 0 ? ` width="${mediaWidth}" height="${mediaHeight}"` : "";
 
     card.innerHTML = `
       <div class="card-media" data-open-id="${escapeHtml(style.id)}"${ratioStyle}>
@@ -1444,11 +1486,13 @@ if (searchV004) {
       return a.localeCompare(b);
     });
 
-    return keys.map((key) => {
-      const label = String(meta.presets.get(key) || key).toUpperCase();
-      const count = meta.presetMedia.get(key)?.size || 0;
-      return `<span class="supported-preset">${escapeHtml(label)}${count ? ` ×${count}` : ""}</span>`;
-    }).join("");
+    return keys
+      .map((key) => {
+        const label = String(meta.presets.get(key) || key).toUpperCase();
+        const count = meta.presetMedia.get(key)?.size || 0;
+        return `<span class="supported-preset">${escapeHtml(label)}${count ? ` ×${count}` : ""}</span>`;
+      })
+      .join("");
   }
 
   function supportedRowHtml(name, index, showNumber = true) {
@@ -1474,9 +1518,7 @@ if (searchV004) {
     const local = Number(entry?.danbooru_post_count || 0);
     if (local > 0) return local;
 
-    const external = Number(
-      window.STYLE_ARCHIVE_DANBOORU?.countForName?.(entry?.name) || 0
-    );
+    const external = Number(window.STYLE_ARCHIVE_DANBOORU?.countForName?.(entry?.name) || 0);
     return Number.isFinite(external) ? external : 0;
   }
 
@@ -1501,10 +1543,10 @@ if (searchV004) {
       if (
         window.STYLE_ARCHIVE_MODELS_V004 &&
         !window.STYLE_ARCHIVE_MODELS_V004.matchesName(entry.name)
-      ) return false;
+      )
+        return false;
 
-      const record =
-        window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(entry.name) || null;
+      const record = window.STYLE_ARCHIVE_DANBOORU?.recordForName?.(entry.name) || null;
 
       const matched = record?.status === "matched";
 
@@ -1517,9 +1559,10 @@ if (searchV004) {
     let rankedSupported = rankSupportedEntries(base, queryNorm, queryCompact);
 
     if (state.supportedSort === "danbooru-desc") {
-      rankedSupported = [...rankedSupported].sort((a, b) =>
-        (supportedDanbooruCount(b) - supportedDanbooruCount(a)) ||
-        a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+      rankedSupported = [...rankedSupported].sort(
+        (a, b) =>
+          supportedDanbooruCount(b) - supportedDanbooruCount(a) ||
+          a.name.localeCompare(b.name, "en", { sensitivity: "base" })
       );
     } else if (state.supportedSort === "danbooru-asc") {
       rankedSupported = [...rankedSupported].sort((a, b) => {
@@ -1529,8 +1572,7 @@ if (searchV004) {
         if (!av && bv) return 1;
         if (av && !bv) return -1;
 
-        return (av - bv) ||
-          a.name.localeCompare(b.name, "en", { sensitivity: "base" });
+        return av - bv || a.name.localeCompare(b.name, "en", { sensitivity: "base" });
       });
     }
 
@@ -1557,12 +1599,14 @@ if (searchV004) {
       el.supportedList.innerHTML = "";
     }
 
-    if (el.supportedEmptyState) el.supportedEmptyState.hidden = state.supportedFiltered.length !== 0;
+    if (el.supportedEmptyState)
+      el.supportedEmptyState.hidden = state.supportedFiltered.length !== 0;
     renderSupportedMore();
   }
 
   function renderSupportedMore() {
-    if (state.mode !== "supported" || state.supportedRendered >= state.supportedFiltered.length) return;
+    if (state.mode !== "supported" || state.supportedRendered >= state.supportedFiltered.length)
+      return;
 
     const start = state.supportedRendered;
     const slice = state.supportedFiltered.slice(start, start + SUPPORTED_PAGE_SIZE);
@@ -1640,10 +1684,16 @@ if (searchV004) {
     if (state.relatedCache.has(style.id)) return state.relatedCache.get(style.id);
     const presets = new Set((style.presets || []).map(normalize));
     const candidates = state.styles.filter((other) => {
-      if (other.id === style.id || normalizeStyleName(other.name) === normalizeStyleName(style.name)) return false;
+      if (
+        other.id === style.id ||
+        normalizeStyleName(other.name) === normalizeStyleName(style.name)
+      )
+        return false;
       return (other.presets || []).some((preset) => presets.has(normalize(preset)));
     });
-    candidates.sort((a, b) => hashString(`${style.id}:${a.id}`) - hashString(`${style.id}:${b.id}`));
+    candidates.sort(
+      (a, b) => hashString(`${style.id}:${a.id}`) - hashString(`${style.id}:${b.id}`)
+    );
     const result = candidates.slice(0, 4);
     state.relatedCache.set(style.id, result);
     return result;
@@ -1658,7 +1708,10 @@ if (searchV004) {
     }
     el.viewerRelated.hidden = false;
     el.viewerRelatedList.innerHTML = related
-      .map((item) => `<button class="viewer-related-item" data-related-id="${escapeAttr(item.id)}" type="button">${escapeHtml(item.name)}</button>`)
+      .map(
+        (item) =>
+          `<button class="viewer-related-item" data-related-id="${escapeAttr(item.id)}" type="button">${escapeHtml(item.name)}</button>`
+      )
       .join("");
   }
 
@@ -1680,7 +1733,9 @@ if (searchV004) {
     el.viewerName.textContent = style.name || t("untitled");
     el.viewerPreset.textContent = (style.presets || []).join(" / ").toUpperCase();
     el.viewerDate.textContent = compactDate(style.published_at);
-    el.viewerImageCount.textContent = mediaIds.length ? `${previewCountLabel(mediaIds.length)}${mediaIds.length > 1 ? ` · ${index + 1}/${mediaIds.length}` : ""}` : "";
+    el.viewerImageCount.textContent = mediaIds.length
+      ? `${previewCountLabel(mediaIds.length)}${mediaIds.length > 1 ? ` · ${index + 1}/${mediaIds.length}` : ""}`
+      : "";
 
     const multiple = mediaIds.length > 1;
     el.prevMedia.hidden = !multiple;
@@ -1713,8 +1768,10 @@ if (searchV004) {
   }
 
   function randomPool(mode) {
-    if (mode === "main") return state.styles.filter((style) => (style.presets || []).map(normalize).includes("main"));
-    if (mode === "alt") return state.styles.filter((style) => (style.presets || []).map(normalize).includes("alt"));
+    if (mode === "main")
+      return state.styles.filter((style) => (style.presets || []).map(normalize).includes("main"));
+    if (mode === "alt")
+      return state.styles.filter((style) => (style.presets || []).map(normalize).includes("alt"));
     if (mode === "saved") return state.styles.filter((style) => state.saved.has(style.id));
     return state.styles;
   }
@@ -1747,7 +1804,10 @@ if (searchV004) {
   }
 
   function syncVisualControls() {
-    if (!state.savedOnly && (state.visualSort === "saved-newest" || state.visualSort === "saved-oldest")) {
+    if (
+      !state.savedOnly &&
+      (state.visualSort === "saved-newest" || state.visualSort === "saved-oldest")
+    ) {
       state.visualSort = "archive";
     }
 
@@ -1803,7 +1863,9 @@ if (searchV004) {
   }
 
   function renderDrawer() {
-    el.drawerTabs.forEach((button) => button.classList.toggle("active", button.dataset.drawerTab === state.drawerTab));
+    el.drawerTabs.forEach((button) =>
+      button.classList.toggle("active", button.dataset.drawerTab === state.drawerTab)
+    );
     el.trayPanel.hidden = state.drawerTab !== "tray";
     el.recentPanel.hidden = state.drawerTab !== "recent";
     if (state.drawerTab === "tray") renderTray();
@@ -1822,10 +1884,11 @@ if (searchV004) {
       return;
     }
 
-    el.trayList.innerHTML = state.tray.map((name, index) => {
-      const meta = previewMetaForName(name);
-      const preview = meta?.style;
-      return `
+    el.trayList.innerHTML = state.tray
+      .map((name, index) => {
+        const meta = previewMetaForName(name);
+        const preview = meta?.style;
+        return `
         <div class="drawer-row${preview ? " has-preview" : ""}">
           <span class="drawer-index">${pad(index + 1, 2)}</span>
           <div class="drawer-row-main">
@@ -1838,7 +1901,8 @@ if (searchV004) {
           </div>
         </div>
       `;
-    }).join("");
+      })
+      .join("");
   }
 
   function renderRecent() {
@@ -1848,11 +1912,12 @@ if (searchV004) {
       return;
     }
 
-    el.recentList.innerHTML = rows.map((style, index) => {
-      const firstMedia = state.media[(style.media || [])[0]] || {};
-      const thumb = toLocalPath(firstMedia.thumb || firstMedia.src || "");
-      const name = style.copy_value || style.name || "";
-      return `
+    el.recentList.innerHTML = rows
+      .map((style, index) => {
+        const firstMedia = state.media[(style.media || [])[0]] || {};
+        const thumb = toLocalPath(firstMedia.thumb || firstMedia.src || "");
+        const name = style.copy_value || style.name || "";
+        return `
         <div class="recent-row">
           <button class="recent-thumb" data-drawer-preview="${escapeAttr(style.id)}" type="button">
             ${thumb ? `<img src="${escapeAttr(thumb)}" loading="lazy" decoding="async" alt="">` : ""}
@@ -1866,7 +1931,8 @@ if (searchV004) {
           </div>
         </div>
       `;
-    }).join("");
+      })
+      .join("");
   }
 
   function bindSupportedListEvents(node) {
@@ -2015,7 +2081,8 @@ if (searchV004) {
 
     el.infoButton?.addEventListener("click", () => {
       if (el.infoVisualCount) el.infoVisualCount.textContent = el.visualStat?.textContent || "—";
-      if (el.infoSupportedCount) el.infoSupportedCount.textContent = el.supportedStat?.textContent || "—";
+      if (el.infoSupportedCount)
+        el.infoSupportedCount.textContent = el.supportedStat?.textContent || "—";
       el.infoDialog?.showModal();
     });
     el.closeInfo?.addEventListener("click", () => el.infoDialog?.close());
@@ -2049,10 +2116,12 @@ if (searchV004) {
       window.scrollTo({ top: el.supportedShell.offsetTop - 150, behavior: "smooth" });
     });
 
-    el.drawerTabs.forEach((button) => button.addEventListener("click", () => {
-      state.drawerTab = button.dataset.drawerTab;
-      renderDrawer();
-    }));
+    el.drawerTabs.forEach((button) =>
+      button.addEventListener("click", () => {
+        state.drawerTab = button.dataset.drawerTab;
+        renderDrawer();
+      })
+    );
     el.closeDrawer.addEventListener("click", closeDrawer);
     el.drawerBackdrop.addEventListener("click", closeDrawer);
     el.copyTrayButton.addEventListener("click", () => {
@@ -2122,7 +2191,8 @@ if (searchV004) {
 
     document.addEventListener("keydown", (event) => {
       const activeTag = document.activeElement?.tagName || "";
-      const typing = /INPUT|TEXTAREA|SELECT/.test(activeTag) || document.activeElement?.isContentEditable;
+      const typing =
+        /INPUT|TEXTAREA|SELECT/.test(activeTag) || document.activeElement?.isContentEditable;
 
       if (event.key === "Escape") {
         el.randomMenu.hidden = true;
@@ -2144,20 +2214,22 @@ if (searchV004) {
       }
 
       if (typing) return;
-
-
-
-
     });
 
-    const visualObserver = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) renderVisualMore();
-    }, { rootMargin: "700px 0px" });
+    const visualObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) renderVisualMore();
+      },
+      { rootMargin: "700px 0px" }
+    );
     visualObserver.observe(el.sentinel);
 
-    const supportedObserver = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) renderSupportedMore();
-    }, { rootMargin: "900px 0px" });
+    const supportedObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) renderSupportedMore();
+      },
+      { rootMargin: "900px 0px" }
+    );
     supportedObserver.observe(el.supportedSentinel);
 
     let resizeTimer;
@@ -2170,7 +2242,8 @@ if (searchV004) {
         const keepRendered = state.rendered;
         state.rendered = 0;
         setupGalleryColumns(true);
-        while (state.rendered < keepRendered && state.rendered < state.filtered.length) renderVisualMore();
+        while (state.rendered < keepRendered && state.rendered < state.filtered.length)
+          renderVisualMore();
       }, 160);
     });
   }
@@ -2193,9 +2266,7 @@ if (searchV004) {
       const rawStyles = await stylesResponse.json();
       state.styles = groupVisualStyles(rawStyles);
 
-      console.info(
-        `[v0.0.4] grouped visual styles: ${rawStyles.length} -> ${state.styles.length}`
-      );
+      console.info(`[v0.0.4] grouped visual styles: ${rawStyles.length} -> ${state.styles.length}`);
       state.media = await mediaResponse.json();
       if (el.archiveSkeleton) el.archiveSkeleton.hidden = true;
       buildVisualLookup();
@@ -2232,7 +2303,7 @@ if (searchV004) {
     syncVisualControls,
     syncSupportedSortControls,
     openViewer,
-    closeViewer
+    closeViewer,
   };
 
   // V003_DANBOORU_UI

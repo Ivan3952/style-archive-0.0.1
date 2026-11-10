@@ -6,7 +6,10 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const normalize = (value) => String(value || "").trim().toLowerCase();
+  const normalize = (value) =>
+    String(value || "")
+      .trim()
+      .toLowerCase();
 
   const formatCount = (value) => {
     const n = Number(value || 0);
@@ -22,12 +25,12 @@
     return String(n);
   };
 
-const state = {
-  records: new Map(),
-  rawRecords: [],
-  meta: null,
-  ready: false,
-};
+  const state = {
+    records: new Map(),
+    rawRecords: [],
+    meta: null,
+    ready: false,
+  };
 
   function isRussian() {
     return (document.documentElement.lang || "").toLowerCase().startsWith("ru");
@@ -51,8 +54,12 @@ const state = {
     countForName,
     recordForName,
     formatCount,
-    get ready() { return state.ready; },
-    get meta() { return state.meta; }
+    get ready() {
+      return state.ready;
+    },
+    get meta() {
+      return state.meta;
+    },
   };
 
   function attachCountsToAppState() {
@@ -94,7 +101,10 @@ const state = {
     const span = document.createElement("span");
     span.className = "danbooru-posts";
     span.dataset.danbooruPosts = String(count);
-    span.title = t(`${count.toLocaleString("en-US")} DANBOORU POSTS`, `${count.toLocaleString("ru-RU")} ПОСТОВ DANBOORU`);
+    span.title = t(
+      `${count.toLocaleString("en-US")} DANBOORU POSTS`,
+      `${count.toLocaleString("ru-RU")} ПОСТОВ DANBOORU`
+    );
     span.textContent = formatCount(count);
     return span;
   }
@@ -178,35 +188,29 @@ const state = {
 
     const presenceLabel = $("#danbooruPresenceLabel");
     if (presenceLabel) {
-      presenceLabel.textContent =
-        t("DANBOORU DATA", "ДАННЫЕ DANBOORU");
+      presenceLabel.textContent = t("DANBOORU DATA", "ДАННЫЕ DANBOORU");
     }
 
-    const supportedPresenceLabel =
-      $("#supportedDanbooruPresenceLabel");
+    const supportedPresenceLabel = $("#supportedDanbooruPresenceLabel");
 
     if (supportedPresenceLabel) {
-      supportedPresenceLabel.textContent =
-        t("DANBOORU DATA", "ДАННЫЕ DANBOORU");
+      supportedPresenceLabel.textContent = t("DANBOORU DATA", "ДАННЫЕ DANBOORU");
     }
 
-    $$(
-  '[data-danbooru-presence="all"], ' +
-  '[data-supported-danbooru-presence="all"]'
-    ).forEach((button) => {
-      button.textContent = t("ALL", "ВСЕ");
-    });
+    $$('[data-danbooru-presence="all"], ' + '[data-supported-danbooru-presence="all"]').forEach(
+      (button) => {
+        button.textContent = t("ALL", "ВСЕ");
+      }
+    );
+
+    $$('[data-danbooru-presence="on"], ' + '[data-supported-danbooru-presence="on"]').forEach(
+      (button) => {
+        button.textContent = t("ON", "ЕСТЬ");
+      }
+    );
 
     $$(
-      '[data-danbooru-presence="on"], ' +
-      '[data-supported-danbooru-presence="on"]'
-    ).forEach((button) => {
-      button.textContent = t("ON", "ЕСТЬ");
-    });
-
-    $$(
-      '[data-danbooru-presence="no-data"], ' +
-      '[data-supported-danbooru-presence="no-data"]'
+      '[data-danbooru-presence="no-data"], ' + '[data-supported-danbooru-presence="no-data"]'
     ).forEach((button) => {
       button.textContent = t("NO DATA", "НЕТ ДАННЫХ");
     });
@@ -233,9 +237,7 @@ const state = {
     }
 
     const date = generatedDate();
-    const dateText = date
-      ? date.toLocaleDateString(isRussian() ? "ru-RU" : "en-GB")
-      : "—";
+    const dateText = date ? date.toLocaleDateString(isRussian() ? "ru-RU" : "en-GB") : "—";
 
     note.textContent = t(`UPDATED ${dateText}`, `ОБНОВЛЕНО ${dateText}`);
   }
@@ -257,53 +259,27 @@ const state = {
     }
 
     const all = state.rawRecords;
-    const matchedRows =
-      all.filter((record) => record?.status === "matched");
+    const matchedRows = all.filter((record) => record?.status === "matched");
 
-    const visualRows =
-      all.filter(
-        (record) =>
-          Array.isArray(record?.source) &&
-          record.source.includes("visual")
-      );
-
-    const visualMatched =
-      visualRows.filter(
-        (record) => record?.status === "matched"
-      ).length;
-
-    const exact =
-      matchedRows.filter(
-        (record) => record?.match === "exact"
-      ).length;
-
-    const alias =
-      matchedRows.filter(
-        (record) => record?.match === "alias"
-      ).length;
-
-    const manual =
-      matchedRows.filter(
-        (record) => record?.match === "manual"
-      ).length;
-
-    const other = Math.max(
-      0,
-      matchedRows.length - exact - alias - manual
+    const visualRows = all.filter(
+      (record) => Array.isArray(record?.source) && record.source.includes("visual")
     );
 
-    const noData =
-      all.filter(
-        (record) => record?.status !== "matched"
-      ).length;
+    const visualMatched = visualRows.filter((record) => record?.status === "matched").length;
 
-    const fmt = (value) =>
-      Number(value || 0).toLocaleString("en-US");
+    const exact = matchedRows.filter((record) => record?.match === "exact").length;
 
-    const pct = (part, total) =>
-      total
-        ? `${((part / total) * 100).toFixed(1)}%`
-        : "—";
+    const alias = matchedRows.filter((record) => record?.match === "alias").length;
+
+    const manual = matchedRows.filter((record) => record?.match === "manual").length;
+
+    const other = Math.max(0, matchedRows.length - exact - alias - manual);
+
+    const noData = all.filter((record) => record?.status !== "matched").length;
+
+    const fmt = (value) => Number(value || 0).toLocaleString("en-US");
+
+    const pct = (part, total) => (total ? `${((part / total) * 100).toFixed(1)}%` : "—");
 
     block.innerHTML = `
       <div class="danbooru-info-title">
@@ -355,65 +331,42 @@ const state = {
   function syncFilterButtons() {
     if (!internal?.state) return;
 
-    const visualMin =
-      Number(internal.state.danbooruMin || 0);
+    const visualMin = Number(internal.state.danbooruMin || 0);
 
-    const visualPresence =
-      internal.state.danbooruPresence || "all";
+    const visualPresence = internal.state.danbooruPresence || "all";
 
-
-    const supportedPresence =
-      internal.state.supportedDanbooruPresence || "all";
+    const supportedPresence = internal.state.supportedDanbooruPresence || "all";
 
     $$(".danbooru-filter-chip").forEach((button) => {
       if (button.dataset.danbooruMin !== undefined) {
-        button.classList.toggle(
-          "active",
-          Number(button.dataset.danbooruMin || 0) ===
-            visualMin
-        );
+        button.classList.toggle("active", Number(button.dataset.danbooruMin || 0) === visualMin);
       }
 
       if (button.dataset.danbooruPresence !== undefined) {
-        button.classList.toggle(
-          "active",
-          button.dataset.danbooruPresence ===
-            visualPresence
-        );
+        button.classList.toggle("active", button.dataset.danbooruPresence === visualPresence);
       }
 
-      if (
-        button.dataset.supportedDanbooruPresence !==
-        undefined
-      ) {
+      if (button.dataset.supportedDanbooruPresence !== undefined) {
         button.classList.toggle(
           "active",
-          button.dataset.supportedDanbooruPresence ===
-            supportedPresence
+          button.dataset.supportedDanbooruPresence === supportedPresence
         );
       }
-
     });
   }
 
   function bindControls() {
-    if (
-      document.documentElement.dataset
-        .danbooruDev4Bound === "1"
-    ) return;
+    if (document.documentElement.dataset.danbooruDev4Bound === "1") return;
 
-    document.documentElement.dataset
-      .danbooruDev4Bound = "1";
+    document.documentElement.dataset.danbooruDev4Bound = "1";
 
     document.addEventListener("click", (event) => {
       if (!internal?.state) return;
 
-      const min =
-        event.target.closest("[data-danbooru-min]");
+      const min = event.target.closest("[data-danbooru-min]");
 
       if (min && !min.disabled) {
-        const value =
-          Number(min.dataset.danbooruMin || 0);
+        const value = Number(min.dataset.danbooruMin || 0);
 
         internal.state.danbooruMin = value;
 
@@ -426,14 +379,10 @@ const state = {
         return;
       }
 
-      const presence =
-        event.target.closest(
-          "[data-danbooru-presence]"
-        );
+      const presence = event.target.closest("[data-danbooru-presence]");
 
       if (presence && !presence.disabled) {
-        const value =
-          presence.dataset.danbooruPresence || "all";
+        const value = presence.dataset.danbooruPresence || "all";
 
         internal.state.danbooruPresence = value;
 
@@ -446,21 +395,12 @@ const state = {
         return;
       }
 
-      const supportedPresence =
-        event.target.closest(
-          "[data-supported-danbooru-presence]"
-        );
+      const supportedPresence = event.target.closest("[data-supported-danbooru-presence]");
 
-      if (
-        supportedPresence &&
-        !supportedPresence.disabled
-      ) {
-        const value =
-          supportedPresence.dataset
-            .supportedDanbooruPresence || "all";
+      if (supportedPresence && !supportedPresence.disabled) {
+        const value = supportedPresence.dataset.supportedDanbooruPresence || "all";
 
-        internal.state.supportedDanbooruPresence =
-          value;
+        internal.state.supportedDanbooruPresence = value;
 
         if (value === "no-data") {
         }
@@ -470,10 +410,7 @@ const state = {
         return;
       }
 
-      if (
-        event.target.closest("#clearButton") ||
-        event.target.closest("#supportedClearButton")
-      ) {
+      if (event.target.closest("#clearButton") || event.target.closest("#supportedClearButton")) {
         requestAnimationFrame(syncFilterButtons);
       }
     });
@@ -557,18 +494,15 @@ const state = {
 
       console.info(
         `[STYLE / ARCHIVE v0.0.3] Danbooru loaded: ` +
-        `${state.records.size.toLocaleString()} records, ` +
-        `${attached.toLocaleString()} visual objects decorated`
+          `${state.records.size.toLocaleString()} records, ` +
+          `${attached.toLocaleString()} visual objects decorated`
       );
     } catch (error) {
       console.error("[STYLE / ARCHIVE] Danbooru data failed:", error);
 
       const note = $("#danbooruSyncNote");
       if (note) {
-        note.textContent = t(
-          "DANBOORU DATA UNAVAILABLE",
-          "ДАННЫЕ DANBOORU НЕДОСТУПНЫ"
-        );
+        note.textContent = t("DANBOORU DATA UNAVAILABLE", "ДАННЫЕ DANBOORU НЕДОСТУПНЫ");
       }
     }
   }

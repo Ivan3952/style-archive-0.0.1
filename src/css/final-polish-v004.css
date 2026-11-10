@@ -2,381 +2,227 @@
    FINAL POLISH V0.0.4
    ========================================================= */
 
-
 /* =========================================================
    STYLE DEEP LINK
    ========================================================= */
 
 .style-link-copy-v004 {
-  position:
-    fixed;
+  position: fixed;
 
-  z-index:
-    10020;
+  z-index: 10020;
 
-  right:
-    18px;
+  right: 18px;
 
-  bottom:
-    18px;
+  bottom: 18px;
 
-  display:
-    none;
+  display: none;
 
-  padding:
-    9px 11px;
+  padding: 9px 11px;
 
-  border:
-    1px solid
-    var(--accent);
+  border: 1px solid var(--accent);
 
-  background:
-    var(--bg);
+  background: var(--bg);
 
-  color:
-    var(--accent);
+  color: var(--accent);
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  font-size:
-    8px;
+  font-size: 8px;
 
-  letter-spacing:
-    .055em;
+  letter-spacing: 0.055em;
 
-  cursor:
-    pointer;
+  cursor: pointer;
 }
 
-
-body.viewer-open
-.style-link-copy-v004 {
-  display:
-    block;
+body.viewer-open .style-link-copy-v004 {
+  display: block;
 }
-
 
 .style-link-copy-v004:hover {
-  background:
-    rgba(
-      214,
-      255,
-      63,
-      .06
-    );
+  background: rgba(214, 255, 63, 0.06);
 }
-
 
 /* =========================================================
    ZERO RESULT
    ========================================================= */
 
 .zero-result-polish-v004 {
-  width:
-    min(
-      680px,
-      100%
-    );
+  width: min(680px, 100%);
 
-  margin:
-    28px
-    auto
-    0;
+  margin: 28px auto 0;
 
-  padding:
-    18px;
+  padding: 18px;
 
-  border:
-    1px solid
-    var(--line);
+  border: 1px solid var(--line);
 
-  text-align:
-    left;
+  text-align: left;
 }
-
 
 .zero-result-polish-v004[hidden] {
-  display:
-    none;
+  display: none;
 }
-
 
 .zero-result-title-v004,
 .zero-result-label-v004 {
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  letter-spacing:
-    .06em;
+  letter-spacing: 0.06em;
 }
-
 
 .zero-result-title-v004 {
-  color:
-    var(--accent);
+  color: var(--accent);
 
-  font-size:
-    9px;
+  font-size: 9px;
 }
-
 
 .zero-result-query-v004 {
-  margin-top:
-    7px;
+  margin-top: 7px;
 
-  overflow:
-    hidden;
+  overflow: hidden;
 
-  color:
-    var(--text);
+  color: var(--text);
 
-  font-size:
-    18px;
+  font-size: 18px;
 
-  text-overflow:
-    ellipsis;
+  text-overflow: ellipsis;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
-
 
 .zero-result-label-v004 {
-  margin-top:
-    18px;
+  margin-top: 18px;
 
-  color:
-    var(--muted-2);
+  color: var(--muted-2);
 
-  font-size:
-    7px;
+  font-size: 7px;
 }
-
 
 .zero-result-actions-v004 {
-  display:
-    flex;
+  display: flex;
 
-  flex-wrap:
-    wrap;
+  flex-wrap: wrap;
 
-  gap:
-    6px;
+  gap: 6px;
 
-  margin-top:
-    7px;
+  margin-top: 7px;
 }
-
 
 .zero-result-actions-v004 button {
-  appearance:
-    none;
+  appearance: none;
 
-  padding:
-    7px 9px;
+  padding: 7px 9px;
 
-  border:
-    1px solid
-    var(--line-soft);
+  border: 1px solid var(--line-soft);
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    var(--muted);
+  color: var(--muted);
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  font-size:
-    8px;
+  font-size: 8px;
 
-  cursor:
-    pointer;
+  cursor: pointer;
 }
-
 
 .zero-result-actions-v004 button:hover {
-  border-color:
-    var(--accent);
+  border-color: var(--accent);
 
-  color:
-    var(--accent);
+  color: var(--accent);
 }
-
 
 /* =========================================================
    DISCOVER
    ========================================================= */
 
 .discover-polish-wrap-v004 {
-  position:
-    relative;
+  position: relative;
 
-  display:
-    inline-flex;
+  display: inline-flex;
 }
-
 
 .discover-polish-menu-v004 {
-  position:
-    absolute;
+  position: absolute;
 
-  z-index:
-    150;
+  z-index: 150;
 
-  top:
-    calc(
-      100% + 7px
-    );
+  top: calc(100% + 7px);
 
-  right:
-    0;
+  right: 0;
 
-  width:
-    min(
-      310px,
-      86vw
-    );
+  width: min(310px, 86vw);
 
-  border:
-    1px solid
-    var(--line);
+  border: 1px solid var(--line);
 
-  background:
-    var(--bg);
+  background: var(--bg);
 
-  box-shadow:
-    0 18px 55px
-    rgba(
-      0,
-      0,
-      0,
-      .34
-    );
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.34);
 }
-
 
 .discover-polish-menu-v004[hidden] {
-  display:
-    none;
+  display: none;
 }
-
 
 .discover-polish-menu-v004 button {
-  appearance:
-    none;
+  appearance: none;
 
-  display:
-    grid;
+  display: grid;
 
-  gap:
-    4px;
+  gap: 4px;
 
-  width:
-    100%;
+  width: 100%;
 
-  padding:
-    11px 12px;
+  padding: 11px 12px;
 
-  border:
-    0;
+  border: 0;
 
-  border-bottom:
-    1px solid
-    var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    var(--text);
+  color: var(--text);
 
-  text-align:
-    left;
+  text-align: left;
 
-  cursor:
-    pointer;
+  cursor: pointer;
 }
-
 
 .discover-polish-menu-v004 button:last-child {
-  border-bottom:
-    0;
+  border-bottom: 0;
 }
-
 
 .discover-polish-menu-v004 button:hover {
-  background:
-    rgba(
-      214,
-      255,
-      63,
-      .045
-    );
+  background: rgba(214, 255, 63, 0.045);
 }
-
 
 .discover-polish-menu-v004 span,
 .discover-polish-menu-v004 small {
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
-
 
 .discover-polish-menu-v004 span {
-  color:
-    var(--text);
+  color: var(--text);
 
-  font-size:
-    9px;
+  font-size: 9px;
 
-  letter-spacing:
-    .04em;
+  letter-spacing: 0.04em;
 }
 
-
-.discover-polish-menu-v004 button:hover
-span {
-  color:
-    var(--accent);
+.discover-polish-menu-v004 button:hover span {
+  color: var(--accent);
 }
-
 
 .discover-polish-menu-v004 small {
-  color:
-    var(--muted);
+  color: var(--muted);
 
-  font-size:
-    7px;
+  font-size: 7px;
 }
-
 
 /* =========================================================
    MOBILE POLISH
    ========================================================= */
 
-@media (
-  max-width: 760px
-) {
-
+@media (max-width: 760px) {
   /*
     Top controls:
     allow breathing room instead of
@@ -384,21 +230,16 @@ span {
   */
 
   .top-actions {
-    flex-wrap:
-      wrap;
+    flex-wrap: wrap;
 
-    gap:
-      6px;
+    gap: 6px;
   }
-
 
   .top-actions button,
   .command-trigger-v004,
   #discoverPolishButton {
-    min-height:
-      36px;
+    min-height: 36px;
   }
-
 
   /*
     Search-related chips can scroll sideways
@@ -406,28 +247,20 @@ span {
   */
 
   .grid-density-v004 {
-    flex-wrap:
-      nowrap;
+    flex-wrap: nowrap;
 
-    max-width:
-      100%;
+    max-width: 100%;
 
-    overflow-x:
-      auto;
+    overflow-x: auto;
 
-    padding-bottom:
-      2px;
+    padding-bottom: 2px;
 
-    scrollbar-width:
-      none;
+    scrollbar-width: none;
   }
-
 
   .grid-density-v004::-webkit-scrollbar {
-    display:
-      none;
+    display: none;
   }
-
 
   /*
     Archive switchers.
@@ -439,16 +272,12 @@ span {
   .archive-switcher-v004,
   .archive-selector-v004,
   .archive-tabs-v004 {
-    max-width:
-      100%;
+    max-width: 100%;
 
-    overflow-x:
-      auto;
+    overflow-x: auto;
 
-    scrollbar-width:
-      none;
+    scrollbar-width: none;
   }
-
 
   /*
     Command menu:
@@ -457,47 +286,34 @@ span {
   */
 
   .command-backdrop-v004 {
-    backdrop-filter:
-      none;
+    backdrop-filter: none;
   }
-
 
   .command-item-v004 {
-    min-height:
-      54px;
+    min-height: 54px;
   }
-
 
   .command-dialog-v004 {
-    width:
-      100%;
+    width: 100%;
   }
-
 
   /*
     Zero results.
   */
 
   .zero-result-polish-v004 {
-    margin-top:
-      20px;
+    margin-top: 20px;
 
-    padding:
-      14px;
+    padding: 14px;
   }
-
 
   .zero-result-query-v004 {
-    font-size:
-      16px;
+    font-size: 16px;
   }
-
 
   .zero-result-actions-v004 button {
-    min-height:
-      38px;
+    min-height: 38px;
   }
-
 
   /*
     Discover menu becomes easy to hit
@@ -505,105 +321,70 @@ span {
   */
 
   .discover-polish-menu-v004 {
-    position:
-      fixed;
+    position: fixed;
 
-    top:
-      auto;
+    top: auto;
 
-    right:
-      10px;
+    right: 10px;
 
-    bottom:
-      10px;
+    bottom: 10px;
 
-    left:
-      10px;
+    left: 10px;
 
-    width:
-      auto;
+    width: auto;
   }
-
 
   .discover-polish-menu-v004 button {
-    min-height:
-      58px;
+    min-height: 58px;
 
-    padding:
-      12px 14px;
+    padding: 12px 14px;
   }
-
 
   /*
     Viewer deep-link button.
   */
 
   .style-link-copy-v004 {
-    right:
-      10px;
+    right: 10px;
 
-    bottom:
-      10px;
+    bottom: 10px;
 
-    min-height:
-      40px;
+    min-height: 40px;
 
-    padding:
-      9px 11px;
+    padding: 9px 11px;
   }
-
 
   /*
     Generic dialog safety.
   */
 
   dialog {
-    max-width:
-      calc(
-        100vw - 16px
-      );
+    max-width: calc(100vw - 16px);
 
-    max-height:
-      calc(
-        100dvh - 16px
-      );
+    max-height: calc(100dvh - 16px);
   }
 }
 
-
-@media (
-  max-width: 430px
-) {
-
+@media (max-width: 430px) {
   .command-overlay-v004 {
-    padding:
-      52px 8px 8px;
+    padding: 52px 8px 8px;
   }
-
 
   .command-input-wrap-v004 {
-    padding:
-      13px 12px;
+    padding: 13px 12px;
   }
-
 
   #commandSearchInput {
-    font-size:
-      20px;
+    font-size: 20px;
   }
-
 
   .zero-result-actions-v004 {
-    display:
-      grid;
+    display: grid;
 
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
-
   .zero-result-actions-v004 button {
-    width:
-      100%;
+    width: 100%;
   }
 }

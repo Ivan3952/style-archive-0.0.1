@@ -9,37 +9,22 @@
 
   min-height: 18px;
 
-  padding:
-    2px
-    6px;
+  padding: 2px 6px;
 
-  border:
-    1px solid
-    var(--line);
+  border: 1px solid var(--line);
 
-  color:
-    var(--muted);
+  color: var(--muted);
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  font-size:
-    7px;
+  font-size: 7px;
 
-  line-height:
-    1;
+  line-height: 1;
 
-  letter-spacing:
-    0.08em;
+  letter-spacing: 0.08em;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
-
 
 /* =========================================================
    MODEL IDENTITY
@@ -47,59 +32,42 @@
 
 .archive-polish-badge[data-archive="opus"],
 .archive-polish-badge[data-archive="sky"] {
-  border-color:
-    var(--accent);
+  border-color: var(--accent);
 
-  color:
-    var(--accent);
+  color: var(--accent);
 }
-
 
 .archive-polish-badge[data-archive="am"] {
-  border-color:
-    var(--line-strong);
+  border-color: var(--line-strong);
 
-  color:
-    var(--muted);
+  color: var(--muted);
 }
-
 
 /* =========================================================
    CARD
    ========================================================= */
 
 .archive-polish-card-badge {
-  margin-right:
-    2px;
+  margin-right: 2px;
 }
-
 
 /* Give model badge a little more visual authority */
-.card[data-archive="opus"]
-.archive-polish-card-badge,
-.card[data-archive="sky"]
-.archive-polish-card-badge {
-  font-weight:
-    600;
+.card[data-archive="opus"] .archive-polish-card-badge,
+.card[data-archive="sky"] .archive-polish-card-badge {
+  font-weight: 600;
 }
-
 
 /* =========================================================
    VIEWER
    ========================================================= */
 
 .archive-polish-viewer-badge {
-  min-height:
-    20px;
+  min-height: 20px;
 
-  padding:
-    3px
-    7px;
+  padding: 3px 7px;
 
-  font-size:
-    8px;
+  font-size: 8px;
 }
-
 
 /* =========================================================
    STATUS
@@ -107,71 +75,44 @@
 
 #statusLine[data-archive-prefix]::before,
 #supportedStatusLine[data-archive-prefix]::before {
-  content:
-    attr(data-archive-prefix)
-    " / ";
+  content: attr(data-archive-prefix) " / ";
 
-  color:
-    var(--accent);
+  color: var(--accent);
 }
-
 
 /* =========================================================
    RESULT COUNT
    ========================================================= */
 
 #resultCount[data-archive]::before {
-  content:
-    attr(data-archive)
-    " · ";
+  content: attr(data-archive) " · ";
 
-  color:
-    var(--muted-2);
+  color: var(--muted-2);
 }
-
 
 /* =========================================================
    OPUS / SKY: presets are intentionally absent
    ========================================================= */
 
-body[data-archive-v004="opus"]
-#filterList
-[data-preset]:not(
-  [data-preset="all"]
-),
-body[data-archive-v004="sky"]
-#filterList
-[data-preset]:not(
-  [data-preset="all"]
-) {
-  display:
-    none;
+body[data-archive-v004="opus"] #filterList [data-preset]:not([data-preset="all"]),
+body[data-archive-v004="sky"] #filterList [data-preset]:not([data-preset="all"]) {
+  display: none;
 }
-
 
 /* =========================================================
    MOBILE
    ========================================================= */
 
-@media (
-  max-width: 680px
-) {
-
+@media (max-width: 680px) {
   .archive-polish-badge {
-    min-height:
-      16px;
+    min-height: 16px;
 
-    padding:
-      2px
-      5px;
+    padding: 2px 5px;
 
-    font-size:
-      6px;
+    font-size: 6px;
   }
 
-
   .archive-polish-viewer-badge {
-    font-size:
-      7px;
+    font-size: 7px;
   }
 }
