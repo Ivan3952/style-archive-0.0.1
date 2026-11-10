@@ -2,6 +2,9 @@ import { defineConfig } from "vite";
 import { cpSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
+const pkg = JSON.parse(readFileSync(resolve(process.cwd(), "package.json"), "utf8"));
+const CODENAME = "Clean Slate";
+
 /*
  * Сайт читает данные запросами (fetch), поэтому JSON лежит в dist/data как есть.
  * Копируем только то, что реально нужно в браузере: список берём из data/archives.json,
@@ -32,10 +35,21 @@ function copyRuntimeData() {
   };
 }
 
+function injectVersion() {
+  return {
+    name: "inject-version",
+    transformIndexHtml: (html) => html.replaceAll("%APP_VERSION%", pkg.version),
+  };
+}
+
 export default defineConfig({
   base: "./",
-  publicDir: false,
-  plugins: [copyRuntimeData()],
+  publicDir: "public",
+  define: {
+    // единственный источник версии: поле version в package.json
+    __APP_RELEASE__: JSON.stringify(`v${pkg.version} · ${CODENAME}`),
+  },
+  plugins: [injectVersion(), copyRuntimeData()],
   build: {
     outDir: "dist",
     emptyOutDir: true,
