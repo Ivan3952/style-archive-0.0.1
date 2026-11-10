@@ -11,13 +11,11 @@
 }
 
 .discover-polish-menu-v004 {
-  position: absolute;
+  position: fixed;
 
   z-index: 150;
 
-  top: calc(100% + 7px);
-
-  right: 0;
+  /* top и right задаёт discover.js по положению кнопки (на телефоне ниже: меню снизу экрана) */
 
   width: min(310px, 86vw);
 

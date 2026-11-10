@@ -228,7 +228,12 @@ import { escapeHtml } from "../utils.js";
         meta: "CURATED RANDOM SET",
         keywords: "discover explore twelve 12",
 
-        action: () => clickExisting("#discoverPolishButton"),
+        action: () => {
+          closePalette();
+          const run = window.STYLE_ARCHIVE_FINAL_FIX_V004?.runDiscover;
+          if (run) run("random");
+          else document.querySelector("#discoverPolishButton")?.click();
+        },
       },
 
       {
