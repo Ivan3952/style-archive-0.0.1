@@ -1339,8 +1339,9 @@
     const density = document.documentElement.dataset.gridDensityV004 || "normal";
 
     if (density === "compact") {
-      if (width <= 390) return 1;
-      if (width <= 680) return 2;
+      // на телефоне «компактно» должно отличаться от «обычно» (2 колонки)
+      if (width <= 390) return 2;
+      if (width <= 680) return 3;
       if (width <= 980) return 4;
       if (width <= 1320) return 5;
       if (width <= 1800) return 6;
