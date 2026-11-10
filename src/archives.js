@@ -18,6 +18,7 @@ const ARCHIVES = Object.fromEntries(
     {
       key,
       label: archive.label,
+      aliases: archive.aliases ?? [],
       styles: archive.styles,
       media: archive.media,
       supported: archive.supported ?? null,

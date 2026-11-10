@@ -1,3 +1,5 @@
+import { escapeHtml } from "../utils.js";
+
 (() => {
   "use strict";
 
@@ -37,14 +39,6 @@
 
   function compact(value) {
     return norm(value).replace(/[\s\-_.()[\]{}'"`~:/\\]+/g, "");
-  }
-
-  function escapeHtml(value) {
-    return String(value || "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;");
   }
 
   /* ======================================================
@@ -200,39 +194,24 @@
      COMMANDS
      ====================================================== */
 
+  // Команды переключения архивов строятся из data/archives.json
+  function archiveCommands(current) {
+    const archives = Object.values(window.STYLE_ARCHIVE_ARCHIVES_V004?.archives || {});
+
+    return archives.map(({ key, label, aliases }) => ({
+      id: `archive-${key}`,
+      title: label,
+      meta: key === current ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE",
+      keywords: [label.toLowerCase(), key, "archive model", ...aliases].join(" "),
+      action: () => switchArchive(key),
+    }));
+  }
+
   function commands() {
     const archive = currentArchive();
 
     return [
-      {
-        id: "archive-am",
-        title: "AM PREVIEW",
-        meta: archive === "am" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE",
-
-        keywords: "am preview archive model",
-
-        action: () => switchArchive("am"),
-      },
-
-      {
-        id: "archive-opus",
-        title: "OPUS",
-        meta: archive === "opus" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE",
-
-        keywords: "opus archive model neko",
-
-        action: () => switchArchive("opus"),
-      },
-
-      {
-        id: "archive-sky",
-        title: "SKY",
-        meta: archive === "sky" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE",
-
-        keywords: "sky archive model",
-
-        action: () => switchArchive("sky"),
-      },
+      ...archiveCommands(archive),
 
       {
         id: "random",

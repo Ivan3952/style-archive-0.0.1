@@ -14,6 +14,7 @@
     },
     "opus": {
       "label": "OPUS",
+      "aliases": ["neko"],
       "styles": "./data/opus-styles.json",
       "media": "./data/opus-media.json",
       "supported": "./data/opus-supported.json",
