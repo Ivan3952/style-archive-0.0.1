@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "media.schema.json",
+  "title": "Картинки одного архива (data/media.json, opus-media.json, sky-media.json)",
+  "description": "Объект: media-id -> файлы и размеры. src открывается во вьюере, thumb рисуется в сетке.",
+  "type": "object",
+  "propertyNames": { "pattern": "^[A-Za-z0-9_-]+$" },
+  "additionalProperties": { "$ref": "#/$defs/media" },
+  "$defs": {
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["src", "thumb", "width", "height"],
+      "properties": {
+        "src": { "type": "string", "pattern": "^/media/.+\\.webp$" },
+        "thumb": { "type": "string", "pattern": "^/media/.+\\.webp$" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

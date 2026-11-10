@@ -35,6 +35,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 IGNORED_CONSOLE = ("favicon",)  # пока в репозитории нет favicon
 
+ARCHIVES_CONFIG = json.loads((ROOT / "data" / "archives.json").read_text(encoding="utf-8"))
 results: list[tuple[bool, str]] = []
 
 
@@ -84,6 +85,11 @@ def start_server() -> tuple[subprocess.Popen, str]:
 def first_style_name() -> str:
     styles = json.loads((ROOT / "data" / "styles.json").read_text(encoding="utf-8"))
     return next(s["name"] for s in styles if s.get("media"))
+
+
+def first_style_id():
+    styles = json.loads((ROOT / "data" / "styles.json").read_text(encoding="utf-8"))
+    return next(s["id"] for s in styles if s.get("media"))
 
 
 def count_cards(page) -> int:
@@ -157,6 +163,13 @@ def run(base: str) -> None:
             ok = wait_cards(page)
             counts[key] = page.inner_text("#brandVisualCount").strip()
             check(ok, f"архив {key.upper()}: карточки отрисованы", f"счётчик {counts[key]}")
+            declared = ARCHIVES_CONFIG["archives"][key]
+            want_visual = f"{declared['uniqueCount']:06d}"
+            want_supported = "------" if declared["supportedCount"] is None else f"{declared['supportedCount']:06d}"
+            got_supported = page.inner_text("#brandSupportedCount").strip()
+            check(counts[key] == want_visual and got_supported == want_supported,
+                  f"архив {key.upper()}: счётчики шапки совпадают с data/archives.json",
+                  f"получено {counts[key]}/{got_supported}, ожидалось {want_visual}/{want_supported}")
         check(len(set(counts.values())) == len(counts) and len(counts) == 3, "счётчики трёх архивов различаются", str(counts))
         page.locator('[data-archive-v004="am"]').first.click()
         page.wait_for_timeout(1200)
@@ -187,6 +200,21 @@ def run(base: str) -> None:
         page.wait_for_timeout(500)
         closed = page.evaluate("document.querySelector('#viewer').open === false")
         check(closed, "вьювер закрывается по Esc")
+
+        # 6b. Ссылка на стиль (?style=<id>) открывает вьюер, внутри есть кнопка «скопировать ссылку»
+        deep_id = first_style_id()
+        page.goto(f"{base}/index.html?archive=am&style={deep_id}", wait_until="networkidle")
+        try:
+            page.wait_for_function("document.querySelector('dialog[open] img')", timeout=15000)
+            page.wait_for_timeout(900)
+            in_viewer = page.evaluate(
+                "!!document.querySelector('dialog[open] #styleDeepLinkCopyV004')"
+            )
+            check(in_viewer, "ссылка ?style= открывает вьюер с кнопкой «COPY STYLE LINK»")
+        except Exception:
+            check(False, "ссылка ?style= открывает вьюер с кнопкой «COPY STYLE LINK»", "вьюер не открылся")
+        page.goto(base + "/index.html", wait_until="networkidle")
+        wait_cards(page)
 
         # 7. Тема и язык
         t0 = page.evaluate("document.documentElement.dataset.theme")

@@ -1,25 +1,19 @@
 (() => {
   "use strict";
 
-  const searchInput =
-    document.querySelector("#searchInput");
+  const searchInput = document.querySelector("#searchInput");
 
-  const searchWrap =
-    document.querySelector(".search-wrap");
+  const searchWrap = document.querySelector(".search-wrap");
 
-  const clearVisual =
-    document.querySelector("#clearButton");
+  const clearVisual = document.querySelector("#clearButton");
 
-  const clearSupported =
-    document.querySelector("#supportedClearButton");
-
+  const clearSupported = document.querySelector("#supportedClearButton");
 
   /* =========================================================
      CSS
      ========================================================= */
 
-  const style =
-    document.createElement("style");
+  const style = document.createElement("style");
 
   style.textContent = `
     /* STYLE / ARCHIVE 0.0.3 QoL */
@@ -225,291 +219,133 @@
 
   document.head.appendChild(style);
 
-
   /* =========================================================
      CLEAR SEARCH
      ========================================================= */
 
   let searchClear = null;
 
-  if (
-    searchInput &&
-    searchWrap
-  ) {
+  if (searchInput && searchWrap) {
+    searchClear = document.createElement("button");
 
-    searchClear =
-      document.createElement("button");
+    searchClear.type = "button";
 
-    searchClear.type =
-      "button";
+    searchClear.className = "search-clear-qol";
 
-    searchClear.className =
-      "search-clear-qol";
+    searchClear.textContent = "×";
 
-    searchClear.textContent =
-      "×";
+    searchClear.setAttribute("aria-label", "Clear search");
 
-    searchClear.setAttribute(
-      "aria-label",
-      "Clear search"
-    );
+    searchClear.title = "Clear search";
 
-    searchClear.title =
-      "Clear search";
-
-    searchWrap.appendChild(
-      searchClear
-    );
-
+    searchWrap.appendChild(searchClear);
 
     const syncSearchClear = () => {
-
-      searchClear.classList.toggle(
-        "visible",
-        Boolean(
-          searchInput.value.trim()
-        )
-      );
-
+      searchClear.classList.toggle("visible", Boolean(searchInput.value.trim()));
     };
 
+    searchClear.addEventListener("click", () => {
+      searchInput.value = "";
 
-    searchClear.addEventListener(
-      "click",
-      () => {
+      /*
+       * Используем уже существующую
+       * поисковую логику app.js.
+       */
 
-        searchInput.value =
-          "";
+      searchInput.dispatchEvent(
+        new Event("input", {
+          bubbles: true,
+        })
+      );
 
-        /*
-         * Используем уже существующую
-         * поисковую логику app.js.
-         */
+      searchInput.focus();
 
-        searchInput.dispatchEvent(
-          new Event(
-            "input",
-            {
-              bubbles: true
-            }
-          )
-        );
+      syncSearchClear();
+    });
 
-        searchInput.focus();
-
-        syncSearchClear();
-
-      }
-    );
-
-
-    searchInput.addEventListener(
-      "input",
-      syncSearchClear
-    );
-
+    searchInput.addEventListener("input", syncSearchClear);
 
     syncSearchClear();
-
   }
-
 
   /* =========================================================
      BACK TO TOP
      ========================================================= */
 
-  const topButton =
-    document.createElement("button");
+  const topButton = document.createElement("button");
 
-  topButton.type =
-    "button";
+  topButton.type = "button";
 
-  topButton.className =
-    "back-to-top-qol";
+  topButton.className = "back-to-top-qol";
 
-  topButton.textContent =
-    "↑";
+  topButton.textContent = "↑";
 
-  topButton.setAttribute(
-    "aria-label",
-    "Back to top"
-  );
+  topButton.setAttribute("aria-label", "Back to top");
 
-  topButton.title =
-    "Back to top";
+  topButton.title = "Back to top";
 
-  document.body.appendChild(
-    topButton
-  );
-
+  document.body.appendChild(topButton);
 
   const syncTopButton = () => {
-
-    topButton.classList.toggle(
-      "visible",
-      window.scrollY > 900
-    );
-
+    topButton.classList.toggle("visible", window.scrollY > 900);
   };
 
+  window.addEventListener("scroll", syncTopButton, {
+    passive: true,
+  });
 
-  window.addEventListener(
-    "scroll",
-    syncTopButton,
-    {
-      passive: true
-    }
-  );
-
-
-  topButton.addEventListener(
-    "click",
-    () => {
-
-      window.scrollTo({
-        top: 0,
-        behavior:
-          window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-          ).matches
-            ? "auto"
-            : "smooth"
-      });
-
-    }
-  );
-
+  topButton.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  });
 
   syncTopButton();
-
 
   /* =========================================================
      RESET ACTIVE STATE
      ========================================================= */
 
   function visualFiltersActive() {
-
-    const state =
-      window.STYLE_ARCHIVE_V003
-        ?.state;
+    const state = window.STYLE_ARCHIVE_V003?.state;
 
     if (!state) {
-
-      return Boolean(
-        searchInput?.value.trim()
-      );
-
+      return Boolean(searchInput?.value.trim());
     }
 
-
     return Boolean(
-
-      searchInput?.value.trim()
-
-      ||
-
-      state.activePreset !==
-        "all"
-
-      ||
-
-      state.visualSort !==
-        "archive"
-
-      ||
-
-      state.savedOnly
-
-      ||
-
-      state.discoveryStyles
-
-      ||
-
-      Number(
-        state.danbooruMin ||
-        0
-      ) > 0
-
-      ||
-
-      (
-        state.danbooruPresence ||
-        "all"
-      ) !== "all"
-
+      searchInput?.value.trim() ||
+      state.activePreset !== "all" ||
+      state.visualSort !== "archive" ||
+      state.savedOnly ||
+      state.discoveryStyles ||
+      Number(state.danbooruMin || 0) > 0 ||
+      (state.danbooruPresence || "all") !== "all"
     );
-
   }
-
 
   function supportedFiltersActive() {
-
-    const state =
-      window.STYLE_ARCHIVE_V003
-        ?.state;
+    const state = window.STYLE_ARCHIVE_V003?.state;
 
     if (!state) {
-
-      return Boolean(
-        searchInput?.value.trim()
-      );
-
+      return Boolean(searchInput?.value.trim());
     }
 
-
     return Boolean(
-
-      searchInput?.value.trim()
-
-      ||
-
-      (
-        state.supportedLetter ||
-        "all"
-      ) !== "all"
-
-      ||
-
-      (
-        state.supportedFilter ||
-        "all"
-      ) !== "all"
-
-      ||
-
-      (
-        state.supportedSort ||
-        "az"
-      ) !== "az"
-
-      ||
-
-      (
-        state.supportedDanbooruPresence ||
-        "all"
-      ) !== "all"
-
+      searchInput?.value.trim() ||
+      (state.supportedLetter || "all") !== "all" ||
+      (state.supportedFilter || "all") !== "all" ||
+      (state.supportedSort || "az") !== "az" ||
+      (state.supportedDanbooruPresence || "all") !== "all"
     );
-
   }
-
 
   function syncResetButtons() {
+    clearVisual?.classList.toggle("qol-active", visualFiltersActive());
 
-    clearVisual?.classList.toggle(
-      "qol-active",
-      visualFiltersActive()
-    );
-
-
-    clearSupported?.classList.toggle(
-      "qol-active",
-      supportedFiltersActive()
-    );
-
+    clearSupported?.classList.toggle("qol-active", supportedFiltersActive());
   }
-
 
   /*
    * Все основные изменения фильтров
@@ -518,30 +354,14 @@
    */
 
   const requestSync = () => {
-
-    window.setTimeout(
-      syncResetButtons,
-      0
-    );
-
+    window.setTimeout(syncResetButtons, 0);
   };
 
+  document.addEventListener("click", requestSync);
 
-  document.addEventListener(
-    "click",
-    requestSync
-  );
+  document.addEventListener("input", requestSync);
 
-  document.addEventListener(
-    "input",
-    requestSync
-  );
-
-  document.addEventListener(
-    "change",
-    requestSync
-  );
-
+  document.addEventListener("change", requestSync);
 
   /*
    * Некоторые действия меняют DOM
@@ -549,32 +369,16 @@
    * observer делает QoL устойчивее.
    */
 
-  const observer =
-    new MutationObserver(
-      () => {
+  const observer = new MutationObserver(() => {
+    requestAnimationFrame(syncResetButtons);
+  });
 
-        requestAnimationFrame(
-          syncResetButtons
-        );
-
-      }
-    );
-
-
-  observer.observe(
-    document.body,
-    {
-      subtree: true,
-      childList: true
-    }
-  );
-
+  observer.observe(document.body, {
+    subtree: true,
+    childList: true,
+  });
 
   syncResetButtons();
 
-
-  console.info(
-    "[STYLE / ARCHIVE 0.0.3] QoL loaded"
-  );
-
+  console.info("[STYLE / ARCHIVE 0.0.3] QoL loaded");
 })();

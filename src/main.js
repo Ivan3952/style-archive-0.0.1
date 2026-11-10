@@ -12,13 +12,12 @@ import "./css/search-discovery-v004.css";
 import "./css/search-quality-lite-v004.css";
 import "./css/grid-density-v004.css";
 import "./css/command-search-v004.css";
-import "./css/final-polish-v004.css";
-import "./css/final-polish-fix-v004.css";
+import "./css/mobile.css";
 import "./css/info-v004.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";
-import "./legacy/archives-v004.js";
+import "./archives.js";
 import "./legacy/app.js";
 import "./legacy/danbooru-v003.js";
 import "./legacy/qol-v003.js";
@@ -26,8 +25,9 @@ import "./legacy/search-v004.js";
 import "./legacy/search-discovery-v004.js";
 import "./legacy/search-quality-lite-v004.js";
 import "./legacy/command-search-v004.js";
-import "./legacy/final-polish-v004.js";
-import "./legacy/final-polish-fix-v004.js";
+import "./features/style-links.js";
+import "./features/zero-results.js";
+import "./features/discover.js";
 import "./legacy/saved-new-tab-v004.js";
 import "./legacy/locale-ru-v004.js";
 import "./legacy/info-v004.js";

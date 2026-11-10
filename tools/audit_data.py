@@ -8,10 +8,13 @@
   - id стилей не уникальны;
   - стиль ссылается на media-id, которого нет в media*.json;
   - файл src или thumb из media*.json отсутствует на диске;
-  - число стилей / медиа не совпадает с заявленным в data/archives.json;
-  - у media-записи нет ширины/высоты (ломает раскладку сетки).
+  - число стилей / медиа не совпадает с заявленным в data/archives.json
+    (в том числе uniqueCount: сколько стилей остаётся после склейки одинаковых названий);
+  - у media-записи нет ширины/высоты (ломает раскладку сетки);
+  - файл данных не соответствует схеме из data/schema/ (нужен пакет jsonschema).
 ПРЕДУПРЕЖДЕНИЯ (стоит посмотреть, но сайт работает):
   - у стиля нет ни одного изображения;
+  - в файле есть записи с одинаковым названием (сайт склеивает их в одну карточку);
   - есть media-записи, на которые не ссылается ни один стиль;
   - одно и то же имя написано по-разному (регистр, «_» вместо пробела);
   - файлы в media/ без записи в media*.json.
@@ -23,6 +26,7 @@ import collections
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -34,6 +38,47 @@ def load(rel: str):
 
 def key(name: str) -> str:
     return re.sub(r"[\s_]+", " ", name.replace("\\", "").lower()).strip()
+
+
+
+def site_name_key(style: dict, index: int) -> str:
+    """Ключ склейки как на сайте: NFKC, нижний регистр, ё=е, пробелы схлопнуты."""
+    value = unicodedata.normalize("NFKC", str(style.get("name") or style.get("copy_value") or ""))
+    value = re.sub(r"\s+", " ", value.lower().replace("ё", "е").strip())
+    return value or f"__record_{style.get('id') or index}"
+
+
+
+def validate_schemas(errors: list[str], warnings: list[str]) -> None:
+    """Проверка файлов данных по JSON Schema из data/schema/ (нужен пакет jsonschema)."""
+    try:
+        from jsonschema import Draft202012Validator
+    except ImportError:
+        warnings.append("схемы данных не проверены: установите пакет (pip install jsonschema)")
+        return
+
+    def check(path: Path, schema_name: str) -> None:
+        if not path.exists():
+            return
+        schema = json.loads((ROOT / "data" / "schema" / schema_name).read_text(encoding="utf-8"))
+        data = json.loads(path.read_text(encoding="utf-8"))
+        problems = sorted(Draft202012Validator(schema).iter_errors(data), key=lambda e: list(e.absolute_path))
+        for e in problems[:5]:
+            where = "/".join(str(p) for p in e.absolute_path) or "(корень)"
+            errors.append(f"{path.name}: {where}: {e.message[:140]}")
+        if len(problems) > 5:
+            errors.append(f"{path.name}: ... и ещё {len(problems) - 5} нарушений схемы {schema_name}")
+
+    check(ROOT / "data" / "archives.json", "archives.schema.json")
+    cfg = json.loads((ROOT / "data" / "archives.json").read_text(encoding="utf-8"))
+    for a in cfg["archives"].values():
+        check(ROOT / a["styles"], "styles.schema.json")
+        check(ROOT / a["media"], "media.schema.json")
+        if a.get("supported"):
+            check(ROOT / a["supported"], "supported.schema.json")
+    # новые типы данных (появятся в обновлениях Foundation и позже)
+    for name, schema in (("mixes", "mixes"), ("events", "events"), ("characters", "characters")):
+        check(ROOT / "data" / f"{name}.json", f"{schema}.schema.json")
 
 
 def main() -> int:
@@ -86,6 +131,13 @@ def main() -> int:
 
         if a.get("visualCount") != len(styles):
             errors.append(f"{tag} visualCount={a.get('visualCount')}, а в файле {len(styles)} стилей")
+        # Сколько стилей видит посетитель: сайт склеивает записи с одинаковым названием
+        # (та же нормализация, что normalizeStyleName в src/legacy/app.js).
+        unique = len({site_name_key(s, i) for i, s in enumerate(styles)})
+        if a.get("uniqueCount") != unique:
+            errors.append(f"{tag} uniqueCount={a.get('uniqueCount')}, а после склейки одинаковых названий {unique}")
+        if unique != len(styles):
+            warnings.append(f"{tag} записей с повторяющимся названием: {len(styles) - unique} (на сайте склеиваются в одну карточку)")
         if a.get("mediaCount") != len(media):
             errors.append(f"{tag} mediaCount={a.get('mediaCount')}, а в файле {len(media)} записей")
         if a.get("supported"):
@@ -112,6 +164,8 @@ def main() -> int:
     ]
     if orphan:
         warnings.append(f"файлы в media/ без записи в media*.json: {len(orphan)}, например {orphan[:3]}")
+
+    validate_schemas(errors, warnings)
 
     print()
     for e in errors:

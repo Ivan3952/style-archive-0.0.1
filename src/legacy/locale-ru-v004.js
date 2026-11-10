@@ -23,14 +23,12 @@
   };
 
   const upper = (node) =>
-    String(node?.textContent || "").trim().toUpperCase();
+    String(node?.textContent || "")
+      .trim()
+      .toUpperCase();
 
   function translateArchiveSelector() {
-    setText(
-      document.querySelector(".archive-v004-label"),
-      "АРХИВ",
-      "ARCHIVE"
-    );
+    setText(document.querySelector(".archive-v004-label"), "АРХИВ", "ARCHIVE");
 
     setAttr(
       document.querySelector(".archive-selector-v004"),
@@ -41,11 +39,7 @@
   }
 
   function translateSearchModes() {
-    setText(
-      document.querySelector(".search-mode-v004 > span"),
-      "РЕЖИМ",
-      "MODE"
-    );
+    setText(document.querySelector(".search-mode-v004 > span"), "РЕЖИМ", "MODE");
 
     const labels = {
       smart: ["УМНЫЙ", "SMART"],
@@ -53,20 +47,14 @@
       contains: ["СОДЕРЖИТ", "CONTAINS"],
     };
 
-    document
-      .querySelectorAll("[data-search-mode-v004]")
-      .forEach((button) => {
-        const row = labels[button.dataset.searchModeV004];
-        if (row) setText(button, row[0], row[1]);
-      });
+    document.querySelectorAll("[data-search-mode-v004]").forEach((button) => {
+      const row = labels[button.dataset.searchModeV004];
+      if (row) setText(button, row[0], row[1]);
+    });
   }
 
   function translateGridDensity() {
-    setText(
-      document.querySelector(".grid-density-label-v004"),
-      "РАЗМЕР",
-      "SIZE"
-    );
+    setText(document.querySelector(".grid-density-label-v004"), "РАЗМЕР", "SIZE");
 
     const labels = {
       compact: ["КОМПАКТНО", "COMPACT"],
@@ -83,25 +71,19 @@
   }
 
   function translateSearchDiscovery() {
-    setText(
-      document.querySelector(".search-discovery-label-v004"),
-      "НЕДАВНИЕ",
-      "RECENT"
-    );
+    setText(document.querySelector(".search-discovery-label-v004"), "НЕДАВНИЕ", "RECENT");
 
-    document
-      .querySelectorAll("[data-search-copy-link]")
-      .forEach((button) => {
-        const value = upper(button);
+    document.querySelectorAll("[data-search-copy-link]").forEach((button) => {
+      const value = upper(button);
 
-        if (value.includes("COPIED") || value.includes("СКОПИРОВАН")) {
-          setText(button, "СКОПИРОВАНО", "COPIED");
-        } else if (value.includes("ERROR") || value.includes("ОШИБ")) {
-          setText(button, "ОШИБКА", "ERROR");
-        } else {
-          setText(button, "КОПИРОВАТЬ ССЫЛКУ", "COPY LINK");
-        }
-      });
+      if (value.includes("COPIED") || value.includes("СКОПИРОВАН")) {
+        setText(button, "СКОПИРОВАНО", "COPIED");
+      } else if (value.includes("ERROR") || value.includes("ОШИБ")) {
+        setText(button, "ОШИБКА", "ERROR");
+      } else {
+        setText(button, "КОПИРОВАТЬ ССЫЛКУ", "COPY LINK");
+      }
+    });
 
     document
       .querySelectorAll("[data-search-clear-history]")
@@ -116,81 +98,37 @@
     const row = commandRow(id);
     if (!row) return;
 
-    setText(
-      row.querySelector(".command-item-type-v004"),
-      "КОМАНДА",
-      "COMMAND"
-    );
+    setText(row.querySelector(".command-item-type-v004"), "КОМАНДА", "COMMAND");
 
-    setText(
-      row.querySelector(".command-item-main-v004"),
-      ruTitle,
-      enTitle
-    );
+    setText(row.querySelector(".command-item-main-v004"), ruTitle, enTitle);
 
-    setText(
-      row.querySelector(".command-item-meta-v004"),
-      ruMeta,
-      enMeta
-    );
+    setText(row.querySelector(".command-item-meta-v004"), ruMeta, enMeta);
   }
 
   function translateCommandMenu() {
-    setText(
-      document.querySelector("#commandSearchButton"),
-      "МЕНЮ",
-      "MENU"
-    );
+    setText(document.querySelector("#commandSearchButton"), "МЕНЮ", "MENU");
 
-    setText(
-      document.querySelector(".command-mark-v004"),
-      "STYLE / МЕНЮ",
-      "STYLE / COMMAND"
-    );
+    setText(document.querySelector(".command-mark-v004"), "STYLE / МЕНЮ", "STYLE / COMMAND");
 
     const dialog = document.querySelector(".command-dialog-v004");
     setAttr(dialog, "aria-label", "Поиск стилей и команд", "Command search");
 
     const input = document.querySelector("#commandSearchInput");
-    setAttr(
-      input,
-      "placeholder",
-      "поиск стиля или команды",
-      "search styles or type a command"
-    );
-    setAttr(
-      input,
-      "aria-label",
-      "Поиск стилей и команд",
-      "Search styles or commands"
-    );
+    setAttr(input, "placeholder", "поиск стиля или команды", "search styles or type a command");
+    setAttr(input, "aria-label", "Поиск стилей и команд", "Search styles or commands");
 
-    const archive =
-      new URL(window.location.href).searchParams.get("archive") || "am";
+    const archivesApi = window.STYLE_ARCHIVE_ARCHIVES_V004;
+    const archive = archivesApi?.currentKey;
 
-    setCommand(
-      "archive-am",
-      "AM PREVIEW",
-      "AM PREVIEW",
-      archive === "am" ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
-      archive === "am" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
-    );
-
-    setCommand(
-      "archive-opus",
-      "OPUS",
-      "OPUS",
-      archive === "opus" ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
-      archive === "opus" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
-    );
-
-    setCommand(
-      "archive-sky",
-      "SKY",
-      "SKY",
-      archive === "sky" ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
-      archive === "sky" ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
-    );
+    Object.values(archivesApi?.archives || {}).forEach(({ key, label }) => {
+      setCommand(
+        `archive-${key}`,
+        label,
+        label,
+        archive === key ? "ТЕКУЩИЙ АРХИВ" : "СМЕНИТЬ АРХИВ",
+        archive === key ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE"
+      );
+    });
 
     setCommand(
       "random",
@@ -200,59 +138,33 @@
       "OPEN RANDOM VISUAL"
     );
 
-    setCommand(
-      "discover",
-      "ПОДБОРКИ 12",
-      "DISCOVER 12",
-      "ПОДБОРКА СТИЛЕЙ",
-      "CURATED RANDOM SET"
-    );
+    setCommand("discover", "ПОДБОРКИ 12", "DISCOVER 12", "ПОДБОРКА СТИЛЕЙ", "CURATED RANDOM SET");
 
-    setCommand(
-      "saved",
-      "ИЗБРАННОЕ",
-      "SAVED",
-      "ПОКАЗАТЬ ИЗБРАННОЕ",
-      "SHOW SAVED STYLES"
-    );
+    setCommand("saved", "ИЗБРАННОЕ", "SAVED", "ПОКАЗАТЬ ИЗБРАННОЕ", "SHOW SAVED STYLES");
 
-    setCommand(
-      "recent",
-      "НЕДАВНИЕ",
-      "RECENT",
-      "ОТКРЫТЬ НЕДАВНИЕ",
-      "OPEN RECENT STYLES"
-    );
+    setCommand("recent", "НЕДАВНИЕ", "RECENT", "ОТКРЫТЬ НЕДАВНИЕ", "OPEN RECENT STYLES");
 
-    document
-      .querySelectorAll("[data-command-style]")
-      .forEach((row) => {
-        setText(
-          row.querySelector(".command-item-type-v004"),
-          "СТИЛЬ",
-          "STYLE"
-        );
+    document.querySelectorAll("[data-command-style]").forEach((row) => {
+      setText(row.querySelector(".command-item-type-v004"), "СТИЛЬ", "STYLE");
 
-        setText(
-          row.querySelector(".command-item-meta-v004"),
-          "ИСКАТЬ В ТЕКУЩЕМ АРХИВЕ",
-          "SEARCH CURRENT ARCHIVE"
-        );
-      });
+      setText(
+        row.querySelector(".command-item-meta-v004"),
+        "ИСКАТЬ В ТЕКУЩЕМ АРХИВЕ",
+        "SEARCH CURRENT ARCHIVE"
+      );
+    });
 
-    document
-      .querySelectorAll(".command-section-label-v004")
-      .forEach((node) => {
-        const value = upper(node);
+    document.querySelectorAll(".command-section-label-v004").forEach((node) => {
+      const value = upper(node);
 
-        if (value === "QUICK ACTIONS" || value === "БЫСТРЫЕ ДЕЙСТВИЯ") {
-          setText(node, "БЫСТРЫЕ ДЕЙСТВИЯ", "QUICK ACTIONS");
-        } else if (value === "STYLES" || value === "СТИЛИ") {
-          setText(node, "СТИЛИ", "STYLES");
-        } else if (value === "COMMANDS" || value === "КОМАНДЫ") {
-          setText(node, "КОМАНДЫ", "COMMANDS");
-        }
-      });
+      if (value === "QUICK ACTIONS" || value === "БЫСТРЫЕ ДЕЙСТВИЯ") {
+        setText(node, "БЫСТРЫЕ ДЕЙСТВИЯ", "QUICK ACTIONS");
+      } else if (value === "STYLES" || value === "СТИЛИ") {
+        setText(node, "СТИЛИ", "STYLES");
+      } else if (value === "COMMANDS" || value === "КОМАНДЫ") {
+        setText(node, "КОМАНДЫ", "COMMANDS");
+      }
+    });
 
     const footer = document.querySelectorAll(".command-footer-v004 span");
     setText(footer[0], "ТОЛЬКО ВИЗУАЛЬНЫЙ АРХИВ", "VISUAL ARCHIVE ONLY");
@@ -268,9 +180,7 @@
       );
 
       const textNode = [...empty.childNodes].find(
-        (node) =>
-          node.nodeType === Node.TEXT_NODE &&
-          String(node.textContent || "").trim()
+        (node) => node.nodeType === Node.TEXT_NODE && String(node.textContent || "").trim()
       );
 
       if (textNode) {
@@ -281,11 +191,7 @@
   }
 
   function translateDiscover() {
-    setText(
-      document.querySelector("#discoverPolishButton"),
-      "ПОДБОРКИ",
-      "DISCOVER"
-    );
+    setText(document.querySelector("#discoverPolishButton"), "ПОДБОРКИ", "DISCOVER");
 
     const rows = {
       random: [
@@ -294,12 +200,7 @@
         "случайные стили из текущего архива",
         "anything from this archive",
       ],
-      newest: [
-        "НОВЫЕ 12",
-        "NEWEST 12",
-        "последние добавленные превью",
-        "latest visual additions",
-      ],
+      newest: ["НОВЫЕ 12", "NEWEST 12", "последние добавленные превью", "latest visual additions"],
       unseen: [
         "НЕПРОСМОТРЕННЫЕ 12",
         "UNSEEN 12",
@@ -314,33 +215,26 @@
       ],
     };
 
-    document
-      .querySelectorAll("[data-discover-fix], [data-discover-v004]")
-      .forEach((item) => {
-        const key = item.dataset.discoverFix || item.dataset.discoverV004;
-        const row = rows[key];
-        if (!row) return;
+    document.querySelectorAll("[data-discover-fix], [data-discover-v004]").forEach((item) => {
+      const key = item.dataset.discoverFix || item.dataset.discoverV004;
+      const row = rows[key];
+      if (!row) return;
 
-        setText(item.querySelector("span"), row[0], row[1]);
-        setText(item.querySelector("small"), row[2], row[3]);
-      });
+      setText(item.querySelector("span"), row[0], row[1]);
+      setText(item.querySelector("small"), row[2], row[3]);
+    });
   }
 
   function translateSearchQuality() {
-    document
-      .querySelectorAll(".search-lite-hint-v004 span")
-      .forEach((span) => {
-        const value = upper(span);
+    document.querySelectorAll(".search-lite-hint-v004 span").forEach((span) => {
+      const value = upper(span);
 
-        if (value === "ALIAS" || value === "АЛИАС") {
-          setText(span, "АЛИАС", "ALIAS");
-        } else if (
-          value.includes("DID YOU MEAN") ||
-          value.includes("ВОЗМОЖНО")
-        ) {
-          setText(span, "ВОЗМОЖНО?", "DID YOU MEAN?");
-        }
-      });
+      if (value === "ALIAS" || value === "АЛИАС") {
+        setText(span, "АЛИАС", "ALIAS");
+      } else if (value.includes("DID YOU MEAN") || value.includes("ВОЗМОЖНО")) {
+        setText(span, "ВОЗМОЖНО?", "DID YOU MEAN?");
+      }
+    });
   }
 
   function translateZeroResult() {
@@ -361,7 +255,11 @@
     root
       .querySelectorAll(".zero-result-title-v004, .zero-result-label-v004, [data-zero-clear]")
       .forEach((node) => {
-        const row = pairs.get(String(node.textContent || "").trim().toUpperCase());
+        const row = pairs.get(
+          String(node.textContent || "")
+            .trim()
+            .toUpperCase()
+        );
         if (row) setText(node, row[0], row[1]);
       });
   }
@@ -467,10 +365,7 @@
   const timer = window.setInterval(() => {
     tries += 1;
 
-    if (
-      window.STYLE_ARCHIVE_V003?.state &&
-      document.querySelector("#languageButton")
-    ) {
+    if (window.STYLE_ARCHIVE_V003?.state && document.querySelector("#languageButton")) {
       window.clearInterval(timer);
       start();
       return;

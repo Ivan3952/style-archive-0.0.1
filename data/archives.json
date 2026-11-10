@@ -8,15 +8,18 @@
       "media": "./data/media.json",
       "supported": "./data/supported.json",
       "visualCount": 5393,
+      "uniqueCount": 5240,
       "mediaCount": 6579,
       "supportedCount": 59676
     },
     "opus": {
       "label": "OPUS",
+      "aliases": ["neko"],
       "styles": "./data/opus-styles.json",
       "media": "./data/opus-media.json",
       "supported": "./data/opus-supported.json",
       "visualCount": 3973,
+      "uniqueCount": 3973,
       "mediaCount": 4638,
       "supportedCount": 51264
     },
@@ -26,6 +29,7 @@
       "media": "./data/sky-media.json",
       "supported": null,
       "visualCount": 7239,
+      "uniqueCount": 7239,
       "mediaCount": 8385,
       "supportedCount": null
     }

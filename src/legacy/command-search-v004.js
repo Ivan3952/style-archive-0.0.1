@@ -1,3 +1,5 @@
+import { escapeHtml } from "../utils.js";
+
 (() => {
   "use strict";
 
@@ -15,7 +17,6 @@
   let styleIndex = [];
   let indexReady = false;
 
-
   /* ======================================================
      HELPERS
      ====================================================== */
@@ -27,7 +28,6 @@
       .trim();
   }
 
-
   function norm(value) {
     return clean(value)
       .toLocaleLowerCase()
@@ -37,21 +37,9 @@
       .trim();
   }
 
-
   function compact(value) {
-    return norm(value)
-      .replace(/[\s\-_.()[\]{}'"`~:/\\]+/g, "");
+    return norm(value).replace(/[\s\-_.()[\]{}'"`~:/\\]+/g, "");
   }
-
-
-  function escapeHtml(value) {
-    return String(value || "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;");
-  }
-
 
   /* ======================================================
      STYLE INDEX
@@ -86,11 +74,8 @@
 
     indexReady = true;
 
-    console.info(
-      `[v0.0.4] command search index: ${styleIndex.length} visual styles`
-    );
+    console.info(`[v0.0.4] command search index: ${styleIndex.length} visual styles`);
   }
-
 
   function waitForArchive() {
     let attempts = 0;
@@ -98,24 +83,14 @@
     const waiter = window.setInterval(() => {
       attempts += 1;
 
-      const styles =
-        window
-          .STYLE_ARCHIVE_V003
-          ?.state
-          ?.styles;
+      const styles = window.STYLE_ARCHIVE_V003?.state?.styles;
 
-      if (
-        Array.isArray(styles) &&
-        styles.length
-      ) {
+      if (Array.isArray(styles) && styles.length) {
         window.clearInterval(waiter);
 
         buildStyleIndex(styles);
 
-        if (
-          overlay &&
-          !overlay.hidden
-        ) {
+        if (overlay && !overlay.hidden) {
           render();
         }
 
@@ -128,57 +103,34 @@
     }, 100);
   }
 
-
   /* ======================================================
      ARCHIVE
      ====================================================== */
 
   function currentArchive() {
     return (
-      window
-        .STYLE_ARCHIVE_ARCHIVES_V004
-        ?.currentKey
-      ||
-      new URL(
-        window.location.href
-      ).searchParams.get("archive")
-      ||
+      window.STYLE_ARCHIVE_ARCHIVES_V004?.currentKey ||
+      new URL(window.location.href).searchParams.get("archive") ||
       "am"
     );
   }
 
-
   function switchArchive(key) {
     closePalette();
 
-    const api =
-      window
-        .STYLE_ARCHIVE_ARCHIVES_V004;
+    const api = window.STYLE_ARCHIVE_ARCHIVES_V004;
 
-    if (
-      api &&
-      typeof api.switchArchive ===
-        "function"
-    ) {
+    if (api && typeof api.switchArchive === "function") {
       api.switchArchive(key);
       return;
     }
 
+    const url = new URL(window.location.href);
 
-    const url =
-      new URL(
-        window.location.href
-      );
+    url.searchParams.set("archive", key);
 
-    url.searchParams.set(
-      "archive",
-      key
-    );
-
-    window.location.href =
-      url.href;
+    window.location.href = url.href;
   }
-
 
   /* ======================================================
      MAIN SEARCH
@@ -187,59 +139,36 @@
   function searchStyle(name) {
     closePalette();
 
-    const discovery =
-      window
-        .STYLE_ARCHIVE_DISCOVERY_V004;
+    const discovery = window.STYLE_ARCHIVE_DISCOVERY_V004;
 
-    if (
-      discovery &&
-      typeof discovery.setQuery ===
-        "function"
-    ) {
+    if (discovery && typeof discovery.setQuery === "function") {
       discovery.setQuery(name);
-    }
-    else {
-      const search =
-        document.querySelector(
-          "#searchInput"
-        );
+    } else {
+      const search = document.querySelector("#searchInput");
 
       if (search) {
         search.value = name;
 
         search.dispatchEvent(
-          new Event(
-            "input",
-            {
-              bubbles: true,
-            }
-          )
+          new Event("input", {
+            bubbles: true,
+          })
         );
       }
     }
 
-
     window.setTimeout(() => {
-      const shell =
-        document.querySelector(
-          "#visualShell"
-        );
+      const shell = document.querySelector("#visualShell");
 
       if (shell) {
         window.scrollTo({
-          top:
-            Math.max(
-              0,
-              shell.offsetTop - 145
-            ),
+          top: Math.max(0, shell.offsetTop - 145),
 
-          behavior:
-            "smooth",
+          behavior: "smooth",
         });
       }
     }, 80);
   }
-
 
   /* ======================================================
      EXISTING SITE ACTIONS
@@ -248,152 +177,88 @@
   function clickExisting(selector) {
     closePalette();
 
-    const element =
-      document.querySelector(
-        selector
-      );
+    const element = document.querySelector(selector);
 
     element?.click();
   }
 
-
   function randomAny() {
     closePalette();
 
-    const button =
-      document.querySelector(
-        '[data-random-mode="any"]'
-      );
+    const button = document.querySelector('[data-random-mode="any"]');
 
     button?.click();
   }
-
 
   /* ======================================================
      COMMANDS
      ====================================================== */
 
+  // Команды переключения архивов строятся из data/archives.json
+  function archiveCommands(current) {
+    const archives = Object.values(window.STYLE_ARCHIVE_ARCHIVES_V004?.archives || {});
+
+    return archives.map(({ key, label, aliases }) => ({
+      id: `archive-${key}`,
+      title: label,
+      meta: key === current ? "CURRENT ARCHIVE" : "SWITCH ARCHIVE",
+      keywords: [label.toLowerCase(), key, "archive model", ...aliases].join(" "),
+      action: () => switchArchive(key),
+    }));
+  }
+
   function commands() {
-    const archive =
-      currentArchive();
+    const archive = currentArchive();
 
     return [
-      {
-        id: "archive-am",
-        title: "AM PREVIEW",
-        meta:
-          archive === "am"
-            ? "CURRENT ARCHIVE"
-            : "SWITCH ARCHIVE",
-
-        keywords:
-          "am preview archive model",
-
-        action:
-          () =>
-            switchArchive("am"),
-      },
-
-      {
-        id: "archive-opus",
-        title: "OPUS",
-        meta:
-          archive === "opus"
-            ? "CURRENT ARCHIVE"
-            : "SWITCH ARCHIVE",
-
-        keywords:
-          "opus archive model neko",
-
-        action:
-          () =>
-            switchArchive("opus"),
-      },
-
-      {
-        id: "archive-sky",
-        title: "SKY",
-        meta:
-          archive === "sky"
-            ? "CURRENT ARCHIVE"
-            : "SWITCH ARCHIVE",
-
-        keywords:
-          "sky archive model",
-
-        action:
-          () =>
-            switchArchive("sky"),
-      },
+      ...archiveCommands(archive),
 
       {
         id: "random",
         title: "RANDOM STYLE",
         meta: "OPEN RANDOM VISUAL",
-        keywords:
-          "random surprise any",
+        keywords: "random surprise any",
 
-        action:
-          randomAny,
+        action: randomAny,
       },
 
       {
         id: "discover",
         title: "DISCOVER 12",
         meta: "CURATED RANDOM SET",
-        keywords:
-          "discover explore twelve 12",
+        keywords: "discover explore twelve 12",
 
-        action:
-          () =>
-            clickExisting(
-              "#discoverPolishButton"
-            ),
+        action: () => clickExisting("#discoverPolishButton"),
       },
 
       {
         id: "saved",
         title: "SAVED",
         meta: "SHOW SAVED STYLES",
-        keywords:
-          "saved favorites favourite bookmark",
+        keywords: "saved favorites favourite bookmark",
 
-        action:
-          () =>
-            clickExisting(
-              "#savedButton"
-            ),
+        action: () => clickExisting("#savedButton"),
       },
 
       {
         id: "recent",
         title: "RECENT",
         meta: "OPEN RECENT STYLES",
-        keywords:
-          "recent history viewed",
+        keywords: "recent history viewed",
 
-        action:
-          () =>
-            clickExisting(
-              "#recentButton"
-            ),
+        action: () => clickExisting("#recentButton"),
       },
     ];
   }
-
 
   /* ======================================================
      STYLE SEARCH
      ====================================================== */
 
   function findStyles(query) {
-    if (
-      !indexReady ||
-      !query
-    ) {
+    if (!indexReady || !query) {
       return [];
     }
-
 
     const qn = norm(query);
     const qc = compact(query);
@@ -402,95 +267,51 @@
       return [];
     }
 
-
     const exact = [];
     const prefix = [];
     const contains = [];
 
-
     for (const entry of styleIndex) {
-      if (
-        entry.norm === qn ||
-        entry.compact === qc
-      ) {
+      if (entry.norm === qn || entry.compact === qc) {
         exact.push(entry);
         continue;
       }
 
-
-      if (
-        entry.norm.startsWith(qn) ||
-        (
-          qc &&
-          entry.compact.startsWith(qc)
-        )
-      ) {
+      if (entry.norm.startsWith(qn) || (qc && entry.compact.startsWith(qc))) {
         prefix.push(entry);
         continue;
       }
 
-
-      if (
-        entry.norm.includes(qn) ||
-        (
-          qc &&
-          entry.compact.includes(qc)
-        )
-      ) {
+      if (entry.norm.includes(qn) || (qc && entry.compact.includes(qc))) {
         contains.push(entry);
       }
     }
 
-
-    return [
-      ...exact,
-      ...prefix,
-      ...contains,
-    ].slice(
-      0,
-      MAX_STYLE_RESULTS
-    );
+    return [...exact, ...prefix, ...contains].slice(0, MAX_STYLE_RESULTS);
   }
 
-
   function findCommands(query) {
-    const q =
-      norm(query);
+    const q = norm(query);
 
-    const rows =
-      commands();
-
+    const rows = commands();
 
     if (!q) {
       return rows;
     }
 
+    return rows.filter((command) => {
+      const haystack = norm([command.title, command.meta, command.keywords].join(" "));
 
-    return rows.filter(
-      (command) => {
-        const haystack =
-          norm(
-            [
-              command.title,
-              command.meta,
-              command.keywords,
-            ].join(" ")
-          );
-
-        return haystack.includes(q);
-      }
-    );
+      return haystack.includes(q);
+    });
   }
-
 
   /* ======================================================
      RENDER
      ====================================================== */
 
   function commandHtml(command) {
-    const current =
-      command.meta ===
-      "CURRENT ARCHIVE";
+    const current = command.meta === "CURRENT ARCHIVE";
 
     return `
       <button
@@ -518,7 +339,6 @@
       </button>
     `;
   }
-
 
   function styleHtml(style) {
     return `
@@ -548,33 +368,20 @@
     `;
   }
 
-
   function render() {
-    if (
-      !input ||
-      !results
-    ) {
+    if (!input || !results) {
       return;
     }
 
+    const query = clean(input.value);
 
-    const query =
-      clean(input.value);
+    const commandRows = findCommands(query);
 
-
-    const commandRows =
-      findCommands(query);
-
-    const styleRows =
-      findStyles(query);
-
+    const styleRows = findStyles(query);
 
     let html = "";
 
-
-    if (
-      !query
-    ) {
+    if (!query) {
       html += `
         <div
           class="command-section-label-v004"
@@ -583,15 +390,9 @@
         </div>
       `;
 
-      html +=
-        commandRows
-          .map(commandHtml)
-          .join("");
-    }
-    else {
-      if (
-        styleRows.length
-      ) {
+      html += commandRows.map(commandHtml).join("");
+    } else {
+      if (styleRows.length) {
         html += `
           <div
             class="command-section-label-v004"
@@ -600,16 +401,10 @@
           </div>
         `;
 
-        html +=
-          styleRows
-            .map(styleHtml)
-            .join("");
+        html += styleRows.map(styleHtml).join("");
       }
 
-
-      if (
-        commandRows.length
-      ) {
+      if (commandRows.length) {
         html += `
           <div
             class="command-section-label-v004"
@@ -618,17 +413,10 @@
           </div>
         `;
 
-        html +=
-          commandRows
-            .map(commandHtml)
-            .join("");
+        html += commandRows.map(commandHtml).join("");
       }
 
-
-      if (
-        !styleRows.length &&
-        !commandRows.length
-      ) {
+      if (!styleRows.length && !commandRows.length) {
         html = `
           <div
             class="command-empty-v004"
@@ -642,24 +430,14 @@
       }
     }
 
-
-    results.innerHTML =
-      html;
+    results.innerHTML = html;
   }
-
 
   function scheduleRender() {
-    window.clearTimeout(
-      timer
-    );
+    window.clearTimeout(timer);
 
-    timer =
-      window.setTimeout(
-        render,
-        DEBOUNCE_MS
-      );
+    timer = window.setTimeout(render, DEBOUNCE_MS);
   }
-
 
   /* ======================================================
      OPEN / CLOSE
@@ -670,198 +448,107 @@
       return;
     }
 
+    previousFocus = document.activeElement;
 
-    previousFocus =
-      document.activeElement;
+    overlay.hidden = false;
 
-
-    overlay.hidden =
-      false;
-
-
-    document.body
-      .classList
-      .add(
-        "command-search-open-v004"
-      );
-
+    document.body.classList.add("command-search-open-v004");
 
     input.value = "";
 
     render();
 
-
-    window.requestAnimationFrame(
-      () => {
-        input.focus();
-      }
-    );
+    window.requestAnimationFrame(() => {
+      input.focus();
+    });
   }
 
-
   function closePalette() {
-    if (
-      !overlay ||
-      overlay.hidden
-    ) {
+    if (!overlay || overlay.hidden) {
       return;
     }
 
+    overlay.hidden = true;
 
-    overlay.hidden =
-      true;
+    document.body.classList.remove("command-search-open-v004");
 
-
-    document.body
-      .classList
-      .remove(
-        "command-search-open-v004"
-      );
-
-
-    if (
-      previousFocus &&
-      typeof previousFocus.focus ===
-        "function"
-    ) {
+    if (previousFocus && typeof previousFocus.focus === "function") {
       try {
         previousFocus.focus({
           preventScroll: true,
         });
-      }
-      catch {}
+      } catch {}
     }
   }
 
-
   function togglePalette() {
-    if (
-      overlay?.hidden
-    ) {
+    if (overlay?.hidden) {
       openPalette();
-    }
-    else {
+    } else {
       closePalette();
     }
   }
-
 
   /* ======================================================
      EXECUTE CLICK
      ====================================================== */
 
   function executeCommand(id) {
-    const command =
-      commands()
-        .find(
-          (row) =>
-            row.id === id
-        );
+    const command = commands().find((row) => row.id === id);
 
     command?.action();
   }
-
 
   /* ======================================================
      UI
      ====================================================== */
 
   function mountTrigger() {
-    if (
-      document.querySelector(
-        "#commandSearchButton"
-      )
-    ) {
-      trigger =
-        document.querySelector(
-          "#commandSearchButton"
-        );
+    if (document.querySelector("#commandSearchButton")) {
+      trigger = document.querySelector("#commandSearchButton");
 
       return;
     }
 
-
-    const actions =
-      document.querySelector(
-        ".top-actions"
-      );
-
+    const actions = document.querySelector(".top-actions");
 
     if (!actions) {
       return;
     }
 
+    trigger = document.createElement("button");
 
-    trigger =
-      document.createElement(
-        "button"
-      );
+    trigger.id = "commandSearchButton";
 
+    trigger.type = "button";
 
-    trigger.id =
-      "commandSearchButton";
-
-    trigger.type =
-      "button";
-
-    trigger.className =
-      "text-button command-trigger-v004";
+    trigger.className = "text-button command-trigger-v004";
 
     trigger.innerHTML = `MENU`;
 
+    actions.prepend(trigger);
 
-    actions.prepend(
-      trigger
-    );
-
-
-    trigger.addEventListener(
-      "click",
-      openPalette
-    );
+    trigger.addEventListener("click", openPalette);
   }
 
-
   function mountOverlay() {
-    if (
-      document.querySelector(
-        "#commandSearchOverlay"
-      )
-    ) {
-      overlay =
-        document.querySelector(
-          "#commandSearchOverlay"
-        );
+    if (document.querySelector("#commandSearchOverlay")) {
+      overlay = document.querySelector("#commandSearchOverlay");
 
-      input =
-        overlay.querySelector(
-          "#commandSearchInput"
-        );
+      input = overlay.querySelector("#commandSearchInput");
 
-      results =
-        overlay.querySelector(
-          "#commandSearchResults"
-        );
+      results = overlay.querySelector("#commandSearchResults");
 
       return;
     }
 
+    overlay = document.createElement("div");
 
-    overlay =
-      document.createElement(
-        "div"
-      );
+    overlay.id = "commandSearchOverlay";
 
+    overlay.className = "command-overlay-v004";
 
-    overlay.id =
-      "commandSearchOverlay";
-
-    overlay.className =
-      "command-overlay-v004";
-
-    overlay.hidden =
-      true;
-
+    overlay.hidden = true;
 
     overlay.innerHTML = `
       <div
@@ -927,97 +614,49 @@
       </section>
     `;
 
+    document.body.appendChild(overlay);
 
-    document.body.appendChild(
-      overlay
-    );
+    input = overlay.querySelector("#commandSearchInput");
 
+    results = overlay.querySelector("#commandSearchResults");
 
-    input =
-      overlay.querySelector(
-        "#commandSearchInput"
-      );
+    input.addEventListener("input", scheduleRender);
 
-    results =
-      overlay.querySelector(
-        "#commandSearchResults"
-      );
-
-
-    input.addEventListener(
-      "input",
-      scheduleRender
-    );
-
-
-    overlay.addEventListener(
-      "click",
-      (event) => {
-        if (
-          event.target.closest(
-            "[data-command-close]"
-          )
-        ) {
-          closePalette();
-          return;
-        }
-
-
-        const command =
-          event.target.closest(
-            "[data-command-id]"
-          );
-
-
-        if (command) {
-          executeCommand(
-            command.dataset
-              .commandId
-          );
-
-          return;
-        }
-
-
-        const style =
-          event.target.closest(
-            "[data-command-style]"
-          );
-
-
-        if (style) {
-          searchStyle(
-            style.dataset
-              .commandStyle
-          );
-        }
+    overlay.addEventListener("click", (event) => {
+      if (event.target.closest("[data-command-close]")) {
+        closePalette();
+        return;
       }
-    );
-  }
 
+      const command = event.target.closest("[data-command-id]");
+
+      if (command) {
+        executeCommand(command.dataset.commandId);
+
+        return;
+      }
+
+      const style = event.target.closest("[data-command-style]");
+
+      if (style) {
+        searchStyle(style.dataset.commandStyle);
+      }
+    });
+  }
 
   /* ======================================================
      HOTKEY
      ====================================================== */
 
   function bindHotkey() {
-    document.addEventListener(
-      "keydown",
-      (event) => {
-        if (
-          event.key ===
-          "Escape" &&
-          overlay &&
-          !overlay.hidden
-        ) {
-          event.preventDefault();
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && overlay && !overlay.hidden) {
+        event.preventDefault();
 
-          closePalette();
-        }
+        closePalette();
       }
-    );
+    });
   }
-
 
   /* ======================================================
      MOUNT
@@ -1033,35 +672,21 @@
     waitForArchive();
   }
 
-
-  if (
-    document.readyState ===
-    "loading"
-  ) {
-    document.addEventListener(
-      "DOMContentLoaded",
-      mount,
-      {
-        once: true,
-      }
-    );
-  }
-  else {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mount, {
+      once: true,
+    });
+  } else {
     mount();
   }
 
+  window.STYLE_ARCHIVE_COMMAND_V004 = {
+    open: openPalette,
 
-  window
-    .STYLE_ARCHIVE_COMMAND_V004 =
-    {
-      open:
-        openPalette,
+    close: closePalette,
 
-      close:
-        closePalette,
-
-      getIndexSize() {
-        return styleIndex.length;
-      },
-    };
+    getIndexSize() {
+      return styleIndex.length;
+    },
+  };
 })();

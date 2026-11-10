@@ -1,0 +1,102 @@
+/* =========================================================
+   МОБИЛЬНЫЕ ПРАВКИ (до 760 px): шапка, плотность сетки, переключатель архивов, меню, диалоги
+   ========================================================= */
+
+@media (max-width: 760px) {
+  /*
+    Top controls:
+    allow breathing room instead of
+    squeezing everything into one line.
+  */
+
+  .top-actions {
+    flex-wrap: wrap;
+
+    gap: 6px;
+  }
+
+  .top-actions button,
+  .command-trigger-v004 {
+    min-height: 36px;
+  }
+
+  /*
+    Search-related chips can scroll sideways
+    instead of destroying the layout.
+  */
+
+  .grid-density-v004 {
+    flex-wrap: nowrap;
+
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    padding-bottom: 2px;
+
+    scrollbar-width: none;
+  }
+
+  .grid-density-v004::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+    Archive switchers.
+    Selectors are deliberately tolerant
+    because archives-v004 may use either
+    class depending on revision.
+  */
+
+  .archive-switcher-v004,
+  .archive-selector-v004,
+  .archive-tabs-v004 {
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+  }
+
+  /*
+    Command menu:
+    no expensive mobile blur,
+    bigger touch targets.
+  */
+
+  .command-backdrop-v004 {
+    backdrop-filter: none;
+  }
+
+  .command-item-v004 {
+    min-height: 54px;
+  }
+
+  .command-dialog-v004 {
+    width: 100%;
+  }
+
+  /*
+    Generic dialog safety.
+  */
+
+  dialog {
+    max-width: calc(100vw - 16px);
+
+    max-height: calc(100dvh - 16px);
+  }
+}
+
+@media (max-width: 430px) {
+  .command-overlay-v004 {
+    padding: 52px 8px 8px;
+  }
+
+  .command-input-wrap-v004 {
+    padding: 13px 12px;
+  }
+
+  #commandSearchInput {
+    font-size: 20px;
+  }
+}

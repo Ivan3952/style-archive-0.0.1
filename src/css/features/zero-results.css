@@ -1,0 +1,112 @@
+/* Пустой результат поиска (см. src/features/zero-results.js). */
+
+.zero-result-polish-v004 {
+  width: min(680px, 100%);
+
+  margin: 28px auto 0;
+
+  padding: 18px;
+
+  border: 1px solid var(--line);
+
+  text-align: left;
+}
+
+.zero-result-polish-v004[hidden] {
+  display: none;
+}
+
+.zero-result-title-v004,
+.zero-result-label-v004 {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  letter-spacing: 0.06em;
+}
+
+.zero-result-title-v004 {
+  color: var(--accent);
+
+  font-size: 9px;
+}
+
+.zero-result-query-v004 {
+  margin-top: 7px;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: 18px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.zero-result-label-v004 {
+  margin-top: 18px;
+
+  color: var(--muted-2);
+
+  font-size: 7px;
+}
+
+.zero-result-actions-v004 {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  margin-top: 7px;
+}
+
+.zero-result-actions-v004 button {
+  appearance: none;
+
+  padding: 7px 9px;
+
+  border: 1px solid var(--line-soft);
+
+  background: transparent;
+
+  color: var(--muted);
+
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  font-size: 8px;
+
+  cursor: pointer;
+}
+
+.zero-result-actions-v004 button:hover {
+  border-color: var(--accent);
+
+  color: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .zero-result-polish-v004 {
+    margin-top: 20px;
+    padding: 14px;
+  }
+
+  .zero-result-query-v004 {
+    font-size: 16px;
+  }
+
+  .zero-result-actions-v004 button {
+    min-height: 38px;
+  }
+}
+
+@media (max-width: 430px) {
+  .zero-result-actions-v004 {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .zero-result-actions-v004 button {
+    width: 100%;
+  }
+}

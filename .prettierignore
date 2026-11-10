@@ -1,0 +1,6 @@
+dist/
+node_modules/
+media/
+data/
+maintenance/
+package-lock.json

@@ -1,186 +1,84 @@
+import { escapeHtml } from "../utils.js";
+
 (() => {
   "use strict";
-
 
   /* ======================================================
      CONFIG
      ====================================================== */
 
-  const HISTORY_KEY =
-    "style-archive:search-history-v004";
+  const HISTORY_KEY = "style-archive:search-history-v004";
 
-  const MAX_HISTORY =
-    8;
+  const MAX_HISTORY = 8;
 
-  const SAVE_DELAY =
-    900;
+  const SAVE_DELAY = 900;
 
-  const HIGHLIGHT_SELECTOR = [
-    ".card-name",
-    ".supported-name",
-    ".viewer-name",
-  ].join(",");
-
+  const HIGHLIGHT_SELECTOR = [".card-name", ".supported-name", ".viewer-name"].join(",");
 
   /* ======================================================
      HELPERS
      ====================================================== */
 
-  function cleanQuery(
-    value
-  ) {
-    return String(
-      value || ""
-    )
-      .replace(
-        /\s+/g,
-        " "
-      )
+  function cleanQuery(value) {
+    return String(value || "")
+      .replace(/\s+/g, " ")
       .trim();
   }
 
-
   function readHistory() {
     try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            HISTORY_KEY
-          )
-          ||
-          "[]"
-        );
+      const parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 
-
-      if (
-        !Array.isArray(
-          parsed
-        )
-      ) {
+      if (!Array.isArray(parsed)) {
         return [];
       }
 
-
-      const seen =
-        new Set();
-
+      const seen = new Set();
 
       return parsed
-        .map(
-          cleanQuery
-        )
-        .filter(
-          (
-            value
-          ) => {
-            if (!value) {
-              return false;
-            }
-
-
-            const key =
-              value.toLocaleLowerCase();
-
-
-            if (
-              seen.has(
-                key
-              )
-            ) {
-              return false;
-            }
-
-
-            seen.add(
-              key
-            );
-
-
-            return true;
+        .map(cleanQuery)
+        .filter((value) => {
+          if (!value) {
+            return false;
           }
-        )
-        .slice(
-          0,
-          MAX_HISTORY
-        );
-    }
-    catch {
+
+          const key = value.toLocaleLowerCase();
+
+          if (seen.has(key)) {
+            return false;
+          }
+
+          seen.add(key);
+
+          return true;
+        })
+        .slice(0, MAX_HISTORY);
+    } catch {
       return [];
     }
   }
 
-
-  function writeHistory(
-    rows
-  ) {
+  function writeHistory(rows) {
     try {
-      localStorage.setItem(
-        HISTORY_KEY,
-        JSON.stringify(
-          rows.slice(
-            0,
-            MAX_HISTORY
-          )
-        )
-      );
-    }
-    catch {}
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(rows.slice(0, MAX_HISTORY)));
+    } catch {}
   }
 
-
-  function escapeHtml(
-    value
-  ) {
-    return String(
-      value || ""
-    )
-      .replaceAll(
-        "&",
-        "&amp;"
-      )
-      .replaceAll(
-        "<",
-        "&lt;"
-      )
-      .replaceAll(
-        ">",
-        "&gt;"
-      )
-      .replaceAll(
-        '"',
-        "&quot;"
-      );
+  function escapeRegex(value) {
+    return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
-
-
-  function escapeRegex(
-    value
-  ) {
-    return String(
-      value || ""
-    ).replace(
-      /[.*+?^${}()|[\]\\]/g,
-      "\\$&"
-    );
-  }
-
 
   /* ======================================================
      STATE
      ====================================================== */
 
-  let historyRows =
-    readHistory();
+  let historyRows = readHistory();
 
-  let saveTimer =
-    null;
+  let saveTimer = null;
 
-  let bar =
-    null;
+  let bar = null;
 
-  let input =
-    null;
-
+  let input = null;
 
   /* ======================================================
      URL / DEEP LINK
@@ -191,152 +89,72 @@
       return;
     }
 
+    const query = cleanQuery(input.value);
 
-    const query =
-      cleanQuery(
-        input.value
-      );
-
-
-    const url =
-      new URL(
-        window.location.href
-      );
-
+    const url = new URL(window.location.href);
 
     if (query) {
-      url.searchParams.set(
-        "q",
-        query
-      );
-    }
-    else {
-      url.searchParams.delete(
-        "q"
-      );
+      url.searchParams.set("q", query);
+    } else {
+      url.searchParams.delete("q");
     }
 
-
-    window.history.replaceState(
-      window.history.state,
-      "",
-      url.href
-    );
+    window.history.replaceState(window.history.state, "", url.href);
   }
-
 
   function initialQuery() {
     try {
-      return cleanQuery(
-        new URL(
-          window.location.href
-        )
-        .searchParams
-        .get(
-          "q"
-        )
-      );
-    }
-    catch {
+      return cleanQuery(new URL(window.location.href).searchParams.get("q"));
+    } catch {
       return "";
     }
   }
-
 
   /* ======================================================
      HISTORY
      ====================================================== */
 
-  function saveQuery(
-    raw
-  ) {
-    const query =
-      cleanQuery(
-        raw
-      );
+  function saveQuery(raw) {
+    const query = cleanQuery(raw);
 
-
-    if (
-      query.length < 2
-    ) {
+    if (query.length < 2) {
       return;
     }
 
-
-    const lower =
-      query.toLocaleLowerCase();
-
+    const lower = query.toLocaleLowerCase();
 
     historyRows = [
       query,
 
-      ...historyRows.filter(
-        (
-          item
-        ) =>
-          item
-            .toLocaleLowerCase()
-          !==
-          lower
-      ),
-    ].slice(
-      0,
-      MAX_HISTORY
-    );
+      ...historyRows.filter((item) => item.toLocaleLowerCase() !== lower),
+    ].slice(0, MAX_HISTORY);
 
-
-    writeHistory(
-      historyRows
-    );
-
+    writeHistory(historyRows);
 
     renderBar();
   }
 
-
   function scheduleSave() {
-    window.clearTimeout(
-      saveTimer
-    );
+    window.clearTimeout(saveTimer);
 
+    const query = cleanQuery(input?.value);
 
-    const query =
-      cleanQuery(
-        input?.value
-      );
-
-
-    if (
-      query.length < 2
-    ) {
+    if (query.length < 2) {
       return;
     }
 
-
-    saveTimer =
-      window.setTimeout(
-        () => {
-          saveQuery(
-            query
-          );
-        },
-        SAVE_DELAY
-      );
+    saveTimer = window.setTimeout(() => {
+      saveQuery(query);
+    }, SAVE_DELAY);
   }
-
 
   function clearHistory() {
     historyRows = [];
 
-
-    writeHistory(
-      []
-    );
-
+    writeHistory([]);
 
     renderBar();
   }
-
 
   /* ======================================================
      SET QUERY
@@ -347,47 +165,25 @@
       return;
     }
 
-
     input.dispatchEvent(
-      new Event(
-        "input",
-        {
-          bubbles:
-            true,
-        }
-      )
+      new Event("input", {
+        bubbles: true,
+      })
     );
   }
 
-
-  function setQuery(
-    value,
-    options = {}
-  ) {
+  function setQuery(value, options = {}) {
     if (!input) {
       return;
     }
 
+    const query = cleanQuery(value);
 
-    const query =
-      cleanQuery(
-        value
-      );
+    input.value = query;
 
-
-    input.value =
-      query;
-
-
-    if (
-      options.save !==
-      false
-    ) {
-      saveQuery(
-        query
-      );
+    if (options.save !== false) {
+      saveQuery(query);
     }
-
 
     syncUrl();
 
@@ -397,130 +193,70 @@
 
     renderBar();
 
-
-    if (
-      options.focus !==
-      false
-    ) {
+    if (options.focus !== false) {
       input.focus();
 
-
       try {
-        input.setSelectionRange(
-          input.value.length,
-          input.value.length
-        );
-      }
-      catch {}
+        input.setSelectionRange(input.value.length, input.value.length);
+      } catch {}
     }
   }
-
 
   /* ======================================================
      COPY LINK
      ====================================================== */
 
-  async function copyText(
-    value
-  ) {
+  async function copyText(value) {
     try {
-      await navigator
-        .clipboard
-        .writeText(
-          value
-        );
+      await navigator.clipboard.writeText(value);
 
       return true;
-    }
-    catch {}
-
+    } catch {}
 
     try {
-      const temp =
-        document.createElement(
-          "textarea"
-        );
+      const temp = document.createElement("textarea");
 
+      temp.value = value;
 
-      temp.value =
-        value;
+      temp.style.position = "fixed";
 
+      temp.style.opacity = "0";
 
-      temp.style.position =
-        "fixed";
+      temp.style.pointerEvents = "none";
 
-      temp.style.opacity =
-        "0";
-
-      temp.style.pointerEvents =
-        "none";
-
-
-      document.body.appendChild(
-        temp
-      );
-
+      document.body.appendChild(temp);
 
       temp.select();
 
-
-      const ok =
-        document.execCommand(
-          "copy"
-        );
-
+      const ok = document.execCommand("copy");
 
       temp.remove();
 
-
       return ok;
-    }
-    catch {
+    } catch {
       return false;
     }
   }
 
-
   async function copySearchLink() {
     syncUrl();
 
+    const button = bar?.querySelector("[data-search-copy-link]");
 
-    const button =
-      bar?.querySelector(
-        "[data-search-copy-link]"
-      );
-
-
-    const ok =
-      await copyText(
-        window.location.href
-      );
-
+    const ok = await copyText(window.location.href);
 
     if (!button) {
       return;
     }
 
+    const previous = button.textContent;
 
-    const previous =
-      button.textContent;
+    button.textContent = ok ? "COPIED" : "ERROR";
 
-
-    button.textContent =
-      ok
-        ? "COPIED"
-        : "ERROR";
-
-
-    window.setTimeout(
-      () => {
-        button.textContent =
-          previous;
-      },
-      900
-    );
+    window.setTimeout(() => {
+      button.textContent = previous;
+    }, 900);
   }
-
 
   /* ======================================================
      BAR
@@ -531,19 +267,11 @@
       return;
     }
 
+    const query = cleanQuery(input?.value);
 
-    const query =
-      cleanQuery(
-        input?.value
-      );
-
-
-    const chips =
-      historyRows
-        .map(
-          (
-            item
-          ) => `
+    const chips = historyRows
+      .map(
+        (item) => `
             <button
               class="search-history-chip-v004"
               type="button"
@@ -553,11 +281,8 @@
               ${escapeHtml(item)}
             </button>
           `
-        )
-        .join(
-          ""
-        );
-
+      )
+      .join("");
 
     bar.innerHTML = `
       <span
@@ -595,553 +320,251 @@
       </div>
     `;
 
-
-    bar.hidden =
-      !query &&
-      historyRows.length === 0;
+    bar.hidden = !query && historyRows.length === 0;
   }
 
-
-  function mountBar(
-    searchWrap
-  ) {
-    if (
-      document.querySelector(
-        ".search-discovery-v004"
-      )
-    ) {
-      bar =
-        document.querySelector(
-          ".search-discovery-v004"
-        );
+  function mountBar(searchWrap) {
+    if (document.querySelector(".search-discovery-v004")) {
+      bar = document.querySelector(".search-discovery-v004");
 
       return;
     }
 
+    bar = document.createElement("div");
 
-    bar =
-      document.createElement(
-        "div"
-      );
+    bar.className = "search-discovery-v004";
 
+    searchWrap.appendChild(bar);
 
-    bar.className =
-      "search-discovery-v004";
+    bar.addEventListener("click", (event) => {
+      const historyButton = event.target.closest("[data-search-history-v004]");
 
+      if (historyButton) {
+        setQuery(historyButton.dataset.searchHistoryV004);
 
-    searchWrap.appendChild(
-      bar
-    );
-
-
-    bar.addEventListener(
-      "click",
-      (
-        event
-      ) => {
-        const historyButton =
-          event.target.closest(
-            "[data-search-history-v004]"
-          );
-
-
-        if (historyButton) {
-          setQuery(
-            historyButton
-              .dataset
-              .searchHistoryV004
-          );
-
-          return;
-        }
-
-
-        if (
-          event.target.closest(
-            "[data-search-clear-history]"
-          )
-        ) {
-          clearHistory();
-
-          return;
-        }
-
-
-        if (
-          event.target.closest(
-            "[data-search-copy-link]"
-          )
-        ) {
-          copySearchLink();
-        }
+        return;
       }
-    );
 
+      if (event.target.closest("[data-search-clear-history]")) {
+        clearHistory();
+
+        return;
+      }
+
+      if (event.target.closest("[data-search-copy-link]")) {
+        copySearchLink();
+      }
+    });
 
     renderBar();
   }
-
 
   /* ======================================================
      HIGHLIGHTING
      ====================================================== */
 
   function highlightTerms() {
-    const query =
-      cleanQuery(
-        input?.value
-      );
-
+    const query = cleanQuery(input?.value);
 
     if (!query) {
       return [];
     }
 
+    const found = new Map();
 
-    const found =
-      new Map();
+    const candidates = [query, ...query.split(/\s+/)];
 
+    candidates.forEach((raw) => {
+      let value = cleanQuery(raw);
 
-    const candidates = [
-      query,
-      ...query.split(
-        /\s+/
-      ),
-    ];
+      if (value.length < 2) {
+        return;
+      }
 
+      const bare = value.replace(/^@+/, "");
 
-    candidates.forEach(
-      (
-        raw
-      ) => {
-        let value =
-          cleanQuery(
-            raw
-          );
-
-
-        if (
-          value.length < 2
-        ) {
+      [value, bare].forEach((term) => {
+        if (term.length < 2) {
           return;
         }
 
+        const key = term.toLocaleLowerCase();
 
-        const bare =
-          value.replace(
-            /^@+/,
-            ""
-          );
+        if (!found.has(key)) {
+          found.set(key, term);
+        }
+      });
+    });
 
-
-        [
-          value,
-          bare,
-        ].forEach(
-          (
-            term
-          ) => {
-            if (
-              term.length < 2
-            ) {
-              return;
-            }
-
-
-            const key =
-              term.toLocaleLowerCase();
-
-
-            if (
-              !found.has(
-                key
-              )
-            ) {
-              found.set(
-                key,
-                term
-              );
-            }
-          }
-        );
-      }
-    );
-
-
-    return [
-      ...found.values(),
-    ].sort(
-      (
-        a,
-        b
-      ) =>
-        b.length -
-        a.length
-    );
+    return [...found.values()].sort((a, b) => b.length - a.length);
   }
 
-
-  function highlightNode(
-    node
-  ) {
-    if (
-      !node ||
-      node.nodeType !==
-        Node.ELEMENT_NODE
-    ) {
+  function highlightNode(node) {
+    if (!node || node.nodeType !== Node.ELEMENT_NODE) {
       return;
     }
 
+    const query = cleanQuery(input?.value);
 
-    const query =
-      cleanQuery(
-        input?.value
-      );
+    const currentPlain = node.textContent || "";
 
+    let base = node.dataset.searchHighlightBaseV004;
 
-    const currentPlain =
-      node.textContent ||
-      "";
+    if (base === undefined || currentPlain !== base) {
+      base = currentPlain;
 
-
-    let base =
-      node.dataset
-        .searchHighlightBaseV004;
-
-
-    if (
-      base === undefined ||
-      currentPlain !== base
-    ) {
-      base =
-        currentPlain;
-
-
-      node.dataset
-        .searchHighlightBaseV004 =
-          base;
+      node.dataset.searchHighlightBaseV004 = base;
     }
 
-
-    if (
-      node.dataset
-        .searchHighlightQueryV004 ===
-        query &&
-      currentPlain ===
-        base
-    ) {
+    if (node.dataset.searchHighlightQueryV004 === query && currentPlain === base) {
       return;
     }
 
+    node.dataset.searchHighlightQueryV004 = query;
 
-    node.dataset
-      .searchHighlightQueryV004 =
-        query;
+    node.textContent = base;
 
+    const terms = highlightTerms();
 
-    node.textContent =
-      base;
-
-
-    const terms =
-      highlightTerms();
-
-
-    if (
-      !terms.length
-    ) {
+    if (!terms.length) {
       return;
     }
 
-
-    const pattern =
-      terms
-        .map(
-          escapeRegex
-        )
-        .join(
-          "|"
-        );
-
+    const pattern = terms.map(escapeRegex).join("|");
 
     if (!pattern) {
       return;
     }
 
+    const regex = new RegExp(`(${pattern})`, "gi");
 
-    const regex =
-      new RegExp(
-        `(${pattern})`,
-        "gi"
-      );
+    const parts = base.split(regex);
 
-
-    const parts =
-      base.split(
-        regex
-      );
-
-
-    if (
-      parts.length <= 1
-    ) {
+    if (parts.length <= 1) {
       return;
     }
 
+    const fragment = document.createDocumentFragment();
 
-    const fragment =
-      document.createDocumentFragment();
-
-
-    parts.forEach(
-      (
-        part
-      ) => {
-        if (!part) {
-          return;
-        }
-
-
-        const isMatch =
-          terms.some(
-            (
-              term
-            ) =>
-              part.localeCompare(
-                term,
-                undefined,
-                {
-                  sensitivity:
-                    "accent",
-                }
-              )
-              ===
-              0
-          );
-
-
-        if (isMatch) {
-          const mark =
-            document.createElement(
-              "mark"
-            );
-
-
-          mark.className =
-            "search-highlight-v004";
-
-
-          mark.textContent =
-            part;
-
-
-          fragment.appendChild(
-            mark
-          );
-        }
-        else {
-          fragment.appendChild(
-            document.createTextNode(
-              part
-            )
-          );
-        }
+    parts.forEach((part) => {
+      if (!part) {
+        return;
       }
-    );
 
+      const isMatch = terms.some(
+        (term) =>
+          part.localeCompare(term, undefined, {
+            sensitivity: "accent",
+          }) === 0
+      );
 
-    node.replaceChildren(
-      fragment
-    );
+      if (isMatch) {
+        const mark = document.createElement("mark");
+
+        mark.className = "search-highlight-v004";
+
+        mark.textContent = part;
+
+        fragment.appendChild(mark);
+      } else {
+        fragment.appendChild(document.createTextNode(part));
+      }
+    });
+
+    node.replaceChildren(fragment);
   }
 
-
-  function processRoot(
-    root
-  ) {
-    if (
-      !root ||
-      root.nodeType !==
-        Node.ELEMENT_NODE
-    ) {
+  function processRoot(root) {
+    if (!root || root.nodeType !== Node.ELEMENT_NODE) {
       return;
     }
 
-
-    if (
-      root.matches?.(
-        HIGHLIGHT_SELECTOR
-      )
-    ) {
-      highlightNode(
-        root
-      );
+    if (root.matches?.(HIGHLIGHT_SELECTOR)) {
+      highlightNode(root);
     }
 
-
-    root
-      .querySelectorAll?.(
-        HIGHLIGHT_SELECTOR
-      )
-      .forEach(
-        highlightNode
-      );
+    root.querySelectorAll?.(HIGHLIGHT_SELECTOR).forEach(highlightNode);
   }
-
 
   function refreshHighlights() {
-    document
-      .querySelectorAll(
-        HIGHLIGHT_SELECTOR
-      )
-      .forEach(
-        highlightNode
-      );
+    document.querySelectorAll(HIGHLIGHT_SELECTOR).forEach(highlightNode);
   }
-
 
   function mountHighlightObserver() {
-    const observer =
-      new MutationObserver(
-        (
-          mutations
-        ) => {
-          mutations.forEach(
-            (
-              mutation
-            ) => {
-              if (
-                mutation.target
-                  ?.nodeType ===
-                Node.ELEMENT_NODE &&
-                mutation.target
-                  .matches?.(
-                    HIGHLIGHT_SELECTOR
-                  )
-              ) {
-                highlightNode(
-                  mutation.target
-                );
-              }
-
-
-              mutation
-                .addedNodes
-                .forEach(
-                  (
-                    node
-                  ) => {
-                    processRoot(
-                      node
-                    );
-                  }
-                );
-            }
-          );
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.target?.nodeType === Node.ELEMENT_NODE &&
+          mutation.target.matches?.(HIGHLIGHT_SELECTOR)
+        ) {
+          highlightNode(mutation.target);
         }
-      );
 
+        mutation.addedNodes.forEach((node) => {
+          processRoot(node);
+        });
+      });
+    });
 
-    observer.observe(
-      document.body,
-      {
-        childList:
-          true,
+    observer.observe(document.body, {
+      childList: true,
 
-        subtree:
-          true,
-      }
-    );
+      subtree: true,
+    });
   }
-
 
   /* ======================================================
      INPUT EVENTS
      ====================================================== */
 
   function bindInput() {
-    input.addEventListener(
-      "input",
-      () => {
+    input.addEventListener("input", () => {
+      syncUrl();
+
+      scheduleSave();
+
+      refreshHighlights();
+
+      renderBar();
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        saveQuery(input.value);
+
         syncUrl();
 
-        scheduleSave();
-
-        refreshHighlights();
-
         renderBar();
+
+        return;
       }
-    );
 
+      if (event.key === "Escape" && input.value) {
+        event.preventDefault();
 
-    input.addEventListener(
-      "keydown",
-      (
-        event
-      ) => {
-        if (
-          event.key ===
-          "Enter"
-        ) {
-          saveQuery(
-            input.value
-          );
-
-          syncUrl();
-
-          renderBar();
-
-          return;
-        }
-
-
-        if (
-          event.key ===
-          "Escape" &&
-          input.value
-        ) {
-          event.preventDefault();
-
-          setQuery(
-            "",
-            {
-              save:
-                false,
-            }
-          );
-        }
+        setQuery("", {
+          save: false,
+        });
       }
-    );
+    });
 
-
-    input.addEventListener(
-      "blur",
-      () => {
-        saveQuery(
-          input.value
-        );
-      }
-    );
+    input.addEventListener("blur", () => {
+      saveQuery(input.value);
+    });
   }
-
 
   /* ======================================================
      INITIAL DEEP LINK
      ====================================================== */
 
   function applyInitialQuery() {
-    const query =
-      initialQuery();
-
+    const query = initialQuery();
 
     if (!query) {
       return;
     }
 
-
-    input.value =
-      query;
-
+    input.value = query;
 
     /*
       app.js may still be loading its
@@ -1153,78 +576,43 @@
       Dispatch once more when the
       public app state becomes ready.
     */
-    let attempts =
-      0;
+    let attempts = 0;
 
+    const timer = window.setInterval(() => {
+      attempts += 1;
 
-    const timer =
-      window.setInterval(
-        () => {
-          attempts += 1;
+      const app = window.STYLE_ARCHIVE_V003;
 
+      if (app?.state?.styles?.length) {
+        window.clearInterval(timer);
 
-          const app =
-            window
-              .STYLE_ARCHIVE_V003;
+        refreshSearch();
 
+        refreshHighlights();
 
-          if (
-            app?.state?.styles
-              ?.length
-          ) {
-            window.clearInterval(
-              timer
-            );
+        return;
+      }
 
-            refreshSearch();
-
-            refreshHighlights();
-
-            return;
-          }
-
-
-          if (
-            attempts >= 80
-          ) {
-            window.clearInterval(
-              timer
-            );
-          }
-        },
-        100
-      );
+      if (attempts >= 80) {
+        window.clearInterval(timer);
+      }
+    }, 100);
   }
-
 
   /* ======================================================
      MOUNT
      ====================================================== */
 
   function mount() {
-    input =
-      document.querySelector(
-        "#searchInput"
-      );
+    input = document.querySelector("#searchInput");
 
+    const searchWrap = input?.closest(".search-wrap");
 
-    const searchWrap =
-      input?.closest(
-        ".search-wrap"
-      );
-
-
-    if (
-      !input ||
-      !searchWrap
-    ) {
+    if (!input || !searchWrap) {
       return;
     }
 
-
-    mountBar(
-      searchWrap
-    );
+    mountBar(searchWrap);
 
     bindInput();
 
@@ -1237,43 +625,27 @@
     renderBar();
   }
 
-
-  if (
-    document.readyState ===
-    "loading"
-  ) {
-    document.addEventListener(
-      "DOMContentLoaded",
-      mount,
-      {
-        once:
-          true,
-      }
-    );
-  }
-  else {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mount, {
+      once: true,
+    });
+  } else {
     mount();
   }
-
 
   /* ======================================================
      DEBUG API
      ====================================================== */
 
-  window
-    .STYLE_ARCHIVE_DISCOVERY_V004 =
-    {
-      setQuery,
+  window.STYLE_ARCHIVE_DISCOVERY_V004 = {
+    setQuery,
 
-      saveQuery,
+    saveQuery,
 
-      clearHistory,
+    clearHistory,
 
-      refreshHighlights,
+    refreshHighlights,
 
-      getHistory:
-        () => [
-          ...historyRows,
-        ],
-    };
+    getHistory: () => [...historyRows],
+  };
 })();

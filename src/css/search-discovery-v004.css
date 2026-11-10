@@ -3,281 +3,182 @@
    ========================================================= */
 
 .search-discovery-v004 {
-  grid-column:
-    1 / -1;
+  grid-column: 1 / -1;
 
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     auto
     minmax(0, 1fr)
     auto;
 
-  gap:
-    10px;
+  gap: 10px;
 
-  align-items:
-    center;
+  align-items: center;
 
-  min-width:
-    0;
+  min-width: 0;
 
-  padding:
-    9px 0 1px;
+  padding: 9px 0 1px;
 }
 
 .search-discovery-v004[hidden] {
-  display:
-    none;
+  display: none;
 }
-
 
 .search-discovery-label-v004 {
-  color:
-    var(--muted-2);
+  color: var(--muted-2);
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  font-size:
-    7px;
+  font-size: 7px;
 
-  letter-spacing:
-    .08em;
+  letter-spacing: 0.08em;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
-
 
 .search-history-list-v004 {
-  display:
-    flex;
+  display: flex;
 
-  gap:
-    5px;
+  gap: 5px;
 
-  align-items:
-    center;
+  align-items: center;
 
-  min-width:
-    0;
+  min-width: 0;
 
-  overflow-x:
-    auto;
+  overflow-x: auto;
 
-  scrollbar-width:
-    none;
+  scrollbar-width: none;
 }
-
 
 .search-history-list-v004::-webkit-scrollbar {
-  display:
-    none;
+  display: none;
 }
-
 
 .search-history-chip-v004,
 .search-discovery-action-v004 {
-  appearance:
-    none;
+  appearance: none;
 
-  flex:
-    0 0 auto;
+  flex: 0 0 auto;
 
-  border:
-    1px solid
-    var(--line-soft);
+  border: 1px solid var(--line-soft);
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    var(--muted);
+  color: var(--muted);
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  cursor:
-    pointer;
+  cursor: pointer;
 
   transition:
-    border-color
-      120ms ease,
-    color
-      120ms ease,
-    background
-      120ms ease;
+    border-color 120ms ease,
+    color 120ms ease,
+    background 120ms ease;
 }
-
 
 .search-history-chip-v004 {
-  max-width:
-    190px;
+  max-width: 190px;
 
-  padding:
-    5px
-    7px;
+  padding: 5px 7px;
 
-  overflow:
-    hidden;
+  overflow: hidden;
 
-  font-size:
-    8px;
+  font-size: 8px;
 
-  line-height:
-    1;
+  line-height: 1;
 
-  text-overflow:
-    ellipsis;
+  text-overflow: ellipsis;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
-
 
 .search-history-chip-v004:hover {
-  border-color:
-    var(--line);
+  border-color: var(--line);
 
-  color:
-    var(--text);
+  color: var(--text);
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      .02
-    );
+  background: rgba(255, 255, 255, 0.02);
 }
-
 
 .search-discovery-actions-v004 {
-  display:
-    flex;
+  display: flex;
 
-  gap:
-    9px;
+  gap: 9px;
 
-  align-items:
-    center;
+  align-items: center;
 }
-
 
 .search-discovery-action-v004 {
-  padding:
-    0;
+  padding: 0;
 
-  border:
-    0;
+  border: 0;
 
-  font-size:
-    7px;
+  font-size: 7px;
 
-  letter-spacing:
-    .05em;
+  letter-spacing: 0.05em;
 }
-
 
 .search-discovery-action-v004:hover {
-  color:
-    var(--accent);
+  color: var(--accent);
 }
-
 
 .search-discovery-action-v004[hidden] {
-  display:
-    none;
+  display: none;
 }
-
 
 /* =========================================================
    MATCH HIGHLIGHT
    ========================================================= */
 
 .search-highlight-v004 {
-  padding:
-    0;
+  padding: 0;
 
-  border-bottom:
-    1px solid
-    var(--accent);
+  border-bottom: 1px solid var(--accent);
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    var(--accent);
+  color: var(--accent);
 
-  font:
-    inherit;
+  font: inherit;
 }
-
 
 /*
   Keep the highlight from stealing
   pointer events from card/name buttons.
 */
-.card-name
-.search-highlight-v004,
-.supported-name
-.search-highlight-v004,
-.viewer-name
-.search-highlight-v004 {
-  pointer-events:
-    none;
+.card-name .search-highlight-v004,
+.supported-name .search-highlight-v004,
+.viewer-name .search-highlight-v004 {
+  pointer-events: none;
 }
-
 
 /* =========================================================
    MOBILE
    ========================================================= */
 
-@media (
-  max-width: 680px
-) {
-
+@media (max-width: 680px) {
   .search-discovery-v004 {
     grid-template-columns:
       auto
       minmax(0, 1fr);
 
-    gap:
-      7px;
+    gap: 7px;
 
-    padding-top:
-      7px;
+    padding-top: 7px;
   }
-
 
   .search-discovery-actions-v004 {
-    grid-column:
-      1 / -1;
+    grid-column: 1 / -1;
 
-    justify-content:
-      flex-end;
+    justify-content: flex-end;
   }
 
-
   .search-history-chip-v004 {
-    max-width:
-      140px;
+    max-width: 140px;
 
-    padding:
-      4px
-      6px;
+    padding: 4px 6px;
 
-    font-size:
-      7px;
+    font-size: 7px;
   }
 }
