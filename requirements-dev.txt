@@ -1,0 +1,3 @@
+jsonschema>=4
+playwright>=1.40
+pillow>=10

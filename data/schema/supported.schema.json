@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "supported.schema.json",
+  "title": "Имена, которые понимает модель (data/supported.json, opus-supported.json)",
+  "type": "array",
+  "items": { "type": "string", "minLength": 1 }
+}
