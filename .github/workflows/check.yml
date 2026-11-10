@@ -42,5 +42,8 @@ jobs:
       - name: Mixes importer test
         run: python3 tests/test_mixes.py
 
+      - name: Embeddings tools test
+        run: python3 tests/test_embed.py
+
       - name: Smoke test
         run: python3 tests/smoke.py

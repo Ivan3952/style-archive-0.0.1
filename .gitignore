@@ -13,3 +13,7 @@ data/*.before_*.json
 Thumbs.db
 node_modules/
 dist/
+
+# Эмбеддинги и отчёты оценки (большие, считаются на ПК)
+embeddings/
+reports/
