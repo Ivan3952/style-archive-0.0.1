@@ -264,6 +264,16 @@
           </div>
 
           <div>
+            <b>${tr("БЫСТРЫЙ ПРОСМОТР", "QUICK PEEK")}</b>
+            <span>
+              ${tr(
+                "Задержи курсор на превью (на телефоне — долгое нажатие): покажем крупно и все варианты стиля. S — сохранить, A — в микс, Enter — открыть. Выключается в «Фильтрах».",
+                "Hover a preview (long-press on a phone) to see it large with every variant. S saves, A adds to the mix, Enter opens. Turn it off in Filters."
+              )}
+            </span>
+          </div>
+
+          <div>
             <b>${tr("НЕДАВНИЕ", "RECENT")}</b>
             <span>
               ${tr(

@@ -1,0 +1,196 @@
+/* =========================================================
+   БЫСТРЫЙ ПРОСМОТР 0.1.2
+   ========================================================= */
+
+.quick-peek-v007 {
+  position: fixed;
+  z-index: 65;
+  display: grid;
+  gap: 10px;
+  width: min(400px, 36vw);
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.quick-peek-v007[hidden],
+.quick-peek-backdrop-v007[hidden] {
+  display: none;
+}
+
+.quick-peek-media-v007 {
+  position: relative;
+  width: 100%;
+  max-height: min(62vh, 560px);
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--line-soft);
+  cursor: zoom-in;
+}
+
+.quick-peek-media-v007 img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.quick-peek-full-v007 {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.quick-peek-full-v007.loaded {
+  opacity: 1;
+}
+
+.quick-peek-strip-v007 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.quick-peek-strip-v007::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-peek-strip-v007 button {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 52px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: var(--line-soft);
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.quick-peek-strip-v007 button.active {
+  border-color: var(--accent);
+  opacity: 1;
+}
+
+.quick-peek-strip-v007 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quick-peek-strip-v007 span {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.quick-peek-info-v007 {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.quick-peek-name-v007 {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quick-peek-count-v007 {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.quick-peek-actions-v007 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.quick-peek-actions-v007 button {
+  appearance: none;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.quick-peek-actions-v007 button:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.quick-peek-actions-v007 button.on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.quick-peek-actions-v007 kbd {
+  padding: 0 4px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--muted-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+/* телефон: окно по центру поверх затемнения */
+.quick-peek-backdrop-v007 {
+  position: fixed;
+  inset: 0;
+  z-index: 64;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.quick-peek-v007.touch {
+  top: 50%;
+  left: 50%;
+  width: min(420px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  transform: translate(-50%, -50%);
+}
+
+.quick-peek-v007.touch .quick-peek-media-v007 {
+  max-height: 58dvh;
+}
+
+.quick-peek-v007.touch .quick-peek-actions-v007 button {
+  padding: 9px 12px;
+}
+
+/* долгое нажатие не должно вызывать системное меню картинки */
+.card-media img {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html.quick-peek-touch-v007 body {
+  overflow: hidden;
+}
+
+html.quick-peek-touch-v007 .back-to-top-qol,
+html.quick-peek-touch-v007 .mix-dock-v006 {
+  visibility: hidden;
+}
