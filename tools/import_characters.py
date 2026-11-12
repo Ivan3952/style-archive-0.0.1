@@ -20,8 +20,10 @@
   - Строка с кириллицей вне подписи — заметка («рекомендуется негатив ...», «+arm cannon», «заменяемые теги: ...»).
   - У большой буквы несколько страниц (aam1, aam1/aam2, aam1/aam3): страницы находятся обходом ссылок.
 
-Картинки: media/characters/<id>.webp (WebP, ширина до 512). По умолчанию скачиваются только для новых
-персонажей; --refresh-images перекачивает все и перезаписывает изменившиеся.
+Картинки: media/characters/<id>.webp (WebP, ширина до 512). Качаются сразу после разбора своей страницы,
+не чаще одной в секунду (первый полный импорт: около часа). При отказе сервера (403/429) — пауза и повтор;
+если отказы не проходят, импорт останавливается без записи данных, а уже скачанные картинки остаются,
+и повторный запуск их не качает. --refresh-images перекачивает все и перезаписывает изменившиеся.
 
 Нужно: pip install pillow
 """
@@ -52,6 +54,11 @@ MEDIA_URL = "/media/characters/"
 USER_AGENT = "StyleArchiveImporter/1.0 (+https://stylearchive.art)"
 IMAGE_WIDTH = 512
 IMAGE_QUALITY = 82
+# Картинки качаются сразу после разбора своей страницы (ссылки sitesv-images-rt могут быть временными)
+# и не чаще одной в IMAGE_DELAY секунд. При отказе (403/429) — пауза и повтор, без смены «личности» клиента.
+IMAGE_DELAY = 1.0
+BACKOFF = (30, 90)
+STOP_AFTER_FAILURES = 2
 
 CYRILLIC = re.compile(r"[а-яё]", re.I)
 VARIANT_START = re.compile(r"^\d?(girl|boy|other)s?\b", re.I)
@@ -195,21 +202,38 @@ def slugify(text: str) -> str:
     return slug or "character"
 
 
+class IdAssigner:
+    """id по имени; если имя уже было в прошлом импорте, id сохраняется. Работает постранично."""
+
+    def __init__(self, previous: dict[str, str]) -> None:
+        self.previous = previous
+        self.used: set[str] = set()
+
+    def __call__(self, characters: list[dict]) -> None:
+        for character in characters:
+            key = character["name"].casefold()
+            candidate = self.previous.get(key) or slugify(character["name"])
+            base, n = candidate, 2
+            while candidate in self.used:
+                candidate = f"{base}-{n}"
+                n += 1
+            self.used.add(candidate)
+            character["id"] = candidate
+
+
 def assign_ids(characters: list[dict], previous: dict[str, str]) -> None:
-    """id по имени; если имя уже было в прошлом импорте, id сохраняется."""
-    used: set[str] = set()
-    for character in characters:
-        key = character["name"].casefold()
-        candidate = previous.get(key) or slugify(character["name"])
-        base, n = candidate, 2
-        while candidate in used:
-            candidate = f"{base}-{n}"
-            n += 1
-        used.add(candidate)
-        character["id"] = candidate
+    IdAssigner(previous)(characters)
 
 
 # ---------------------------------------------------------------- загрузка
+
+
+class Refused(RuntimeError):
+    """Сервер отказал (403/429): повтор сразу бесполезен, нужна пауза."""
+
+
+class StopImport(Exception):
+    """Отказы не проходят и после пауз: импорт останавливается, данные не пишутся."""
 
 
 def fetch(url: str, retries: int = 3, delay: float = 0.4) -> bytes:
@@ -221,13 +245,33 @@ def fetch(url: str, retries: int = 3, delay: float = 0.4) -> bytes:
                 body = response.read()
             time.sleep(delay)
             return body
+        except urllib.error.HTTPError as error:
+            if error.code in (403, 429):
+                raise Refused(f"HTTP {error.code}") from error
+            if error.code in (401, 404, 410):
+                raise RuntimeError(f"HTTP {error.code}") from error
+            last_error = error
+            time.sleep(2 * (attempt + 1))
         except (urllib.error.URLError, TimeoutError) as error:
             last_error = error
             time.sleep(2 * (attempt + 1))
-    raise RuntimeError(f"не удалось скачать {url}: {last_error}")
+    raise RuntimeError(f"не удалось скачать: {last_error}")
 
 
-def crawl(only: set[str] | None) -> tuple[list[dict], list[str]]:
+def fetch_image(url: str) -> bytes:
+    """Картинка с паузами при отказе. Бросает Refused, если отказы не прошли и после всех пауз."""
+    for pause in (*BACKOFF, None):
+        try:
+            return fetch(url, delay=IMAGE_DELAY)
+        except Refused:
+            if pause is None:
+                raise
+            print(f"  сервер отказал, пауза {pause} с…", file=sys.stderr)
+            time.sleep(pause)
+    raise Refused("нет попыток")
+
+
+def crawl(only: set[str] | None, on_page=None) -> tuple[list[dict], list[str]]:
     """Обходит раздел, начиная с корня. Возвращает персонажей в порядке страниц и список страниц."""
     queue, seen, pages, characters = [SOURCE_PATH], set(), [], []
     while queue:
@@ -249,6 +293,8 @@ def crawl(only: set[str] | None) -> tuple[list[dict], list[str]]:
             character["page"] = path[len(SOURCE_PATH) :] or "/"
         characters.extend(found)
         print(f"  {path[len(SOURCE_PATH):] or '/'}: {len(found)}", file=sys.stderr)
+        if on_page and found:
+            on_page(found)
 
         for href in links:
             target = urlparse(urljoin(SOURCE_URL, href))
@@ -331,12 +377,57 @@ def main() -> int:
         print("--only нельзя совмещать с --apply: остальные буквы пропали бы из данных.", file=sys.stderr)
         return 2
 
-    print("Обход страниц…", file=sys.stderr)
-    characters, pages = crawl(only)
-
     previous = load_previous()
     previous_ids = {c["name"].casefold(): c["id"] for c in previous.get("characters", [])}
-    assign_ids(characters, previous_ids)
+    assign = IdAssigner(previous_ids)
+    stats = {"downloaded": 0, "skipped": 0, "failed": 0, "refused_in_row": 0}
+
+    def download(found: list[dict]) -> None:
+        for character in found:
+            dst = MEDIA_DIR / f"{character['id']}.webp"
+            if dst.exists() and not args.refresh_images:
+                from PIL import Image
+
+                with Image.open(dst) as image:
+                    character["width"], character["height"] = image.size
+                stats["skipped"] += 1
+                continue
+            try:
+                character["width"], character["height"] = save_image(fetch_image(character["image_src"]), dst)
+                stats["downloaded"] += 1
+                stats["refused_in_row"] = 0
+            except Refused as error:
+                stats["failed"] += 1
+                stats["refused_in_row"] += 1
+                print(f"  картинка не скачалась: {character['name']}: {error}", file=sys.stderr)
+                if stats["refused_in_row"] >= STOP_AFTER_FAILURES:
+                    raise StopImport from error
+            except Exception as error:  # битая картинка не критична: персонаж остаётся без превью
+                stats["failed"] += 1
+                print(f"  картинка не скачалась: {character['name']}: {error}", file=sys.stderr)
+
+    def on_page(found: list[dict]) -> None:
+        assign(found)
+        if args.apply:
+            download(found)
+            total = stats["downloaded"] + stats["skipped"] + stats["failed"]
+            print(
+                f"    картинки: всего {total}, скачано {stats['downloaded']}, "
+                f"уже были {stats['skipped']}, ошибок {stats['failed']}",
+                file=sys.stderr,
+            )
+
+    print("Обход страниц…" + (" Картинки качаются по ходу, около секунды на каждую." if args.apply else ""), file=sys.stderr)
+    try:
+        characters, pages = crawl(only, on_page)
+    except StopImport:
+        print(
+            f"\nСервер подряд отказывает в картинках даже после пауз. Скачано: {stats['downloaded']}. "
+            "data/characters.json не записан. Запустите ту же команду позже: уже скачанные картинки "
+            "сохранены и повторно не качаются.",
+            file=sys.stderr,
+        )
+        return 1
 
     if args.inspect:
         for character in characters[: args.inspect]:
@@ -367,24 +458,6 @@ def main() -> int:
         )
         return 1
 
-    previous_by_id = {c["id"]: c for c in previous.get("characters", [])}
-    downloaded = skipped = failed = 0
-    for index, character in enumerate(characters, 1):
-        dst = MEDIA_DIR / f"{character['id']}.webp"
-        known = previous_by_id.get(character["id"], {})
-        if dst.exists() and not args.refresh_images and known.get("width"):
-            character["width"], character["height"] = known["width"], known["height"]
-            skipped += 1
-            continue
-        try:
-            character["width"], character["height"] = save_image(fetch(character["image_src"], delay=0.15), dst)
-            downloaded += 1
-        except Exception as error:  # картинка не критична: персонаж остаётся, превью нет
-            failed += 1
-            print(f"  картинка не скачалась: {character['name']}: {error}", file=sys.stderr)
-        if index % 100 == 0:
-            print(f"  картинки: {index}/{len(characters)}", file=sys.stderr)
-
     out = []
     for character in characters:
         has_image = (MEDIA_DIR / f"{character['id']}.webp").exists()
@@ -412,7 +485,7 @@ def main() -> int:
     DATA_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     digest = hashlib.sha1(DATA_FILE.read_bytes()).hexdigest()[:10]
     print(f"\nЗаписано: {DATA_FILE.relative_to(ROOT)} ({len(out)} персонажей, sha1 {digest})")
-    print(f"Картинки: скачано {downloaded}, уже были {skipped}, ошибок {failed}")
+    print(f"Картинки: скачано {stats['downloaded']}, уже были {stats['skipped']}, ошибок {stats['failed']}")
     return 0
 
 
