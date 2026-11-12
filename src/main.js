@@ -22,10 +22,12 @@ import "./css/info-v004.css";
 import "./css/usability-v005.css";
 import "./css/winter-v005.css";
 import "./css/mix-dock-v006.css";
+import "./css/workspace-v006.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";
 import "./archives.js";
+import "./legacy/fresh-v006.js";
 import "./legacy/app.js";
 import "./legacy/danbooru-v003.js";
 import "./legacy/qol-v003.js";
@@ -41,3 +43,4 @@ import "./legacy/locale-ru-v004.js";
 import "./legacy/info-v004.js";
 import "./legacy/usability-v005.js";
 import "./legacy/mix-dock-v006.js";
+import "./legacy/restore-v006.js";

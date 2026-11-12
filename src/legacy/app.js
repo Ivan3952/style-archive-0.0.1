@@ -91,8 +91,8 @@
       sortArchive: "ARCHIVE",
       sortNewest: "NEWEST",
       sortOldest: "OLDEST",
-      sortAddedNewest: "ADDED ↓",
-      sortAddedOldest: "ADDED ↑",
+      sortAddedNewest: "SAVED LATEST",
+      sortAddedOldest: "SAVED EARLIEST",
       sortRandom: "RANDOM",
       clear: "CLEAR",
       loadingArchive: "LOADING ARCHIVE",
@@ -118,6 +118,8 @@
       addedToast: "ADDED ✓",
       removedToast: "REMOVED FROM MIX",
       cleared: "CLEARED",
+      undo: "UNDO",
+      freshBadge: "NEW",
       nothingFound: "NOTHING FOUND",
       nothingFoundHint: "Change the query or reset the filters.",
       resetFilters: "RESET FILTERS",
@@ -244,8 +246,8 @@
       sortArchive: "АРХИВ",
       sortNewest: "НОВЫЕ",
       sortOldest: "СТАРЫЕ",
-      sortAddedNewest: "ДОБАВЛЕНЫ ↓",
-      sortAddedOldest: "ДОБАВЛЕНЫ ↑",
+      sortAddedNewest: "СОХРАНЕНЫ НЕДАВНО",
+      sortAddedOldest: "СОХРАНЕНЫ ДАВНО",
       sortRandom: "СЛУЧАЙНО",
       clear: "СБРОСИТЬ",
       loadingArchive: "ЗАГРУЗКА АРХИВА",
@@ -271,6 +273,8 @@
       addedToast: "ДОБАВЛЕНО ✓",
       removedToast: "УБРАНО ИЗ МИКСА",
       cleared: "ОЧИЩЕНО",
+      undo: "ОТМЕНИТЬ",
+      freshBadge: "НОВОЕ",
       nothingFound: "НИЧЕГО НЕ НАЙДЕНО",
       nothingFoundHint: "Измените запрос или сбросьте фильтры.",
       resetFilters: "СБРОСИТЬ ФИЛЬТРЫ",
@@ -798,12 +802,15 @@
   }
 
   /* целиком заменяет состав микса (используется панелью микса) */
-  function setTray(names) {
+  function setTray(names, toast = null) {
+    const previous = [...state.tray];
     state.tray = names.filter((value) => typeof value === "string" && value.trim());
     savePersistentState();
     updateVisibleTrayButtons();
     if (!el.utilityDrawer.hidden && state.drawerTab === "tray") renderTray();
     updateViewerActions();
+    /* toast задан: показываем уведомление с «Отменить», которое возвращает прежний состав */
+    if (toast) showToast(toast, () => setTray(previous, null));
   }
 
   function updateUtilityCounts() {
@@ -814,11 +821,30 @@
     el.drawerRecentCount.textContent = state.recent.length;
   }
 
-  function showToast(text) {
+  /* undo: функция отмены. С ней в уведомлении появляется кнопка «Отменить», и оно висит дольше. */
+  function showToast(text, undo = null) {
     window.clearTimeout(state.toastTimer);
     el.toast.textContent = text;
+    el.toast.classList.toggle("has-action", Boolean(undo));
+
+    if (undo) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "toast-undo";
+      button.textContent = t("undo");
+      button.addEventListener("click", () => {
+        window.clearTimeout(state.toastTimer);
+        el.toast.classList.remove("show", "has-action");
+        undo();
+      });
+      el.toast.appendChild(button);
+    }
+
     el.toast.classList.add("show");
-    state.toastTimer = window.setTimeout(() => el.toast.classList.remove("show"), 1250);
+    state.toastTimer = window.setTimeout(
+      () => el.toast.classList.remove("show", "has-action"),
+      undo ? 6000 : 1250
+    );
   }
 
   async function copyValue(value, toast = null) {
@@ -905,18 +931,21 @@
     });
   }
 
-  function toggleSaved(styleId) {
+  function toggleSaved(styleId, restoreStamp = null) {
     const willSave = !state.saved.has(styleId);
+    const previousStamp = state.savedAt.get(styleId) || null;
     if (willSave) {
       state.saved.add(styleId);
-      state.savedAt.set(styleId, Date.now());
+      /* при отмене удаления возвращаем прежнее время, чтобы стиль встал на своё место */
+      state.savedAt.set(styleId, restoreStamp || Date.now());
     } else {
       state.saved.delete(styleId);
       state.savedAt.delete(styleId);
     }
 
     savePersistentState();
-    showToast(t(willSave ? "savedToast" : "unsavedToast"));
+    if (willSave) showToast(t("savedToast"));
+    else showToast(t("unsavedToast"), () => toggleSaved(styleId, previousStamp));
 
     document.querySelectorAll("[data-save-id]").forEach((button) => {
       if (button.dataset.saveId !== styleId) return;
@@ -945,24 +974,24 @@
     const index = state.tray.findIndex((item) => trayKey(item) === key);
     const willAdd = index < 0;
 
-    if (!willAdd) state.tray.splice(index, 1);
-    else state.tray.push(name);
-
-    savePersistentState();
-    showToast(t(willAdd ? "addedToast" : "removedToast"));
-    updateVisibleTrayButtons();
-    if (!el.utilityDrawer.hidden && state.drawerTab === "tray") renderTray();
-    updateViewerActions();
+    if (willAdd) {
+      setTray([...state.tray, name]);
+      showToast(t("addedToast"));
+    } else {
+      setTray(
+        state.tray.filter((_, position) => position !== index),
+        t("removedToast")
+      );
+    }
   }
 
   function removeFromTray(name) {
     const key = trayKey(name);
-    state.tray = state.tray.filter((item) => trayKey(item) !== key);
-    savePersistentState();
-    showToast(t("removedToast"));
-    updateVisibleTrayButtons();
+    setTray(
+      state.tray.filter((item) => trayKey(item) !== key),
+      t("removedToast")
+    );
     renderTray();
-    updateViewerActions();
   }
 
   function updateVisibleTrayButtons() {
@@ -1252,8 +1281,12 @@
     if (queryNorm) el.resultCount.textContent = previewCountLabel(state.filtered.length);
     else el.resultCount.textContent = `${state.filtered.length} / ${state.styles.length}`;
 
+    /* подборка может прийти из «Новое с прошлого визита»: тогда у неё своя подпись */
+    const discoveryLabel =
+      window.STYLE_ARCHIVE_FRESH_V006?.labelFor?.(state.discoveryStyles) || t("discoverStatus");
+
     el.statusLine.textContent = state.discoveryStyles
-      ? `${t("discoverStatus")} / ${state.filtered.length}`
+      ? `${discoveryLabel} / ${state.filtered.length}`
       : state.savedOnly
         ? `${t("savedStatus")} / ${state.filtered.length}`
         : `${t("visualIndex")} / ${state.filtered.length}`;
@@ -1271,6 +1304,8 @@
       el.searchSupported.hidden = true;
       el.searchSupportedList.innerHTML = "";
     }
+
+    window.dispatchEvent(new CustomEvent("style-archive:filters"));
   }
 
   function rankSupportedEntries(entries, queryNorm, queryCompact) {
@@ -1439,6 +1474,7 @@
       <div class="card-media" data-open-id="${escapeHtml(style.id)}"${ratioStyle}>
         ${thumb ? `<img src="${escapeAttr(thumb)}"${sizeAttrs} loading="lazy" decoding="async" alt="${escapeAttr(style.name || t("styleAlt"))}">` : ""}
         ${imageCount > 1 ? `<span class="card-image-count">×${imageCount}</span>` : ""}
+        ${window.STYLE_ARCHIVE_FRESH_V006?.has?.(style.id) ? `<span class="card-fresh-v006">${t("freshBadge")}</span>` : ""}
       </div>
       <div class="card-bottom">
         <div class="card-index">
@@ -2115,12 +2151,9 @@
       copyValue(state.tray.join(", "), t("allCopied"));
     });
     el.clearTrayButton.addEventListener("click", () => {
-      state.tray = [];
-      savePersistentState();
-      updateVisibleTrayButtons();
+      if (!state.tray.length) return;
+      setTray([], t("cleared"));
       renderTray();
-      updateViewerActions();
-      showToast(t("cleared"));
     });
     el.clearRecentButton.addEventListener("click", () => {
       state.recent = [];
@@ -2253,6 +2286,7 @@
       state.media = await mediaResponse.json();
       if (el.archiveSkeleton) el.archiveSkeleton.hidden = true;
       buildVisualLookup();
+      window.STYLE_ARCHIVE_FRESH_V006?.compute?.(state.styles);
       state.recent = state.recent.filter((id) => state.styleById.has(id)).slice(0, RECENT_LIMIT);
 
       const visualCount = state.styles.length;
@@ -2287,6 +2321,7 @@
     syncSupportedSortControls,
     openViewer,
     closeViewer,
+    renderVisualMore,
     setTray,
     toggleTray,
     isInTray,

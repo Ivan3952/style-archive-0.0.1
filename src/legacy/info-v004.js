@@ -247,8 +247,8 @@
             <b>${tr("МИКС", "MIX")}</b>
             <span>
               ${tr(
-                "Временный список: набрать стили и скопировать одной строкой.",
-                "A scratch list: gather styles and copy them as one line."
+                "Набор стилей для одного промпта. Панель внизу показывает готовую строку, там же веса, замки и формат.",
+                "A set of styles for one prompt. The bottom bar shows the ready line, with weights, locks and format."
               )}
             </span>
           </div>

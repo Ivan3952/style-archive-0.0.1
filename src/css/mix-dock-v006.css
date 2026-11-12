@@ -189,11 +189,6 @@ html.mix-dock-open-v006 .toast {
   margin-left: auto;
 }
 
-.mix-dock-clear-v006.armed {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
 .mix-dock-base-v006 {
   display: grid;
   gap: 6px;

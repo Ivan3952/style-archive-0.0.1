@@ -21,8 +21,6 @@
 
   let app = null;
   let store = readStore();
-  let clearTimer = null;
-  let clearArmed = false;
 
   function readStore() {
     const fallback = { weights: {}, locks: [], format: "list", base: "", open: false };
@@ -64,24 +62,45 @@
   const weightOf = (name) => store.weights[keyOf(name)] ?? 1;
   const isLocked = (name) => store.locks.includes(keyOf(name));
 
-  /* убирает из хранилища веса и замки стилей, которых уже нет в миксе */
+  /*
+   * Убирает из хранилища веса и замки стилей, которых уже нет в миксе.
+   * Убранное несколько секунд помнится: если стиль вернули кнопкой «Отменить»,
+   * его вес и замок возвращаются вместе с ним.
+   */
+  const UNDO_WINDOW = 8000;
+  const removed = new Map();
+
   function pruneStore() {
     const keys = new Set(app.state.tray.map(keyOf));
+    const now = Date.now();
     let changed = false;
 
-    Object.keys(store.weights).forEach((key) => {
-      if (!keys.has(key)) {
-        delete store.weights[key];
+    keys.forEach((key) => {
+      const memo = removed.get(key);
+      if (!memo) return;
+      removed.delete(key);
+      if (now - memo.at > UNDO_WINDOW) return;
+      if (memo.weight !== undefined && store.weights[key] === undefined) {
+        store.weights[key] = memo.weight;
+        changed = true;
+      }
+      if (memo.locked && !store.locks.includes(key)) {
+        store.locks.push(key);
         changed = true;
       }
     });
 
-    const locks = store.locks.filter((key) => keys.has(key));
-    if (locks.length !== store.locks.length) {
-      store.locks = locks;
-      changed = true;
-    }
+    const gone = new Set(
+      [...Object.keys(store.weights), ...store.locks].filter((key) => !keys.has(key))
+    );
 
+    gone.forEach((key) => {
+      removed.set(key, { weight: store.weights[key], locked: store.locks.includes(key), at: now });
+      delete store.weights[key];
+      changed = true;
+    });
+
+    if (gone.size) store.locks = store.locks.filter((key) => keys.has(key));
     if (changed) writeStore();
   }
 
@@ -213,7 +232,7 @@
               "Replace unlocked styles with random ones from Saved"
             )
           )}">${tr("ЗАМЕНИТЬ СЛУЧАЙНЫМИ", "SHUFFLE UNLOCKED")}</button>
-          <button class="mix-dock-action-v006 mix-dock-clear-v006${clearArmed ? " armed" : ""}" type="button" data-act="clear">${clearArmed ? tr("ТОЧНО ОЧИСТИТЬ?", "CLEAR ALL?") : tr("ОЧИСТИТЬ", "CLEAR")}</button>
+          <button class="mix-dock-action-v006 mix-dock-clear-v006" type="button" data-act="clear">${tr("ОЧИСТИТЬ", "CLEAR")}</button>
         </div>
         <label class="mix-dock-base-v006">
           <span>${tr("ПРОМПТ ПЕРЕД СТИЛЯМИ", "PROMPT BEFORE STYLES")}</span>
@@ -280,7 +299,10 @@
   }
 
   function removeName(name) {
-    app.setTray(app.state.tray.filter((item) => keyOf(item) !== keyOf(name)));
+    app.setTray(
+      app.state.tray.filter((item) => keyOf(item) !== keyOf(name)),
+      app.t("removedToast")
+    );
   }
 
   /* заменяет незафиксированные стили случайными: сначала из избранного, потом из всего архива */
@@ -334,9 +356,8 @@
     const next = current.map((name) => (isLocked(name) ? name : chosen[cursor++]));
 
     /* веса заменённых стилей сбрасываются вместе с ними (pruneStore) */
-    app.setTray(next);
-
-    app.showToast(
+    app.setTray(
+      next,
       fromSaved.length >= free.length
         ? tr("ЗАМЕНЕНО ИЗ ИЗБРАННОГО", "SHUFFLED FROM SAVED")
         : tr("ЗАМЕНЕНО: ЧАСТЬ ИЗ АРХИВА", "SHUFFLED: SOME FROM ARCHIVE")
@@ -344,21 +365,7 @@
   }
 
   function clearMix() {
-    if (!clearArmed) {
-      clearArmed = true;
-      window.clearTimeout(clearTimer);
-      clearTimer = window.setTimeout(() => {
-        clearArmed = false;
-        render();
-      }, 3500);
-      render();
-      return;
-    }
-
-    clearArmed = false;
-    window.clearTimeout(clearTimer);
-    app.setTray([]);
-    app.showToast(app.t("cleared"));
+    app.setTray([], app.t("cleared"));
   }
 
   dock.addEventListener("click", (event) => {
