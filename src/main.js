@@ -21,6 +21,7 @@ import "./css/mobile.css";
 import "./css/info-v004.css";
 import "./css/usability-v005.css";
 import "./css/winter-v005.css";
+import "./css/mix-dock-v006.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";
@@ -39,3 +40,4 @@ import "./legacy/saved-new-tab-v004.js";
 import "./legacy/locale-ru-v004.js";
 import "./legacy/info-v004.js";
 import "./legacy/usability-v005.js";
+import "./legacy/mix-dock-v006.js";

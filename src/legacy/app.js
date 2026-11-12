@@ -22,7 +22,7 @@
       randomAny: "ANY",
       discover12: "DISCOVER 12",
       recent: "RECENT",
-      tray: "ADDED",
+      tray: "MIX",
       saved: "SAVED",
       info: "INFO",
       aboutTitle: "ABOUT",
@@ -116,7 +116,7 @@
       savedToast: "SAVED ✓",
       unsavedToast: "REMOVED FROM SAVED",
       addedToast: "ADDED ✓",
-      removedToast: "REMOVED FROM ADDED",
+      removedToast: "REMOVED FROM MIX",
       cleared: "CLEARED",
       nothingFound: "NOTHING FOUND",
       nothingFoundHint: "Change the query or reset the filters.",
@@ -146,8 +146,8 @@
       supportedGeneric: "SUPPORTED",
       dataError: "SUPPORTED DATA ERROR",
       empty: "EMPTY",
-      trayEmptyToast: "NOTHING ADDED",
-      trayEmpty: "Added styles land here. Copy them all with one button.",
+      trayEmptyToast: "MIX IS EMPTY",
+      trayEmpty: "Styles you add land here. Copy them all with one button.",
       recentEmpty: "Nothing opened yet.",
       noMatchingStyles: "Nothing found.",
       availablePreviewPresets: "Preview presets",
@@ -174,7 +174,7 @@
       randomAny: "ЛЮБОЙ",
       discover12: "ПОДБОРКА 12",
       recent: "НЕДАВНИЕ",
-      tray: "ДОБАВЛЕННЫЕ",
+      tray: "МИКС",
       saved: "ИЗБРАННОЕ",
       info: "ИНФО",
       aboutTitle: "О ПРОЕКТЕ",
@@ -269,7 +269,7 @@
       savedToast: "СОХРАНЕНО ✓",
       unsavedToast: "УДАЛЕНО ИЗ ИЗБРАННОГО",
       addedToast: "ДОБАВЛЕНО ✓",
-      removedToast: "УДАЛЕНО ИЗ ДОБАВЛЕННЫХ",
+      removedToast: "УБРАНО ИЗ МИКСА",
       cleared: "ОЧИЩЕНО",
       nothingFound: "НИЧЕГО НЕ НАЙДЕНО",
       nothingFoundHint: "Измените запрос или сбросьте фильтры.",
@@ -299,7 +299,7 @@
       supportedGeneric: "ПОДДЕРЖИВАЕТСЯ",
       dataError: "ОШИБКА ДАННЫХ",
       empty: "ПУСТО",
-      trayEmptyToast: "НИЧЕГО НЕ ДОБАВЛЕНО",
+      trayEmptyToast: "МИКС ПУСТОЙ",
       trayEmpty: "Добавленные стили будут здесь. Весь список копируется одной кнопкой.",
       recentEmpty: "Пока ничего не открывали.",
       noMatchingStyles: "Ничего не нашлось.",
@@ -794,6 +794,16 @@
     localStorage.setItem("style-archive:tray", JSON.stringify(state.tray));
     localStorage.setItem("style-archive:recent", JSON.stringify(state.recent));
     updateUtilityCounts();
+    window.dispatchEvent(new CustomEvent("style-archive:state"));
+  }
+
+  /* целиком заменяет состав микса (используется панелью микса) */
+  function setTray(names) {
+    state.tray = names.filter((value) => typeof value === "string" && value.trim());
+    savePersistentState();
+    updateVisibleTrayButtons();
+    if (!el.utilityDrawer.hidden && state.drawerTab === "tray") renderTray();
+    updateViewerActions();
   }
 
   function updateUtilityCounts() {
@@ -2277,6 +2287,13 @@
     syncSupportedSortControls,
     openViewer,
     closeViewer,
+    setTray,
+    toggleTray,
+    isInTray,
+    trayKey,
+    copyValue,
+    showToast,
+    t,
   };
 
   // V003_DANBOORU_UI
