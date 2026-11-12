@@ -43,14 +43,20 @@
   <body data-v003-danbooru-ui="1">
     <!-- V003_DANBOORU_UI -->
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Style Archive">
-        <span class="brand-mark">STYLE / ARCHIVE</span>
-        <span class="brand-count"
-          ><b id="brandVisualCount">000000</b> <span data-i18n="previewsShort">PREVIEWS</span> ·
-          <b id="brandSupportedCount">000000</b>
-          <span data-i18n="supportedShort">SUPPORTED</span></span
-        >
-      </a>
+      <div class="brand-row-v008">
+        <a class="brand" href="./" aria-label="Style Archive">
+          <span class="brand-mark">STYLE / ARCHIVE</span>
+          <span class="brand-count"
+            ><b id="brandVisualCount">000000</b> <span data-i18n="previewsShort">PREVIEWS</span> ·
+            <b id="brandSupportedCount">000000</b>
+            <span data-i18n="supportedShort">SUPPORTED</span></span
+          >
+        </a>
+        <nav class="section-switch-v008" aria-label="Раздел">
+          <a href="./" aria-current="page" data-i18n="sectionStyles">СТИЛИ</a>
+          <a href="./characters.html" data-i18n="sectionCharacters">ПЕРСОНАЖИ</a>
+        </nav>
+      </div>
 
       <nav class="top-actions" aria-label="Основные действия">
         <div class="random-wrap">

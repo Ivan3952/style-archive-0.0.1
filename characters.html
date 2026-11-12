@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta id="themeColor" name="theme-color" content="#0a0e14" />
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem("style-archive:theme");
+          const theme =
+            saved === "light" || saved === "dark"
+              ? saved
+              : window.matchMedia("(prefers-color-scheme: light)").matches
+                ? "light"
+                : "dark";
+          document.documentElement.dataset.theme = theme;
+          const lang = localStorage.getItem("style-archive:lang");
+          if (lang === "ru" || lang === "en") document.documentElement.lang = lang;
+          else if (
+            !String(navigator.language || "")
+              .toLowerCase()
+              .startsWith("ru")
+          )
+            document.documentElement.lang = "en";
+        } catch (_) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+    <title>Персонажи Stable Waifu: STYLE / ARCHIVE</title>
+    <meta
+      name="description"
+      content="Персонажи, которых знает Stable Waifu AM: превью, готовые строки тегов, варианты образов. Поиск по имени, тайтлу и тегам, копирование в один клик."
+    />
+    <link rel="canonical" href="https://stylearchive.art/characters.html" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="STYLE / ARCHIVE" />
+    <meta property="og:title" content="STYLE / ARCHIVE: персонажи Stable Waifu" />
+    <meta
+      property="og:description"
+      content="Персонажи Stable Waifu AM с превью и готовыми строками тегов."
+    />
+    <meta property="og:url" content="https://stylearchive.art/characters.html" />
+    <meta property="og:image" content="https://stylearchive.art/og.jpg" />
+  </head>
+  <body class="characters-page">
+    <header class="topbar">
+      <div class="brand-row-v008">
+        <a class="brand" href="./" aria-label="Style Archive">
+          <span class="brand-mark">STYLE / ARCHIVE</span>
+        </a>
+        <nav class="section-switch-v008" aria-label="Раздел">
+          <a href="./" data-ch-i18n="styles">СТИЛИ</a>
+          <a href="./characters.html" aria-current="page" data-ch-i18n="characters">ПЕРСОНАЖИ</a>
+        </nav>
+      </div>
+      <nav class="top-actions" aria-label="Основные действия">
+        <button class="text-button" id="chSavedButton" type="button">
+          <span data-ch-i18n="saved">СОХРАНЁННЫЕ</span> <span id="chSavedCount">0</span>
+        </button>
+        <button class="text-button locale-button" id="chLangButton" type="button">RU</button>
+        <button class="text-button theme-button" id="chThemeButton" type="button">◐</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">
+            <span>STABLE WAIFU AM</span> / <span data-ch-i18n="eyebrow">ИНДЕКС ПЕРСОНАЖЕЙ</span>
+          </p>
+          <h1 data-ch-i18n="title">Персонажи</h1>
+        </div>
+        <div class="intro-stats">
+          <div class="stat-block">
+            <span class="stat-value" id="chStatCount">0</span>
+            <span class="stat-label" data-ch-i18n="statCharacters">ПЕРСОНАЖЕЙ</span>
+          </div>
+          <div class="stat-block">
+            <span class="stat-value" id="chStatTitles">0</span>
+            <span class="stat-label" data-ch-i18n="statTitles">ТАЙТЛОВ</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar ch-toolbar-v008" aria-label="Поиск">
+        <div class="toolbar-bar-v005">
+          <label class="search-wrap">
+            <span class="search-label" data-ch-i18n="search">ПОИСК</span>
+            <input
+              id="chSearch"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              data-ch-i18n-placeholder="searchPlaceholder"
+              placeholder="имя, тайтл или тег"
+            />
+            <span class="search-count" id="chCount">0</span>
+          </label>
+        </div>
+        <div class="ch-filters-v008">
+          <div class="ch-title-filter-v008">
+            <input
+              id="chTitle"
+              list="chTitleList"
+              autocomplete="off"
+              spellcheck="false"
+              data-ch-i18n-placeholder="titlePlaceholder"
+              placeholder="тайтл: все"
+            />
+            <datalist id="chTitleList"></datalist>
+            <button class="ch-clear-v008" id="chTitleClear" type="button" hidden>×</button>
+          </div>
+          <div class="ch-chips-v008" id="chTopTitles"></div>
+        </div>
+        <div class="ch-letters-v008" id="chLetters"></div>
+      </section>
+
+      <p class="ch-status-v008" id="chStatus"></p>
+      <div class="ch-grid-v008" id="chGrid" aria-live="polite"></div>
+      <div class="ch-sentinel-v008" id="chSentinel"></div>
+      <p class="ch-empty-v008" id="chEmpty" hidden></p>
+
+      <p class="ch-source-v008">
+        <span data-ch-i18n="sourceText"
+          >Список и превью собраны сообществом Stable Waifu. Источник:</span
+        >
+        <a
+          href="https://sites.google.com/view/stable-waifu/characters-am"
+          target="_blank"
+          rel="noopener"
+          >Stable Waifu / Characters AM ↗</a
+        >
+      </p>
+    </main>
+
+    <footer class="site-footer">
+      <span>STYLE / ARCHIVE</span>
+      <span>v%APP_VERSION%</span>
+      <span id="chUpdated"></span>
+    </footer>
+
+    <dialog class="ch-viewer-v008" id="chViewer">
+      <div class="ch-viewer-shell-v008"></div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="./src/characters/main.js"></script>
+  </body>
+</html>

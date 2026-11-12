@@ -88,5 +88,11 @@ export default defineConfig({
     emptyOutDir: true,
     assetsDir: "assets",
     sourcemap: false,
+    rollupOptions: {
+      input: {
+        main: resolve(process.cwd(), "index.html"),
+        characters: resolve(process.cwd(), "characters.html"),
+      },
+    },
   },
 });
