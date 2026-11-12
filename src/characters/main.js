@@ -42,6 +42,11 @@ const DICT = {
     copy: "КОПИРОВАТЬ",
     copyWithMix: "+ МИКС",
     copyWithMixTitle: "Скопировать вместе со стилями из микса",
+    noPreview: "превью пока нет",
+    sourceLink: "на Stable Waifu ↗",
+    sourceLinkTitle: "Открыть персонажа на сайте Stable Waifu (там есть их превью)",
+    generatedNote:
+      "Превью сгенерировано Anima по тегам этой карточки: один промпт и сид для всех персонажей.",
     copied: "СКОПИРОВАНО",
     copiedWithMix: "СКОПИРОВАНО ВМЕСТЕ С МИКСОМ",
     copyFailed: "НЕ УДАЛОСЬ СКОПИРОВАТЬ",
@@ -80,6 +85,11 @@ const DICT = {
     copy: "COPY",
     copyWithMix: "+ MIX",
     copyWithMixTitle: "Copy together with the styles from your mix",
+    noPreview: "no preview yet",
+    sourceLink: "on Stable Waifu ↗",
+    sourceLinkTitle: "Open this character on the Stable Waifu site (they have their own preview)",
+    generatedNote:
+      "Preview generated with Anima from this card's tags: one prompt and seed for every character.",
     copied: "COPIED",
     copiedWithMix: "COPIED WITH THE MIX",
     copyFailed: "COULD NOT COPY",
@@ -303,17 +313,26 @@ function variantLabel(variant, index) {
   return variant.label || `${t("variant")} ${index + 1}`;
 }
 
+function sourceLink(character) {
+  if (!character.source_url) return "";
+  return `<a class="ch-source-link-v008" href="${esc(character.source_url)}" target="_blank" rel="noopener" title="${esc(t("sourceLinkTitle"))}">${esc(t("sourceLink"))}</a>`;
+}
+
 function cardHtml(character) {
   const { index, variant } = currentVariant(character);
   const saved = state.saved.has(character.id);
-  const ratio =
-    character.width && character.height ? `${character.width}/${character.height}` : "2/3";
+  /* без превью — низкая заглушка, чтобы тысячи пустых карточек не выглядели поломкой */
+  const ratio = character.image
+    ? character.width && character.height
+      ? `${character.width}/${character.height}`
+      : "2/3"
+    : "3/2";
   const showVariants = character.variants.length > 1;
 
   return `
     <article class="ch-card-v008" data-id="${esc(character.id)}">
       <button class="ch-media-v008" type="button" data-open style="aspect-ratio:${ratio}" aria-label="${esc(t("open"))}: ${esc(character.name)}">
-        ${character.image ? `<img src=".${esc(character.image)}" alt="" loading="lazy" decoding="async">` : `<span class="ch-noimg-v008">${esc((character.base || character.name).slice(0, 1))}</span>`}
+        ${character.image ? `<img src=".${esc(character.image)}" alt="" loading="lazy" decoding="async">` : `<span class="ch-noimg-v008"><b>${esc((character.base || character.name).slice(0, 1))}</b><small>${esc(t("noPreview"))}</small></span>`}
         ${showVariants ? `<span class="ch-vcount-v008">×${character.variants.length}</span>` : ""}
       </button>
       <div class="ch-body-v008">
@@ -336,6 +355,7 @@ function cardHtml(character) {
         }
         <p class="ch-tags-v008" title="${esc(variant.tags)}">${esc(variant.tags)}</p>
         ${character.notes.map((note) => `<p class="ch-note-v008">${esc(note)}</p>`).join("")}
+        ${sourceLink(character)}
         <div class="ch-actions-v008">
           <button class="ch-btn-v008 primary" type="button" data-copy>${esc(t("copy"))}</button>
           <button class="ch-btn-v008 ch-mix-btn-v008" type="button" data-copy-mix title="${esc(t("copyWithMixTitle"))}">${esc(t("copyWithMix"))}</button>
@@ -529,8 +549,12 @@ function openViewer(id) {
 
   el.viewer.dataset.id = id;
   el.viewer.querySelector(".ch-viewer-shell-v008").innerHTML = `
-    <div class="ch-viewer-media-v008">
-      ${character.image ? `<img src=".${esc(character.image)}" alt="${esc(character.name)}">` : ""}
+    <div class="ch-viewer-media-v008${character.image ? "" : " empty"}">
+      ${
+        character.image
+          ? `<img src=".${esc(character.image)}" alt="${esc(character.name)}">`
+          : `<span class="ch-noimg-v008"><b>${esc((character.base || character.name).slice(0, 1))}</b><small>${esc(t("noPreview"))}</small></span>`
+      }
     </div>
     <div class="ch-viewer-info-v008">
       <header>
@@ -564,6 +588,8 @@ function openViewer(id) {
               .join("")}</div>`
           : ""
       }
+      ${character.image ? `<p class="ch-generated-v008">${esc(t("generatedNote"))}</p>` : ""}
+      ${sourceLink(character)}
       <button class="ch-btn-v008 ch-viewer-save-v008${saved ? " on" : ""}" type="button" data-viewer-save>${saved ? "★" : "☆"} ${esc(saved ? t("saveOff") : t("saveOn"))}</button>
     </div>`;
 

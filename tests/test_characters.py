@@ -38,6 +38,7 @@ check(
     a2["variants"],
 )
 check("картинка", a2["image_src"].endswith("APXyLQdd-a2=w1280"))
+check("якорь секции", a2["anchor"] == "h.64ea59c8f851aaf2_6" and by_name["Batman"]["anchor"] == "")
 
 abi = by_name["Abigail Williams (Fate)"]
 check("варианты с русскими подписями", [v["label"] for v in abi["variants"]] == ["первое вознесение", "второе вознесение", "купальник (первое вознесение)"])

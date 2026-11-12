@@ -183,10 +183,51 @@ html[data-theme="light"] #chSearch::placeholder {
 
 .ch-noimg-v008 {
   display: grid;
-  place-items: center;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
   height: 100%;
   color: var(--muted-2);
-  font-size: 48px;
+}
+
+.ch-noimg-v008 b {
+  font-size: 44px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.ch-noimg-v008 small {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.ch-source-link-v008 {
+  align-self: flex-start;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+}
+
+.ch-source-link-v008:hover {
+  color: var(--accent);
+}
+
+.ch-viewer-media-v008 {
+  position: relative;
+}
+
+.ch-viewer-media-v008.empty {
+  min-height: 260px;
+}
+
+.ch-generated-v008 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .ch-vcount-v008 {
@@ -556,6 +597,10 @@ html.ch-has-mix-v008 .ch-mix-btn-v008 {
 
   .ch-viewer-media-v008 img {
     max-height: 56dvh;
+  }
+
+  .ch-viewer-media-v008.empty {
+    min-height: 140px;
   }
 
   .ch-viewer-info-v008 {

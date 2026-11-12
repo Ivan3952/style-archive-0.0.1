@@ -7,7 +7,7 @@
 Порядок обновления (запускать на своём ПК, из корня репозитория):
   python3 tools/import_characters.py --only A --inspect 5   # как разобраны первые персонажи буквы A, ничего не пишет
   python3 tools/import_characters.py                        # пробный прогон: отчёт «добавлено / изменено / пропало»
-  python3 tools/import_characters.py --apply                # записать data/characters.json и скачать новые картинки
+  python3 tools/import_characters.py --apply                # записать data/characters.json
   python3 tools/audit_data.py && python3 tests/smoke.py     # проверить
 
 Формат источника (сверен 13.11.2026: 44 страницы, 3117 персонажей, 4576 вариантов образов, 21 заметка):
@@ -20,10 +20,10 @@
   - Строка с кириллицей вне подписи — заметка («рекомендуется негатив ...», «+arm cannon», «заменяемые теги: ...»).
   - У большой буквы несколько страниц (aam1, aam1/aam2, aam1/aam3): страницы находятся обходом ссылок.
 
-Картинки: media/characters/<id>.webp (WebP, ширина до 512). Качаются сразу после разбора своей страницы,
-не чаще одной в секунду (первый полный импорт: около часа). При отказе сервера (403/429) — пауза и повтор;
-если отказы не проходят, импорт останавливается без записи данных, а уже скачанные картинки остаются,
-и повторный запуск их не качает. --refresh-images перекачивает все и перезаписывает изменившиеся.
+Картинки с Google Sites не копируются: Google не отдаёт их скриптам (403 после пары десятков) и не даёт
+показывать на других сайтах (проверено 13.11.2026). Превью делаются своей генерацией:
+tools/generate_character_previews.py кладёт их в media/characters/<id>.webp, а этот сборщик подхватывает
+готовые файлы. У каждого персонажа есть ссылка на его место в источнике (source_url).
 
 Нужно: pip install pillow
 """
@@ -32,7 +32,6 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import hashlib
-import io
 import json
 import re
 import sys
@@ -52,14 +51,6 @@ DATA_FILE = ROOT / "data" / "characters.json"
 MEDIA_DIR = ROOT / "media" / "characters"
 MEDIA_URL = "/media/characters/"
 USER_AGENT = "StyleArchiveImporter/1.0 (+https://stylearchive.art)"
-IMAGE_WIDTH = 512
-IMAGE_QUALITY = 82
-# Картинки качаются сразу после разбора своей страницы (ссылки sitesv-images-rt могут быть временными)
-# и не чаще одной в IMAGE_DELAY секунд. При отказе (403/429) — пауза и повтор, без смены «личности» клиента.
-IMAGE_DELAY = 1.0
-BACKOFF = (30, 90)
-STOP_AFTER_FAILURES = 2
-
 CYRILLIC = re.compile(r"[а-яё]", re.I)
 VARIANT_START = re.compile(r"^\d?(girl|boy|other)s?\b", re.I)
 LABELED = re.compile(r"^([^,:]{1,80}?)::?\s*(.*)$", re.S)
@@ -87,7 +78,7 @@ class _PageParser(HTMLParser):
         if tag == "svg":
             self._svg_depth += 1
         if tag == "section":
-            self._section = {"images": [], "paragraphs": []}
+            self._section = {"images": [], "paragraphs": [], "anchor": attrs.get("id") or ""}
             self.sections.append(self._section)
         elif self._section is not None:
             if tag == "img" and "sitesv-images-rt" in (attrs.get("src") or ""):
@@ -183,6 +174,7 @@ def parse_page(html: str) -> tuple[list[dict], list[str]]:
                 "variants": variants,
                 "notes": notes,
                 "image_src": section["images"][0],
+                "anchor": section["anchor"],
             }
         )
     return characters, parser.links
@@ -228,14 +220,6 @@ def assign_ids(characters: list[dict], previous: dict[str, str]) -> None:
 # ---------------------------------------------------------------- загрузка
 
 
-class Refused(RuntimeError):
-    """Сервер отказал (403/429): повтор сразу бесполезен, нужна пауза."""
-
-
-class StopImport(Exception):
-    """Отказы не проходят и после пауз: импорт останавливается, данные не пишутся."""
-
-
 def fetch(url: str, retries: int = 3, delay: float = 0.4) -> bytes:
     last_error = None
     for attempt in range(retries):
@@ -246,9 +230,7 @@ def fetch(url: str, retries: int = 3, delay: float = 0.4) -> bytes:
             time.sleep(delay)
             return body
         except urllib.error.HTTPError as error:
-            if error.code in (403, 429):
-                raise Refused(f"HTTP {error.code}") from error
-            if error.code in (401, 404, 410):
+            if error.code in (401, 403, 404, 410, 429):
                 raise RuntimeError(f"HTTP {error.code}") from error
             last_error = error
             time.sleep(2 * (attempt + 1))
@@ -256,19 +238,6 @@ def fetch(url: str, retries: int = 3, delay: float = 0.4) -> bytes:
             last_error = error
             time.sleep(2 * (attempt + 1))
     raise RuntimeError(f"не удалось скачать: {last_error}")
-
-
-def fetch_image(url: str) -> bytes:
-    """Картинка с паузами при отказе. Бросает Refused, если отказы не прошли и после всех пауз."""
-    for pause in (*BACKOFF, None):
-        try:
-            return fetch(url, delay=IMAGE_DELAY)
-        except Refused:
-            if pause is None:
-                raise
-            print(f"  сервер отказал, пауза {pause} с…", file=sys.stderr)
-            time.sleep(pause)
-    raise Refused("нет попыток")
 
 
 def crawl(only: set[str] | None, on_page=None) -> tuple[list[dict], list[str]]:
@@ -306,24 +275,6 @@ def crawl(only: set[str] | None, on_page=None) -> tuple[list[dict], list[str]]:
             if link not in seen and link not in queue:
                 queue.append(link)
     return characters, pages
-
-
-def save_image(data: bytes, dst: Path) -> tuple[int, int]:
-    from PIL import Image  # pillow нужен только для --apply
-
-    with Image.open(io.BytesIO(data)) as image:
-        image = image.convert("RGB")
-        width = min(IMAGE_WIDTH, image.width)
-        height = max(1, round(image.height * width / image.width))
-        if width != image.width:
-            image = image.resize((width, height), Image.LANCZOS)
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        buffer = io.BytesIO()
-        image.save(buffer, "WEBP", quality=IMAGE_QUALITY, method=6)
-    payload = buffer.getvalue()
-    if not dst.exists() or dst.read_bytes() != payload:
-        dst.write_bytes(payload)
-    return width, height
 
 
 # ---------------------------------------------------------------- сравнение и запись
@@ -365,10 +316,9 @@ def print_report(report: dict, total: int, pages: int, variants: int, notes: int
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--apply", action="store_true", help="записать data/characters.json и скачать картинки")
+    ap.add_argument("--apply", action="store_true", help="записать data/characters.json")
     ap.add_argument("--only", help="только эти буквы через запятую (A,B или #); вместе с --apply запрещено")
     ap.add_argument("--inspect", type=int, metavar="N", help="показать, как разобраны первые N персонажей")
-    ap.add_argument("--refresh-images", action="store_true", help="перекачать картинки всех персонажей")
     ap.add_argument("--force", action="store_true", help="записать, даже если персонажей стало заметно меньше")
     args = ap.parse_args()
 
@@ -380,54 +330,9 @@ def main() -> int:
     previous = load_previous()
     previous_ids = {c["name"].casefold(): c["id"] for c in previous.get("characters", [])}
     assign = IdAssigner(previous_ids)
-    stats = {"downloaded": 0, "skipped": 0, "failed": 0, "refused_in_row": 0}
 
-    def download(found: list[dict]) -> None:
-        for character in found:
-            dst = MEDIA_DIR / f"{character['id']}.webp"
-            if dst.exists() and not args.refresh_images:
-                from PIL import Image
-
-                with Image.open(dst) as image:
-                    character["width"], character["height"] = image.size
-                stats["skipped"] += 1
-                continue
-            try:
-                character["width"], character["height"] = save_image(fetch_image(character["image_src"]), dst)
-                stats["downloaded"] += 1
-                stats["refused_in_row"] = 0
-            except Refused as error:
-                stats["failed"] += 1
-                stats["refused_in_row"] += 1
-                print(f"  картинка не скачалась: {character['name']}: {error}", file=sys.stderr)
-                if stats["refused_in_row"] >= STOP_AFTER_FAILURES:
-                    raise StopImport from error
-            except Exception as error:  # битая картинка не критична: персонаж остаётся без превью
-                stats["failed"] += 1
-                print(f"  картинка не скачалась: {character['name']}: {error}", file=sys.stderr)
-
-    def on_page(found: list[dict]) -> None:
-        assign(found)
-        if args.apply:
-            download(found)
-            total = stats["downloaded"] + stats["skipped"] + stats["failed"]
-            print(
-                f"    картинки: всего {total}, скачано {stats['downloaded']}, "
-                f"уже были {stats['skipped']}, ошибок {stats['failed']}",
-                file=sys.stderr,
-            )
-
-    print("Обход страниц…" + (" Картинки качаются по ходу, около секунды на каждую." if args.apply else ""), file=sys.stderr)
-    try:
-        characters, pages = crawl(only, on_page)
-    except StopImport:
-        print(
-            f"\nСервер подряд отказывает в картинках даже после пауз. Скачано: {stats['downloaded']}. "
-            "data/characters.json не записан. Запустите ту же команду позже: уже скачанные картинки "
-            "сохранены и повторно не качаются.",
-            file=sys.stderr,
-        )
-        return 1
+    print("Обход страниц…", file=sys.stderr)
+    characters, pages = crawl(only, assign)
 
     if args.inspect:
         for character in characters[: args.inspect]:
@@ -458,9 +363,17 @@ def main() -> int:
         )
         return 1
 
-    out = []
+    out, with_image = [], 0
     for character in characters:
-        has_image = (MEDIA_DIR / f"{character['id']}.webp").exists()
+        image = MEDIA_DIR / f"{character['id']}.webp"
+        width = height = None
+        if image.exists():
+            from PIL import Image  # pillow нужен только для размеров готовых превью
+
+            with Image.open(image) as picture:
+                width, height = picture.size
+            with_image += 1
+        page_url = urljoin(SOURCE_URL, SOURCE_PATH + (character["page"] if character["page"] != "/" else ""))
         out.append(
             {
                 "id": character["id"],
@@ -470,9 +383,10 @@ def main() -> int:
                 "letter": character["letter"],
                 "variants": character["variants"],
                 "notes": character["notes"],
-                "image": f"{MEDIA_URL}{character['id']}.webp" if has_image else None,
-                "width": character.get("width"),
-                "height": character.get("height"),
+                "source_url": f"{page_url}#{character['anchor']}" if character["anchor"] else page_url,
+                "image": f"{MEDIA_URL}{character['id']}.webp" if width else None,
+                "width": width,
+                "height": height,
             }
         )
 
@@ -485,7 +399,7 @@ def main() -> int:
     DATA_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     digest = hashlib.sha1(DATA_FILE.read_bytes()).hexdigest()[:10]
     print(f"\nЗаписано: {DATA_FILE.relative_to(ROOT)} ({len(out)} персонажей, sha1 {digest})")
-    print(f"Картинки: скачано {stats['downloaded']}, уже были {stats['skipped']}, ошибок {stats['failed']}")
+    print(f"Превью есть у {with_image} из {len(out)} (tools/generate_character_previews.py)")
     return 0
 
 
