@@ -48,5 +48,8 @@ jobs:
       - name: Prompt parser test
         run: node tests/prompt_parse.test.mjs
 
+      - name: Characters importer test
+        run: python3 tests/test_characters.py
+
       - name: Smoke test
         run: python3 tests/smoke.py

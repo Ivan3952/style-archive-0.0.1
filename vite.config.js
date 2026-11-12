@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { cpSync, mkdirSync, readFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 const pkg = JSON.parse(readFileSync(resolve(process.cwd(), "package.json"), "utf8"));
@@ -50,6 +50,8 @@ function copyRuntimeData() {
           if (archive[key]) files.add(archive[key]);
         }
       }
+      /* персонажи Stable Waifu (0.1.3): файл появляется после первого импорта */
+      if (existsSync(resolve(root, "data/characters.json"))) files.add("./data/characters.json");
       for (const rel of files) {
         const from = resolve(root, rel);
         const to = resolve(root, "dist", rel);

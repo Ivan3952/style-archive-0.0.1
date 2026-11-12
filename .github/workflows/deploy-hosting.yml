@@ -78,7 +78,8 @@ jobs:
 
           # 1) картинки по папкам. Сначала AM (thumb, web): сайт оживает раньше.
           #    WebP уже сжат, поэтому без -z; --size-only: mtime после checkout всегда новый
-          for d in thumb web opus sky; do
+          for d in thumb web opus sky characters; do
+            [ -d "media/$d" ] || continue
             echo "=== media/$d ==="
             sync -rl --size-only --partial --timeout=180 --info=stats1 -e "$SSH" \
               "media/$d/" "$TARGET/media/$d/" || exit 1
