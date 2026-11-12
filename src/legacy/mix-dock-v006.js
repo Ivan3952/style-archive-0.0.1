@@ -437,6 +437,38 @@
 
   /* ---------- запуск ---------- */
 
+  /* для других модулей (разбор промпта): веса, формат и текст перед стилями */
+  window.STYLE_ARCHIVE_MIX_V006 = {
+    setWeights(map) {
+      Object.entries(map).forEach(([name, weight]) => {
+        const key = keyOf(name);
+        const value = clampWeight(Number(weight) || 1);
+        if (value === 1) delete store.weights[key];
+        else store.weights[key] = value;
+      });
+      writeStore();
+      render();
+    },
+    setFormat(format) {
+      store.format = format === "blend" ? "blend" : "list";
+      writeStore();
+      render();
+    },
+    setBase(text) {
+      store.base = String(text || "")
+        .replace(/\s+/g, " ")
+        .slice(0, 600);
+      writeStore();
+      render();
+    },
+    open() {
+      if (!store.open) setOpen(true);
+    },
+    get state() {
+      return { format: store.format, base: store.base };
+    },
+  };
+
   function start(candidate) {
     app = candidate;
     document.body.appendChild(dock);

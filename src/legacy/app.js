@@ -2329,6 +2329,12 @@
     copyValue,
     showToast,
     t,
+    toggleSaved,
+    loadSupported,
+    previewMetaForName,
+    normalizeStyleName,
+    compactSearch,
+    toLocalPath,
   };
 
   // V003_DANBOORU_UI

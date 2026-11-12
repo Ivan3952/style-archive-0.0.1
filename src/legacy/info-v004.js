@@ -254,6 +254,16 @@
           </div>
 
           <div>
+            <b>${tr("ПРОМПТ", "PROMPT")}</b>
+            <span>
+              ${tr(
+                "Вставь чужой или свой промпт: сайт найдёт в нём стили, покажет превью и перенесёт их в микс. Промпт можно вставить и прямо в поиск.",
+                "Paste any prompt: the site finds the styles in it, shows previews and moves them to the mix. Pasting into search works too."
+              )}
+            </span>
+          </div>
+
+          <div>
             <b>${tr("НЕДАВНИЕ", "RECENT")}</b>
             <span>
               ${tr(

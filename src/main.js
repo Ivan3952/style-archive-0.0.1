@@ -23,6 +23,7 @@ import "./css/usability-v005.css";
 import "./css/winter-v005.css";
 import "./css/mix-dock-v006.css";
 import "./css/workspace-v006.css";
+import "./css/prompt-parse-v007.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";
@@ -44,3 +45,4 @@ import "./legacy/info-v004.js";
 import "./legacy/usability-v005.js";
 import "./legacy/mix-dock-v006.js";
 import "./legacy/restore-v006.js";
+import "./legacy/prompt-parse-v007.js";
