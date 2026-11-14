@@ -14,7 +14,7 @@ mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 
 items = json.loads((ROOT / "tests" / "fixtures" / "civitai_loras.json").read_text(encoding="utf-8"))["items"]
-loras, reasons = mod.select(items + items[:2])  # дубли тоже проверим
+loras, reasons, review = mod.select(items + items[:2])  # дубли тоже проверим
 by_id = {lora["id"]: lora for lora in loras}
 passed = 0
 
@@ -58,5 +58,12 @@ check("технические LoRA отдельно", by_id[2560840]["category"]
 check("художник = style", by_id[2638819]["category"] == "style")
 check("версия 748cm — новая с картинкой", by_id[2638819]["version_id"] == 3020719)
 check("старый формат /orig тоже уменьшается", mod.resized("https://image.civitai.com/k/u/orig") == "https://image.civitai.com/k/u/width=450")
+
+review_ids = {item["id"] for item in review}
+check("в пересмотр попадают XXX, без превью и с тегами", review_ids == {929497, 2640938, 2718862}, review_ids)
+check("minor в пересмотр не попадает", 465603 not in review_ids)
+xxx = next(item for item in review if item["id"] == 929497)
+check("в пересмотре только безопасные превью и счётчики", xxx["image_levels"] == {"1": 1} and len(xxx["safe_images"]) == 1, xxx)
+check("причина записана", xxx["reason"] == "выше R")
 
 print(f"\n{passed} проверок пройдено")

@@ -17,3 +17,6 @@ dist/
 # Эмбеддинги и отчёты оценки (большие, считаются на ПК)
 embeddings/
 reports/
+
+# Исключённые LoRA для ручного пересмотра (tools/import_loras.py): только локально
+data/loras_review.json

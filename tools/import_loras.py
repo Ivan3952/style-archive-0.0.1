@@ -34,6 +34,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "data" / "loras.json"
+# Исключённое для ручного пересмотра: только локально (в .gitignore, на сайт не копируется).
+REVIEW_FILE = ROOT / "data" / "loras_review.json"
+# Эти причины не пересматриваются и в файл пересмотра не попадают вообще.
+NEVER_REVIEW = {"minor", "реальный человек"}
 API_URL = (
     "https://civitai.com/api/v1/models?types=LORA&baseModels=Anima"
     "&sort=Most%20Downloaded&limit=100"
@@ -173,8 +177,38 @@ def convert(model: dict) -> dict:
     }
 
 
-def select(models: list[dict]) -> tuple[list[dict], dict]:
-    kept, reasons, seen = [], {}, set()
+def review_entry(model: dict, reason: str) -> dict:
+    """Исключённая модель для пересмотра: только безопасные превью и счётчики картинок по уровням."""
+    version = next(
+        (v for v in model.get("modelVersions") or [] if v.get("baseModel") == BASE_MODEL), None
+    ) or {}
+    levels: dict[str, int] = {}
+    for image in version.get("images") or []:
+        key = str(image.get("nsfwLevel"))
+        levels[key] = levels.get(key, 0) + 1
+    tags = [str(tag).strip() for tag in model.get("tags") or [] if str(tag).strip()]
+    return {
+        "id": model.get("id"),
+        "version_id": version.get("id"),
+        "name": re.sub(r"\s+", " ", model.get("name") or "").strip(),
+        "reason": reason,
+        "model_level": model.get("nsfwLevel"),
+        "category": category_of(tags),
+        "tags": tags[:MAX_TAGS],
+        "creator": (model.get("creator") or {}).get("username") or "",
+        "downloads": (model.get("stats") or {}).get("downloadCount") or 0,
+        "image_levels": levels,
+        "safe_images": [
+            {"url": resized(image["url"]), "width": image.get("width") or 0, "height": image.get("height") or 0}
+            for image in safe_images(version)[:MAX_IMAGES]
+        ],
+        "url": f"https://civitai.com/models/{model.get('id')}"
+        + (f"?modelVersionId={version['id']}" if version.get("id") else ""),
+    }
+
+
+def select(models: list[dict]) -> tuple[list[dict], dict, list[dict]]:
+    kept, reasons, review, seen = [], {}, [], set()
     for model in models:
         if model.get("id") in seen:
             continue
@@ -182,9 +216,11 @@ def select(models: list[dict]) -> tuple[list[dict], dict]:
         reason = reject_reason(model)
         if reason:
             reasons[reason] = reasons.get(reason, 0) + 1
+            if reason not in NEVER_REVIEW:
+                review.append(review_entry(model, reason))
             continue
         kept.append(convert(model))
-    return kept, reasons
+    return kept, reasons, review
 
 
 # ---------------------------------------------------------------- загрузка
@@ -246,7 +282,7 @@ def main() -> int:
 
     print("Загрузка списка LoRA под Anima…", file=sys.stderr)
     models = crawl(args.pages)
-    loras, reasons = select(models)
+    loras, reasons, review = select(models)
 
     if args.inspect:
         for lora in loras[: args.inspect]:
@@ -284,6 +320,20 @@ def main() -> int:
     }
     DATA_FILE.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     print(f"\nЗаписано: {DATA_FILE.relative_to(ROOT)} ({len(loras)} LoRA)")
+
+    review_payload = {
+        "note": "Исключённые LoRA для ручного пересмотра. Только локально: не публикуется и не коммитится.",
+        "updated_at": dt.date.today().isoformat(),
+        "count": len(review),
+        "by_reason": {k: v for k, v in reasons.items() if k not in NEVER_REVIEW},
+        "loras": sorted(review, key=lambda item: -item["downloads"]),
+    }
+    REVIEW_FILE.write_text(json.dumps(review_payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    with_safe = sum(1 for item in review if item["safe_images"])
+    print(
+        f"Для пересмотра: {REVIEW_FILE.relative_to(ROOT)} ({len(review)}, из них с безопасными превью {with_safe}); "
+        "minor и реальные люди туда не попадают"
+    )
     return 0
 
 
