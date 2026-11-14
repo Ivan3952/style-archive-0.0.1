@@ -460,9 +460,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/aam1#h.64ea59c8f851aaf2_105",
-   "image": "/media/characters/admiral-graf-spee-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "admiral-hipper-azur-lane",
@@ -1199,7 +1199,7 @@
    "id": "ak-12-girl-s-frontline",
    "name": "AK-12 (Girl's Frontline)",
    "base": "AK-12",
-   "title": "Girl's Frontline",
+   "title": "Girls' Frontline",
    "letter": "A",
    "variants": [
     {
@@ -1635,7 +1635,7 @@
    "id": "akino-princess-connect",
    "name": "Akino (Princess Connect)",
    "base": "Akino",
-   "title": "Princess Connect",
+   "title": "Princess Connect!",
    "letter": "A",
    "variants": [
     {
@@ -1671,7 +1671,7 @@
    "id": "aki-shizuha-touhou",
    "name": "Aki Shizuha (TouHou)",
    "base": "Aki Shizuha",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "A",
    "variants": [
     {
@@ -1826,7 +1826,7 @@
    "id": "aladdin-magi-the-labyrinth-of-magic",
    "name": "Aladdin (Magi the Labyrinth of Magic)",
    "base": "Aladdin",
-   "title": "Magi the Labyrinth of Magic",
+   "title": "Magi: The Labyrinth of Magic",
    "letter": "A",
    "variants": [
     {
@@ -2051,7 +2051,7 @@
    "id": "alibaba-saluja-magi-the-labyrinth-of-magic",
    "name": "Alibaba Saluja (Magi the Labyrinth of Magic)",
    "base": "Alibaba Saluja",
-   "title": "Magi the Labyrinth of Magic",
+   "title": "Magi: The Labyrinth of Magic",
    "letter": "A",
    "variants": [
     {
@@ -2091,7 +2091,7 @@
    "id": "alice-margatroid-touhou",
    "name": "Alice Margatroid (TouHou)",
    "base": "Alice Margatroid",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "A",
    "variants": [
     {
@@ -2509,9 +2509,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/bam#h.64ea59c8f851aaf2_2075",
-   "image": "/media/characters/baltimore-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "bambietta-basterbine-bleach",
@@ -2818,9 +2818,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/bam#h.6a6e52fa7755f2e2_54",
-   "image": "/media/characters/bay-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "bayonetta-bayonetta",
@@ -3048,9 +3048,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/bam#h.57897628e31f659e_27",
-   "image": "/media/characters/behemoth-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "beidou-genshin-impact",
@@ -3143,7 +3143,7 @@
    "id": "belldandy-aa-megami-sama",
    "name": "Belldandy (aa megami-sama)",
    "base": "Belldandy",
-   "title": "aa megami-sama",
+   "title": "Aa Megami-sama!",
    "letter": "B",
    "variants": [
     {
@@ -3843,9 +3843,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/bam#h.41e5a7bd30f1f7cc_234",
-   "image": "/media/characters/brest-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "briar-league-of-legends",
@@ -3894,7 +3894,7 @@
    "id": "brid-goddess-of-victory",
    "name": "Brid (Goddess of Victory)",
    "base": "Brid",
-   "title": "Goddess of Victory",
+   "title": "Goddess of Victory: Nikke",
    "letter": "B",
    "variants": [
     {
@@ -4641,7 +4641,7 @@
    "id": "castorice-honkai-star-rail",
    "name": "Castorice (Honkai:Star Rail)",
    "base": "Castorice",
-   "title": "Honkai:Star Rail",
+   "title": "Honkai: Star Rail",
    "letter": "C",
    "variants": [
     {
@@ -4846,7 +4846,7 @@
    "id": "ceobe-arknigts",
    "name": "Ceobe (Arknigts)",
    "base": "Ceobe",
-   "title": "Arknigts",
+   "title": "Arknights",
    "letter": "C",
    "variants": [
     {
@@ -4950,7 +4950,7 @@
    "id": "ceylon-arknigts",
    "name": "Ceylon (Arknigts)",
    "base": "Ceylon",
-   "title": "Arknigts",
+   "title": "Arknights",
    "letter": "C",
    "variants": [
     {
@@ -5994,7 +5994,7 @@
    "id": "cinderella-goddess-of-victory-nikke",
    "name": "Cinderella (Goddess of Victory:Nikke)",
    "base": "Cinderella",
-   "title": "Goddess of Victory:Nikke",
+   "title": "Goddess of Victory: Nikke",
    "letter": "C",
    "variants": [
     {
@@ -6113,7 +6113,7 @@
    "id": "cirno-touhou",
    "name": "Cirno (TouHou)",
    "base": "Cirno",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "C",
    "variants": [
     {
@@ -6149,7 +6149,7 @@
    "id": "daenerys-targaryen-a-song-of-ice-and-fire",
    "name": "Daenerys Targaryen (A song of Ice and Fire)",
    "base": "Daenerys Targaryen",
-   "title": "A song of Ice and Fire",
+   "title": "A Song of Ice and Fire",
    "letter": "D",
    "variants": [
     {
@@ -6416,7 +6416,7 @@
    "id": "daphne-blake-scooby-doo",
    "name": "Daphne Blake (Scooby Doo)",
    "base": "Daphne Blake",
-   "title": "Scooby Doo",
+   "title": "Scooby-Doo",
    "letter": "D",
    "variants": [
     {
@@ -6898,7 +6898,7 @@
    "id": "diana-cavendish-little-witch-acaemia",
    "name": "Diana Cavendish (Little Witch Acaemia)",
    "base": "Diana Cavendish",
-   "title": "Little Witch Acaemia",
+   "title": "Little Witch Academia",
    "letter": "D",
    "variants": [
     {
@@ -7206,9 +7206,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/dam#h.64ea59c8f851aaf2_4122",
-   "image": "/media/characters/dizzy-guilty-gear.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "djeeta-granblue-fantasy",
@@ -7254,7 +7254,7 @@
    "id": "doctor-arknigts",
    "name": "Doctor (Arknigts)",
    "base": "Doctor",
-   "title": "Arknigts",
+   "title": "Arknights",
    "letter": "D",
    "variants": [
     {
@@ -7318,9 +7318,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/dam#h.64ea59c8f851aaf2_4176",
-   "image": "/media/characters/dola-vtuber.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "dolla-goddess-of-victory-nikke",
@@ -7470,7 +7470,7 @@
    "id": "dorothy-arknigts",
    "name": "Dorothy (Arknigts)",
    "base": "Dorothy",
-   "title": "Arknigts",
+   "title": "Arknights",
    "letter": "D",
    "variants": [
     {
@@ -8448,9 +8448,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/eam#h.64ea59c8f851aaf2_4610",
-   "image": "/media/characters/eldridge-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "elegg-goddess-of-victory-nikke",
@@ -8564,7 +8564,7 @@
    "id": "ellen-joe-zenless-zome-zero",
    "name": "Ellen Joe (Zenless Zome Zero)",
    "base": "Ellen Joe",
-   "title": "Zenless Zome Zero",
+   "title": "Zenless Zone Zero",
    "letter": "E",
    "variants": [
     {
@@ -8683,7 +8683,7 @@
    "id": "emilia-re-zero",
    "name": "Emilia (Re:zero)",
    "base": "Emilia",
-   "title": "Re:zero",
+   "title": "Re:Zero",
    "letter": "E",
    "variants": [
     {
@@ -9457,9 +9457,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/eam#h.64ea59c8f851aaf2_4979",
-   "image": "/media/characters/etna-disgaea.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "eugeo-sword-art-online",
@@ -9852,9 +9852,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/fam#h.64ea59c8f851aaf2_5116",
-   "image": "/media/characters/faputa-made-in-abyss.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "faris-scherwiz-final-fantasy",
@@ -10068,7 +10068,7 @@
    "id": "felix-argyle-re-zero",
    "name": "Felix Argyle (Re:zero)",
    "base": "Felix Argyle",
-   "title": "Re:zero",
+   "title": "Re:Zero",
    "letter": "F",
    "variants": [
     {
@@ -10488,7 +10488,7 @@
    "id": "flandre-scarlet-touhou",
    "name": "Flandre Scarlet (TouHou)",
    "base": "Flandre Scarlet",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "F",
    "variants": [
     {
@@ -11068,7 +11068,7 @@
    "id": "fubuki-one-punch-man",
    "name": "Fubuki (One-punch Man)",
    "base": "Fubuki",
-   "title": "One-punch Man",
+   "title": "One-Punch Man",
    "letter": "F",
    "variants": [
     {
@@ -11269,7 +11269,7 @@
    "id": "fujiwara-no-mokou-touhou",
    "name": "Fujiwara no Mokou (TouHou)",
    "base": "Fujiwara no Mokou",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "F",
    "variants": [
     {
@@ -11460,7 +11460,7 @@
    "id": "fusou-azur-lane",
    "name": "Fusou (Azur lane)",
    "base": "Fusou",
-   "title": "Azur lane",
+   "title": "Azur Lane",
    "letter": "F",
    "variants": [
     {
@@ -12584,7 +12584,7 @@
    "id": "gokou-ruri-ore-no-imouto-ga-konna-ni-kawaii-wake-ga-nai",
    "name": "Gokou Ruri (Ore no Imouto ga Konna ni Kawaii wake ga nai)",
    "base": "Gokou Ruri",
-   "title": "Ore no Imouto ga Konna ni Kawaii wake ga nai",
+   "title": "Ore no Imouto ga Konna ni Kawaii Wake ga Nai",
    "letter": "G",
    "variants": [
     {
@@ -12634,7 +12634,7 @@
    "id": "goldenglow-arknigts",
    "name": "Goldenglow (Arknigts)",
    "base": "Goldenglow",
-   "title": "Arknigts",
+   "title": "Arknights",
    "letter": "G",
    "variants": [
     {
@@ -12908,7 +12908,7 @@
    "id": "grave-goddes-of-victory-nikke",
    "name": "Grave (Goddes of Victory: Nikke)",
    "base": "Grave",
-   "title": "Goddes of Victory: Nikke",
+   "title": "Goddess of Victory: Nikke",
    "letter": "G",
    "variants": [
     {
@@ -13531,7 +13531,7 @@
    "id": "hakurei-reimu-touhou",
    "name": "Hakurei Reimu (TouHou)",
    "base": "Hakurei Reimu",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "H",
    "variants": [
     {
@@ -13751,7 +13751,7 @@
    "id": "hanasaki-tsubomi-precure",
    "name": "Hanasaki Tsubomi (Precure!)",
    "base": "Hanasaki Tsubomi",
-   "title": "Precure!",
+   "title": "Precure",
    "letter": "H",
    "variants": [
     {
@@ -13902,7 +13902,7 @@
    "id": "hanyuu-higarashi-no-naku-koro-ni",
    "name": "Hanyuu (Higarashi no Naku Koro ni)",
    "base": "Hanyuu",
-   "title": "Higarashi no Naku Koro ni",
+   "title": "Higurashi no Naku Koro ni",
    "letter": "H",
    "variants": [
     {
@@ -14270,9 +14270,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ham1#h.64ea59c8f851aaf2_6825",
-   "image": "/media/characters/hassan-of-the-serenity-fate.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "hasumi-blue-archive",
@@ -14307,7 +14307,7 @@
    "id": "hata-no-kokoro-touhou",
    "name": "Hata no Kokoro (TouHou)",
    "base": "Hata no Kokoro",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "H",
    "variants": [
     {
@@ -15389,7 +15389,7 @@
    "id": "hijiri-byakuren-touhou",
    "name": "Hijiri Byakuren (TouHou)",
    "base": "Hijiri Byakuren",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "H",
    "variants": [
     {
@@ -15443,7 +15443,7 @@
    "id": "hikigaya-hachiman-yahari-ore-no-seishun-lovecome-wa-machigatteiru",
    "name": "Hikigaya Hachiman (Yahari Ore no Seishun Lovecome wa Machigatteiru)",
    "base": "Hikigaya Hachiman",
-   "title": "Yahari Ore no Seishun Lovecome wa Machigatteiru",
+   "title": "Yahari Ore no Seishun Lovecome wa Machigatteiru.",
    "letter": "H",
    "variants": [
     {
@@ -15461,7 +15461,7 @@
    "id": "hikigaya-komachi-yahari-ore-no-seishun-lovecome-wa-machigatteiru",
    "name": "Hikigaya Komachi (Yahari Ore no Seishun Lovecome wa Machigatteiru)",
    "base": "Hikigaya Komachi",
-   "title": "Yahari Ore no Seishun Lovecome wa Machigatteiru",
+   "title": "Yahari Ore no Seishun Lovecome wa Machigatteiru.",
    "letter": "H",
    "variants": [
     {
@@ -15558,7 +15558,7 @@
    "id": "himekaidou-hatate-touhou",
    "name": "Himekaidou Hatate (TouHou)",
    "base": "Himekaidou Hatate",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "H",
    "variants": [
     {
@@ -15576,7 +15576,7 @@
    "id": "himekawa-yoshino-date-a-live",
    "name": "Himekawa Yoshino (Date a Live)",
    "base": "Himekawa Yoshino",
-   "title": "Date a Live",
+   "title": "Date A Live",
    "letter": "H",
    "variants": [
     {
@@ -15926,7 +15926,7 @@
    "id": "ibaraki-kasen-touhou",
    "name": "Ibaraki Kasen (TouHou)",
    "base": "Ibaraki Kasen",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "I",
    "variants": [
     {
@@ -16023,7 +16023,7 @@
    "id": "ibuki-suika-touhou",
    "name": "Ibuki Suika (TouHou)",
    "base": "Ibuki Suika",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "I",
    "variants": [
     {
@@ -16253,9 +16253,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/iam1#h.64ea59c8f851aaf2_8411",
-   "image": "/media/characters/igawa-asagi-taimanin.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "ignis-scientia-final-fantasy",
@@ -16642,15 +16642,15 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/iam1#h.64ea59c8f851aaf2_8555",
-   "image": "/media/characters/implacable-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "inaba-tewi-touhou",
    "name": "Inaba Tewi (TouHou)",
    "base": "Inaba Tewi",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "I",
    "variants": [
     {
@@ -16920,7 +16920,7 @@
    "id": "inubashiri-momiji-touhou",
    "name": "Inubashiri Momiji (TouHou)",
    "base": "Inubashiri Momiji",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "I",
    "variants": [
     {
@@ -17369,9 +17369,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/iam1#h.64ea59c8f851aaf2_8852",
-   "image": "/media/characters/ishtar-fate.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "isokaze-azur-lane",
@@ -17481,7 +17481,7 @@
    "id": "isshiki-iroha-yahari-ore-no-seishun-lovecome-wa-machigatteiru",
    "name": "Isshiki Iroha (Yahari Ore no Seishun Lovecome wa Machigatteiru)",
    "base": "Isshiki Iroha",
-   "title": "Yahari Ore no Seishun Lovecome wa Machigatteiru",
+   "title": "Yahari Ore no Seishun Lovecome wa Machigatteiru.",
    "letter": "I",
    "variants": [
     {
@@ -17571,7 +17571,7 @@
    "id": "itsuka-kotori-date-a-live",
    "name": "Itsuka Kotori (Date a Live)",
    "base": "Itsuka Kotori",
-   "title": "Date a Live",
+   "title": "Date A Live",
    "letter": "I",
    "variants": [
     {
@@ -18496,7 +18496,7 @@
    "id": "jill-stingray-va11-hall-a",
    "name": "Jill Stingray (Va11 Hall-a)",
    "base": "Jill Stingray",
-   "title": "Va11 Hall-a",
+   "title": "Va-11 Hall-a",
    "letter": "J",
    "variants": [
     {
@@ -18742,7 +18742,7 @@
    "id": "joffre-azur-lane",
    "name": "Joffre (Azur lane)",
    "base": "Joffre",
-   "title": "Azur lane",
+   "title": "Azur Lane",
    "letter": "J",
    "variants": [
     {
@@ -19037,7 +19037,7 @@
    "id": "junko-touhou",
    "name": "Junko (TouHou)",
    "base": "Junko",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "J",
    "variants": [
     {
@@ -19242,7 +19242,7 @@
    "id": "kaenbyou-rin-touhou",
    "name": "Kaenbyou Rin (TouHou)",
    "base": "Kaenbyou Rin",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -19350,7 +19350,7 @@
    "id": "kaga-kantai-kollection",
    "name": "Kaga (Kantai Kollection)",
    "base": "Kaga",
-   "title": "Kantai Kollection",
+   "title": "Kantai Collection",
    "letter": "K",
    "variants": [
     {
@@ -19493,9 +19493,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/kam1#h.64ea59c8f851aaf2_9783",
-   "image": "/media/characters/kaho-blue-archive.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "kaine-nier",
@@ -19655,7 +19655,7 @@
    "id": "kaku-seiga-touhou",
    "name": "Kaku Seiga (TouHou)",
    "base": "Kaku Seiga",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -19781,7 +19781,7 @@
    "id": "kamimi-izumo-ao-no-exorcist",
    "name": "Kamimi Izumo (Ao No Exorcist)",
    "base": "Kamimi Izumo",
-   "title": "Ao No Exorcist",
+   "title": "Ao no Exorcist",
    "letter": "K",
    "variants": [
     {
@@ -20430,7 +20430,7 @@
    "id": "kasodani-kyouko-touhou",
    "name": "Kasodani Kyouko (TouHou)",
    "base": "Kasodani Kyouko",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -20782,9 +20782,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/kam1#h.64ea59c8f851aaf2_10332",
-   "image": "/media/characters/katsuragi-senran-kagura.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "katsura-kotonoha-school-days",
@@ -21002,7 +21002,7 @@
    "id": "kawashiro-nitori-touhou",
    "name": "Kawashiro Nitori (TouHou)",
    "base": "Kawashiro Nitori",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -21973,7 +21973,7 @@
    "id": "leviathan-goddess-of-victory-nikke",
    "name": "Leviathan (Goddess of Victory:Nikke)",
    "base": "Leviathan",
-   "title": "Goddess of Victory:Nikke",
+   "title": "Goddess of Victory: Nikke",
    "letter": "L",
    "variants": [
     {
@@ -22171,7 +22171,7 @@
    "id": "lillia-league-of-legend",
    "name": "Lillia (League of Legend)",
    "base": "Lillia",
-   "title": "League of Legend",
+   "title": "League of Legends",
    "letter": "L",
    "variants": [
     {
@@ -22962,7 +22962,7 @@
    "id": "lucia-puniching-gray-raven",
    "name": "Lucia (Puniching Gray Raven)",
    "base": "Lucia",
-   "title": "Puniching Gray Raven",
+   "title": "Punishing: Gray Raven",
    "letter": "L",
    "variants": [
     {
@@ -23343,7 +23343,7 @@
    "id": "m4a1-girls-frontline",
    "name": "M4A1 (Girls Frontline)",
    "base": "M4A1",
-   "title": "Girls Frontline",
+   "title": "Girls' Frontline",
    "letter": "M",
    "variants": [
     {
@@ -23368,7 +23368,7 @@
    "id": "m4-sopmod-ii-girls-frontline",
    "name": "M4 Sopmod II (Girls Frontline)",
    "base": "M4 Sopmod II",
-   "title": "Girls Frontline",
+   "title": "Girls' Frontline",
    "letter": "M",
    "variants": [
     {
@@ -24277,7 +24277,7 @@
    "id": "maribel-hearn-touhou",
    "name": "Maribel Hearn (TouHou)",
    "base": "Maribel Hearn",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "M",
    "variants": [
     {
@@ -25059,7 +25059,7 @@
    "id": "matsuzaka-satou-happy-shugar-life",
    "name": "Matsuzaka Satou (Happy Shugar Life)",
    "base": "Matsuzaka Satou",
-   "title": "Happy Shugar Life",
+   "title": "Happy Sugar Life",
    "letter": "M",
    "variants": [
     {
@@ -25479,9 +25479,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/mam1#h.64ea59c8f851aaf2_13406",
-   "image": "/media/characters/megu-blue-archive.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "megumin-konosuba",
@@ -25602,7 +25602,7 @@
    "id": "nagae-iku-touhou",
    "name": "Nagae Iku (TouHou)",
    "base": "Nagae Iku",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "N",
    "variants": [
     {
@@ -25638,7 +25638,7 @@
    "id": "naganami-kantai-kollection",
    "name": "Naganami (Kantai Kollection)",
    "base": "Naganami",
-   "title": "Kantai Kollection",
+   "title": "Kantai Collection",
    "letter": "N",
    "variants": [
     {
@@ -26759,7 +26759,7 @@
    "id": "nazrin-touhou",
    "name": "Nazrin (TouHou)",
    "base": "Nazrin",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "N",
    "variants": [
     {
@@ -27461,9 +27461,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/nam1#h.64ea59c8f851aaf2_15623",
-   "image": "/media/characters/nico-robin-one-piece.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "nidalee-league-of-legends",
@@ -27479,9 +27479,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/nam1#h.64ea59c8f851aaf2_15632",
-   "image": "/media/characters/nidalee-league-of-legends.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "nightwing-dc",
@@ -27515,9 +27515,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/nam1#h.2ad26a20169cea8c_36",
-   "image": "/media/characters/nihilister-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "nijimura-okuyasu-jojo",
@@ -27899,7 +27899,7 @@
    "id": "oda-nanami-sono-hanabira-ni-kachizuke-wo",
    "name": "Oda Nanami (Sono Hanabira ni Kachizuke wo)",
    "base": "Oda Nanami",
-   "title": "Sono Hanabira ni Kachizuke wo",
+   "title": "Sono Hanabira ni Kuchizuke wo",
    "letter": "O",
    "variants": [
     {
@@ -28384,7 +28384,7 @@
    "id": "onozuka-komachi-touhou",
    "name": "Onozuka Komachi (TouHou)",
    "base": "Onozuka Komachi",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "O",
    "variants": [
     {
@@ -28856,7 +28856,7 @@
    "id": "oyama-mahiro-onii-chan-wa-oshimai",
    "name": "Oyama Mahiro (Onii-chan wa Oshimai)",
    "base": "Oyama Mahiro",
-   "title": "Onii-chan wa Oshimai",
+   "title": "Onii-chan wa Oshimai!",
    "letter": "O",
    "variants": [
     {
@@ -29139,7 +29139,7 @@
    "id": "panty-panty-stocking-with-gartetbelt",
    "name": "Panty (Panty & Stocking with Gartetbelt)",
    "base": "Panty",
-   "title": "Panty & Stocking with Gartetbelt",
+   "title": "Panty & Stocking with Garterbelt",
    "letter": "P",
    "variants": [
     {
@@ -29219,7 +29219,7 @@
    "id": "patchouli-knowledge-touhou",
    "name": "Patchouli Knowledge (TouHou)",
    "base": "Patchouli Knowledge",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "P",
    "variants": [
     {
@@ -29406,7 +29406,7 @@
    "id": "pela-hokai-star-rail",
    "name": "Pela (Hokai: Star Rail)",
    "base": "Pela",
-   "title": "Hokai: Star Rail",
+   "title": "Honkai: Star Rail",
    "letter": "P",
    "variants": [
     {
@@ -29661,7 +29661,7 @@
    "id": "phosphophyllite-houseki-no-kuni",
    "name": "Phosphophyllite (Houseki no kuni)",
    "base": "Phosphophyllite",
-   "title": "Houseki no kuni",
+   "title": "Houseki no Kuni",
    "letter": "P",
    "variants": [
     {
@@ -29806,7 +29806,7 @@
    "id": "pinkie-pie-my-littlepony",
    "name": "Pinkie Pie (My LittlePony)",
    "base": "Pinkie Pie",
-   "title": "My LittlePony",
+   "title": "My Little Pony",
    "letter": "P",
    "variants": [
     {
@@ -30228,7 +30228,7 @@
    "id": "pozyomka-arknigts",
    "name": "Pozyomka (Arknigts)",
    "base": "Pozyomka",
-   "title": "Arknigts",
+   "title": "Arknights",
    "letter": "P",
    "variants": [
     {
@@ -30563,9 +30563,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/pam#h.7469029acbe4ef17_9",
-   "image": "/media/characters/prinz-heinrich-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "prinz-rupprecht-azur-lane",
@@ -30916,9 +30916,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/qam#h.64ea59c8f851aaf2_17254",
-   "image": "/media/characters/queen-marika-the-eternal-elden-ring.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "quercus-arknights",
@@ -30952,9 +30952,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/qam#h.6b8bac7962d7f665_243",
-   "image": "/media/characters/quency-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "quinella-sword-art-online",
@@ -31488,9 +31488,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ram1#h.64ea59c8f851aaf2_17485",
-   "image": "/media/characters/raynare-high-school-dxd.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "ray-yakusoku-no-neverland",
@@ -31600,9 +31600,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ram1#h.2ad26a20169cea8c_72",
-   "image": "/media/characters/red-hood-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "red-shoes-goddess-of-victory-nikke",
@@ -31618,9 +31618,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ram1#h.57897628e31f659e_99",
-   "image": "/media/characters/red-shoes-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "red-xiii-final-fantasy",
@@ -31687,9 +31687,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ram1#h.64ea59c8f851aaf2_17539",
-   "image": "/media/characters/regensburg-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "reg-made-in-abyss",
@@ -31875,7 +31875,7 @@
    "id": "reiuji-utsuho-touhou",
    "name": "Reiuji Utsuho (TouHou)",
    "base": "Reiuji Utsuho",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "R",
    "variants": [
     {
@@ -31967,7 +31967,7 @@
    "id": "remilia-scarlet-touhou",
    "name": "Remilia Scarlet (TouHou)",
    "base": "Remilia Scarlet",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "R",
    "variants": [
     {
@@ -32388,7 +32388,7 @@
    "id": "richter-belmont-catlevania",
    "name": "Richter Belmont (Catlevania)",
    "base": "Richter Belmont",
-   "title": "Catlevania",
+   "title": "Castlevania",
    "letter": "R",
    "variants": [
     {
@@ -32582,9 +32582,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ram1#h.41e5a7bd30f1f7cc_72",
-   "image": "/media/characters/rin-senran-kagura.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "rio-blue-archive",
@@ -33076,7 +33076,7 @@
    "id": "saigyouji-yuyuko-touhou",
    "name": "Saigyouji Yuyuko (TouHou)",
    "base": "Saigyouji Yuyuko",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "S",
    "variants": [
     {
@@ -33148,7 +33148,7 @@
    "id": "saileach-aarknights",
    "name": "Saileach (Aarknights)",
    "base": "Saileach",
-   "title": "Aarknights",
+   "title": "Arknights",
    "letter": "S",
    "variants": [
     {
@@ -33206,7 +33206,7 @@
    "id": "sairenji-haruna-to-love-ru",
    "name": "Sairenji Haruna (To Love Ru)",
    "base": "Sairenji Haruna",
-   "title": "To Love Ru",
+   "title": "To Love-Ru",
    "letter": "S",
    "variants": [
     {
@@ -34141,7 +34141,7 @@
    "id": "saren-princess-connect",
    "name": "Saren (Princess Connect)",
    "base": "Saren",
-   "title": "Princess Connect",
+   "title": "Princess Connect!",
    "letter": "S",
    "variants": [
     {
@@ -34260,7 +34260,7 @@
    "id": "sasha-browse-shengeki-no-kyojin",
    "name": "Sasha Browse (Shengeki no Kyojin)",
    "base": "Sasha Browse",
-   "title": "Shengeki no Kyojin",
+   "title": "Shingeki no Kyojin",
    "letter": "S",
    "variants": [
     {
@@ -34460,15 +34460,15 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1#h.64ea59c8f851aaf2_18963",
-   "image": "/media/characters/satsuki-blue-archive.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "sawaguchi-mai-sono-hanabari-ni-kuchizuke-wo",
    "name": "Sawaguchi Mai (Sono Hanabari ni Kuchizuke wo)",
    "base": "Sawaguchi Mai",
-   "title": "Sono Hanabari ni Kuchizuke wo",
+   "title": "Sono Hanabira ni Kuchizuke wo",
    "letter": "S",
    "variants": [
     {
@@ -34514,9 +34514,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1#h.64ea59c8f851aaf2_18999",
-   "image": "/media/characters/sawatari-mitsuki-kore-ga-watashi-no-goshujin-sama.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "saya-blue-archive",
@@ -34612,7 +34612,7 @@
    "id": "scanty-panty-stocking-with-garterbelt",
    "name": "Scanty (Panty & Stocking With Garterbelt)",
    "base": "Scanty",
-   "title": "Panty & Stocking With Garterbelt",
+   "title": "Panty & Stocking with Garterbelt",
    "letter": "S",
    "variants": [
     {
@@ -34916,9 +34916,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1#h.64ea59c8f851aaf2_19152",
-   "image": "/media/characters/seaport-princess-kantai-collection.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "sebastian-michaelis-kuroshitsuji",
@@ -36145,7 +36145,7 @@
    "id": "tatara-kogasa-touhou",
    "name": "Tatara Kogasa (TouHou)",
    "base": "Tatara Kogasa",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "T",
    "variants": [
     {
@@ -36181,7 +36181,7 @@
    "id": "tedeza-rize-gochuumon-wa-usagi-desu-ka",
    "name": "Tedeza Rize (Gochuumon wa Usagi Desu ka?)",
    "base": "Tedeza Rize",
-   "title": "Gochuumon wa Usagi Desu ka?",
+   "title": "Gochuumon wa Usagi desu ka?",
    "letter": "T",
    "variants": [
     {
@@ -36608,7 +36608,7 @@
    "id": "theresa-apocalypse-hankai-impact-3rd",
    "name": "Theresa Apocalypse (Hankai Impact 3rd)",
    "base": "Theresa Apocalypse",
-   "title": "Hankai Impact 3rd",
+   "title": "Honkai Impact 3rd",
    "letter": "T",
    "variants": [
     {
@@ -36837,9 +36837,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/tam1#h.64ea59c8f851aaf2_21883",
-   "image": "/media/characters/tier-harribel-bleach.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "tieria-erde-gundam",
@@ -37333,7 +37333,7 @@
    "id": "tokisaki-kurumi-date-a-live",
    "name": "Tokisaki Kurumi (Date a Live)",
    "base": "Tokisaki Kurumi",
-   "title": "Date a Live",
+   "title": "Date A Live",
    "letter": "T",
    "variants": [
     {
@@ -37559,7 +37559,7 @@
    "id": "ujimatsu-chiya-gochuumon-wa-usagi-desu-ka",
    "name": "Ujimatsu Chiya (Gochuumon wa Usagi Desu ka?)",
    "base": "Ujimatsu Chiya",
-   "title": "Gochuumon wa Usagi Desu ka?",
+   "title": "Gochuumon wa Usagi desu ka?",
    "letter": "U",
    "variants": [
     {
@@ -37710,9 +37710,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/uam#h.16a2f4ea9b3f0442_148",
-   "image": "/media/characters/ultima-final-fantasy.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "ultimecia-final-fantasy",
@@ -37728,9 +37728,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/uam#h.50217ba7cde5fa5_144",
-   "image": "/media/characters/ultimecia-final-fantasy.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "ulti-one-piece",
@@ -37790,7 +37790,7 @@
    "id": "ump45-girls-frontline",
    "name": "UMP45 (Girls Frontline)",
    "base": "UMP45",
-   "title": "Girls Frontline",
+   "title": "Girls' Frontline",
    "letter": "U",
    "variants": [
     {
@@ -38016,9 +38016,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/uam#h.64ea59c8f851aaf2_22736",
-   "image": "/media/characters/urd-aa-megami-sama.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "uruha-rushia-vtuber",
@@ -38120,7 +38120,7 @@
    "id": "usami-renko-touhou",
    "name": "Usami Renko (TouHou)",
    "base": "Usami Renko",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "U",
    "variants": [
     {
@@ -38339,9 +38339,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/vam#h.64ea59c8f851aaf2_22873",
-   "image": "/media/characters/valentine-skullgirls.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "valkyrie-apex-legends",
@@ -39539,7 +39539,7 @@
    "id": "wakasagihime-touhou",
    "name": "Wakasagihime (TouHou)",
    "base": "Wakasagihime",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "W",
    "variants": [
     {
@@ -40022,7 +40022,7 @@
    "id": "wraith-apex-legend",
    "name": "Wraith (Apex Legend)",
    "base": "Wraith",
-   "title": "Apex Legend",
+   "title": "Apex Legends",
    "letter": "W",
    "variants": [
     {
@@ -40047,7 +40047,7 @@
    "id": "wriggle-nightbug-touhou",
    "name": "Wriggle Nightbug (TouHou)",
    "base": "Wriggle Nightbug",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "W",
    "variants": [
     {
@@ -40464,7 +40464,7 @@
    "id": "yagokoro-eirin-touhou",
    "name": "Yagokoro Eirin (TouHou)",
    "base": "Yagokoro Eirin",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "Y",
    "variants": [
     {
@@ -40518,7 +40518,7 @@
    "id": "yakumo-ran-touhou",
    "name": "Yakumo Ran (TouHou)",
    "base": "Yakumo Ran",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "Y",
    "variants": [
     {
@@ -40536,7 +40536,7 @@
    "id": "yakumo-yukari-touhou",
    "name": "Yakumo Yukari (TouHou)",
    "base": "Yakumo Yukari",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "Y",
    "variants": [
     {
@@ -40778,7 +40778,7 @@
    "id": "yamuraiha-magi-the-lanyrinth-of-magic",
    "name": "Yamuraiha (Magi the Lanyrinth of Magic)",
    "base": "Yamuraiha",
-   "title": "Magi the Lanyrinth of Magic",
+   "title": "Magi: The Labyrinth of Magic",
    "letter": "Y",
    "variants": [
     {
@@ -40944,7 +40944,7 @@
    "id": "yasuo-league-of-legends",
    "name": "Yasuo (League of legends)",
    "base": "Yasuo",
-   "title": "League of legends",
+   "title": "League of Legends",
    "letter": "Y",
    "variants": [
     {
@@ -40980,7 +40980,7 @@
    "id": "yatogami-tohka-date-a-live",
    "name": "Yatogami Tohka (Date a Live)",
    "base": "Yatogami Tohka",
-   "title": "Date a Live",
+   "title": "Date A Live",
    "letter": "Y",
    "variants": [
     {
@@ -41198,9 +41198,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/yam1#h.3b75c5145169005f_81",
-   "image": "/media/characters/yixuan-zenless-zone-zero.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "yoimiya-genshin-impact",
@@ -41670,7 +41670,7 @@
    "id": "yui-princess-connect",
    "name": "Yui (Princess Connect)",
    "base": "Yui",
-   "title": "Princess Connect",
+   "title": "Princess Connect!",
    "letter": "Y",
    "variants": [
     {
@@ -41813,9 +41813,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/yam1#h.64ea59c8f851aaf2_24269",
-   "image": "/media/characters/yukikaze-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "yukikaze-kantai-collection",
@@ -42007,9 +42007,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/yam1#h.7efdf5f22fc85983_108",
-   "image": "/media/characters/yulha-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "yume-blue-archive",
@@ -42108,9 +42108,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/yam1#h.64ea59c8f851aaf2_24377",
-   "image": "/media/characters/yumi-senran-kagura.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "yuna-final-fantasy",
@@ -42360,9 +42360,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/yam1#h.64ea59c8f851aaf2_24467",
-   "image": "/media/characters/yuudachi-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "yuudachi-kantai-collection",
@@ -42521,9 +42521,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/zam#h.7469029acbe4ef17_72",
-   "image": "/media/characters/zara-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "zaraki-kenpachi-bleach",
@@ -42829,7 +42829,7 @@
    "id": "zidane-tribal-fina-fantasy",
    "name": "Zidane Tribal (Fina Fantasy)",
    "base": "Zidane Tribal",
-   "title": "Fina Fantasy",
+   "title": "Final Fantasy",
    "letter": "Z",
    "variants": [
     {
@@ -45366,7 +45366,7 @@
    "id": "asseylum-vers-allusia-aldnoah-zero",
    "name": "Asseylum Vers Allusia (Aldnoah.zero)",
    "base": "Asseylum Vers Allusia",
-   "title": "Aldnoah.zero",
+   "title": "Aldnoah.Zero",
    "letter": "A",
    "variants": [
     {
@@ -45651,9 +45651,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/aam1/aam3#h.631d4c345dd0e1a1_54",
-   "image": "/media/characters/asuna-blue-archive.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "asuna-sao",
@@ -46310,9 +46310,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/aam1/aam3#h.64ea59c8f851aaf2_1925",
-   "image": "/media/characters/ayla-chrono-trigger.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "ayumu-blue-archive",
@@ -46555,9 +46555,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/cam1/cam2#h.3d07029aaa8413e_153",
-   "image": "/media/characters/clay-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "clemont-pokemon",
@@ -46689,7 +46689,7 @@
    "id": "clownpiece-touhou",
    "name": "Clownpiece (TouHou)",
    "base": "Clownpiece",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "C",
    "variants": [
     {
@@ -47449,7 +47449,7 @@
    "id": "hinanawi-tenshi-touhou",
    "name": "Hinanawi Tenshi (TouHou)",
    "base": "Hinanawi Tenshi",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "H",
    "variants": [
     {
@@ -47539,9 +47539,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ham1/ham2#h.1351f425c5176912_18",
-   "image": "/media/characters/hindenburg-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "hinomori-shiho-project-sekai",
@@ -47766,7 +47766,7 @@
    "id": "hisaishi-kanade-hibike-euphomium",
    "name": "Hisaishi Kanade (Hibike! Euphomium)",
    "base": "Hisaishi Kanade",
-   "title": "Hibike! Euphomium",
+   "title": "Hibike! Euphonium",
    "letter": "H",
    "variants": [
     {
@@ -47949,7 +47949,7 @@
    "id": "hk416-girls-frontline",
    "name": "HK416 (Girls Frontline)",
    "base": "HK416",
-   "title": "Girls Frontline",
+   "title": "Girls' Frontline",
    "letter": "H",
    "variants": [
     {
@@ -48160,7 +48160,7 @@
    "id": "hong-meiling-touhou",
    "name": "Hong Meiling (TouHou)",
    "base": "Hong Meiling",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "H",
    "variants": [
     {
@@ -48441,7 +48441,7 @@
    "id": "hoshiguma-yuugi-touhou",
    "name": "Hoshiguma Yuugi (TouHou)",
    "base": "Hoshiguma Yuugi",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "H",
    "variants": [
     {
@@ -48733,7 +48733,7 @@
    "id": "hoto-cocoa-gchuumon-wa-usagi-desu-ka",
    "name": "Hoto Cocoa (Gchuumon wa Usagi desu ka?)",
    "base": "Hoto Cocoa",
-   "title": "Gchuumon wa Usagi desu ka?",
+   "title": "Gochuumon wa Usagi desu ka?",
    "letter": "H",
    "variants": [
     {
@@ -49215,7 +49215,7 @@
    "id": "izayoi-sakuya-touhou",
    "name": "Izayoi Sakuya (TouHou)",
    "base": "Izayoi Sakuya",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "I",
    "variants": [
     {
@@ -49355,9 +49355,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/iam1/iam2#h.64ea59c8f851aaf2_9051",
-   "image": "/media/characters/izumo-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "izuna-blue-archive",
@@ -50085,7 +50085,7 @@
    "id": "kirisame-marisa-touhou",
    "name": "Kirisame Marisa (TouHou)",
    "base": "Kirisame Marisa",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -50738,7 +50738,7 @@
    "id": "koakuma-touhou",
    "name": "Koakuma (TouHou)",
    "base": "Koakuma",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -50864,7 +50864,7 @@
    "id": "kochiya-sanae-touhou",
    "name": "Kochiya Sanae (TouHou)",
    "base": "Kochiya Sanae",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -51156,7 +51156,7 @@
    "id": "komeiji-koishi-touhou",
    "name": "Komeiji Koishi (TouHou)",
    "base": "Komeiji Koishi",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -51174,7 +51174,7 @@
    "id": "komeiji-satori-touhou",
    "name": "Komeiji Satori (TouHou)",
    "base": "Komeiji Satori",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -51282,7 +51282,7 @@
    "id": "konpaku-youmu-touhou",
    "name": "Konpaku Youmu (TouHou)",
    "base": "Konpaku Youmu",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "K",
    "variants": [
     {
@@ -51343,7 +51343,7 @@
    "id": "kotegawa-yui-to-love-ru",
    "name": "Kotegawa Yui (To Love Ru)",
    "base": "Kotegawa Yui",
-   "title": "To Love Ru",
+   "title": "To Love-Ru",
    "letter": "K",
    "variants": [
     {
@@ -51640,9 +51640,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/kam1/kam3#h.1351f425c5176912_45",
-   "image": "/media/characters/krile-mayer-baldesion-final-fantasy.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "kris-deltarune",
@@ -52125,9 +52125,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/kam1/kam3#h.64ea59c8f851aaf2_11612",
-   "image": "/media/characters/kuroka-high-school-dxd.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "kurokawa-akane-oshi-no-ko",
@@ -52277,7 +52277,7 @@
    "id": "kurumi-erika-precure",
    "name": "Kurumi Erika (Precure!)",
    "base": "Kurumi Erika",
-   "title": "Precure!",
+   "title": "Precure",
    "letter": "K",
    "variants": [
     {
@@ -53584,7 +53584,7 @@
    "id": "mia-fey-ace-attotney",
    "name": "Mia Fey (Ace Attotney)",
    "base": "Mia Fey",
-   "title": "Ace Attotney",
+   "title": "Ace Attorney",
    "letter": "M",
    "variants": [
     {
@@ -53674,7 +53674,7 @@
    "id": "midna-the-legemd-of-zelda",
    "name": "Midna (The Legemd of Zelda)",
    "base": "Midna",
-   "title": "The Legemd of Zelda",
+   "title": "The Legend of Zelda",
    "letter": "M",
    "variants": [
     {
@@ -53709,9 +53709,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/mam1/mam2#h.64ea59c8f851aaf2_13740",
-   "image": "/media/characters/midnight-boku-no-hero-academia.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "midori-blue-archive",
@@ -53777,9 +53777,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/mam1/mam2#h.64ea59c8f851aaf2_13767",
-   "image": "/media/characters/midway-princess-kantai-collection.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "mienshao-pokemon",
@@ -54543,9 +54543,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/mam1/mam2#h.64ea59c8f851aaf2_14037",
-   "image": "/media/characters/minneapolis-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "minneapolis-kantai-collection",
@@ -54767,7 +54767,7 @@
    "id": "misono-karin-mahou-shoujo-madoka-magica",
    "name": "Misono Karin (Mahou Shoujo madoka Magica)",
    "base": "Misono Karin",
-   "title": "Mahou Shoujo madoka Magica",
+   "title": "Mahou Shoujo Madoka Magica",
    "letter": "M",
    "variants": [
     {
@@ -55064,7 +55064,7 @@
    "id": "miyako-yoshiko-touhou",
    "name": "Miyako Yoshiko (TouHou)",
    "base": "Miyako Yoshiko",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "M",
    "variants": [
     {
@@ -55248,7 +55248,7 @@
    "id": "mizuhashi-parsee-touhou",
    "name": "Mizuhashi Parsee (TouHou)",
    "base": "Mizuhashi Parsee",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "M",
    "variants": [
     {
@@ -55476,9 +55476,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/mam1/mam3#h.2ad26a20169cea8c_27",
-   "image": "/media/characters/modernia-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "modeus-helltaker",
@@ -55897,7 +55897,7 @@
    "id": "mononobe-no-futo-touhou",
    "name": "Mononobe no Futo (TouHou)",
    "base": "Mononobe no Futo",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "M",
    "variants": [
     {
@@ -56173,9 +56173,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/mam1/mam3#h.64ea59c8f851aaf2_14650",
-   "image": "/media/characters/morrigan-aensland-darksiders.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "mostima-arknights",
@@ -56418,7 +56418,7 @@
    "id": "mugetsu-touhou",
    "name": "Mugetsu (TouHou)",
    "base": "Mugetsu",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "M",
    "variants": [
     {
@@ -56454,7 +56454,7 @@
    "id": "murakumo-kantai-collectiom",
    "name": "Murakumo (Kantai Collectiom)",
    "base": "Murakumo",
-   "title": "Kantai Collectiom",
+   "title": "Kantai Collection",
    "letter": "M",
    "variants": [
     {
@@ -56918,7 +56918,7 @@
    "id": "mystia-lorelei-touhou",
    "name": "Mystia Lorelei (TouHou)",
    "base": "Mystia Lorelei",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "M",
    "variants": [
     {
@@ -57656,7 +57656,7 @@
    "id": "rokudo-mukuro-katekyo-hitman-reborn",
    "name": "Rokudo Mukuro (Katekyo Hitman Reborn)",
    "base": "Rokudo Mukuro",
-   "title": "Katekyo Hitman Reborn",
+   "title": "Katekyo Hitman Reborn!",
    "letter": "R",
    "variants": [
     {
@@ -57738,9 +57738,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ram1/ram2#h.214f62206f9fc080_9",
-   "image": "/media/characters/ronova-genshin-impact.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "rook-hunt-twisted-wonderland",
@@ -57930,7 +57930,7 @@
    "id": "rosaria-genshin-impact",
    "name": "Rosaria (Genshin impact)",
    "base": "Rosaria",
-   "title": "Genshin impact",
+   "title": "Genshin Impact",
    "letter": "R",
    "variants": [
     {
@@ -58145,9 +58145,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/ram1/ram2#h.7469029acbe4ef17_126",
-   "image": "/media/characters/rozaliya-olenyeva-honkai-impact-3rd.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "ruan-mei-honkai-star-rail",
@@ -58207,7 +58207,7 @@
    "id": "rudeus-greyrat-moushoku-tensei",
    "name": "Rudeus Greyrat (Moushoku Tensei)",
    "base": "Rudeus Greyrat",
-   "title": "Moushoku Tensei",
+   "title": "Mushoku Tensei",
    "letter": "R",
    "variants": [
     {
@@ -58279,7 +58279,7 @@
    "id": "rumia-touhou",
    "name": "Rumia (TouHou)",
    "base": "Rumia",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "R",
    "variants": [
     {
@@ -58675,7 +58675,7 @@
    "id": "sekibanki-touhou",
    "name": "Sekibanki (TouHou)",
    "base": "Sekibanki",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "S",
    "variants": [
     {
@@ -58808,7 +58808,7 @@
    "id": "sendai-hakurei-no-miko-touhou",
    "name": "Sendai Hakurei no Miko (TouHou)",
    "base": "Sendai Hakurei no Miko",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "S",
    "variants": [
     {
@@ -59304,7 +59304,7 @@
    "id": "shamare-aknights",
    "name": "Shamare (Aknights)",
    "base": "Shamare",
-   "title": "Aknights",
+   "title": "Arknights",
    "letter": "S",
    "variants": [
     {
@@ -59322,7 +59322,7 @@
    "id": "shameimaru-aya-touhou",
    "name": "Shameimaru Aya (TouHou)",
    "base": "Shameimaru Aya",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "S",
    "variants": [
     {
@@ -59739,7 +59739,7 @@
    "id": "shiki-eiki-touhou",
    "name": "Shiki Eiki (TouHou)",
    "base": "Shiki Eiki",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "S",
    "variants": [
     {
@@ -59767,9 +59767,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam2#h.64ea59c8f851aaf2_19729",
-   "image": "/media/characters/shimakaze-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "shimakaze-kantai-collection",
@@ -59785,9 +59785,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam2#h.64ea59c8f851aaf2_19738",
-   "image": "/media/characters/shimakaze-kantai-collection.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "shimamura-uzuki-idolmaster",
@@ -60232,9 +60232,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam2#h.64ea59c8f851aaf2_19936",
-   "image": "/media/characters/shirahoshi-one-piece.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "shirai-kuroko-toaru-majutsu-no-index",
@@ -60462,7 +60462,7 @@
    "id": "shiratori-aira-dandandan",
    "name": "Shiratori Aira (Dandandan)",
    "base": "Shiratori Aira",
-   "title": "Dandandan",
+   "title": "Dandadan",
    "letter": "S",
    "variants": [
     {
@@ -60999,7 +60999,7 @@
    "id": "signora-genchin-impact",
    "name": "Signora (Genchin Impact)",
    "base": "Signora",
-   "title": "Genchin Impact",
+   "title": "Genshin Impact",
    "letter": "S",
    "variants": [
     {
@@ -61239,9 +61239,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam3#h.3d07029aaa8413e_270",
-   "image": "/media/characters/sin-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "sinon-sword-art-online",
@@ -61490,7 +61490,7 @@
    "id": "skuld-aa-megami-sama",
    "name": "Skuld (Aa Megami Sama!)",
    "base": "Skuld",
-   "title": "Aa Megami Sama!",
+   "title": "Aa Megami-sama!",
    "letter": "S",
    "variants": [
     {
@@ -61669,9 +61669,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam3#h.7efdf5f22fc85983_72",
-   "image": "/media/characters/soda-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "sof-blue-archive",
@@ -62149,9 +62149,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam3#h.64ea59c8f851aaf2_20666",
-   "image": "/media/characters/sorceress-dragon-crown.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "sotheby-reverse-1999",
@@ -62250,9 +62250,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam3#h.7b9cbfd254345c5_162",
-   "image": "/media/characters/south-dakota-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "south-dakota-kantai-collection",
@@ -62336,9 +62336,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam3#h.64ea59c8f851aaf2_20711",
-   "image": "/media/characters/sovetsky-soyuz-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "sparkle-honkai-star-rail",
@@ -62556,7 +62556,7 @@
    "id": "star-sapphire-touhou",
    "name": "Star Sapphire (TouHou)",
    "base": "Star Sapphire",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "S",
    "variants": [
     {
@@ -63203,9 +63203,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/sam1/sam4#h.1351f425c5176912_126",
-   "image": "/media/characters/surcouf-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "surtr-arknights",
@@ -63695,7 +63695,7 @@
    "id": "tomimi-arknigths",
    "name": "Tomimi (Arknigths)",
    "base": "Tomimi",
-   "title": "Arknigths",
+   "title": "Arknights",
    "letter": "T",
    "variants": [
     {
@@ -64145,7 +64145,7 @@
    "id": "toyosatomimi-no-miko-touhou",
    "name": "Toyosatomimi no Miko (TouHou)",
    "base": "Toyosatomimi no Miko",
-   "title": "TouHou",
+   "title": "Touhou",
    "letter": "T",
    "variants": [
     {
@@ -64295,9 +64295,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/tam1/tam2#h.64ea59c8f851aaf2_22298",
-   "image": "/media/characters/trieste-azur-lane.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "trigger-zenless-zone-zero",
@@ -64331,9 +64331,9 @@
    ],
    "notes": [],
    "source_url": "https://sites.google.com/view/stable-waifu/characters-am/tam1/tam2#h.3d07029aaa8413e_261",
-   "image": "/media/characters/trina-goddess-of-victory-nikke.webp",
-   "width": 512,
-   "height": 748
+   "image": null,
+   "width": null,
+   "height": null
   },
   {
    "id": "trinnon-honkai-star-rail",
@@ -64925,7 +64925,7 @@
    "id": "turbo-granny-dandandan",
    "name": "Turbo Granny (Dandandan)",
    "base": "Turbo Granny",
-   "title": "Dandandan",
+   "title": "Dandadan",
    "letter": "T",
    "variants": [
     {
@@ -64943,7 +64943,7 @@
    "id": "twilight-sparkle-my-little-pony",
    "name": "Twilight Sparkle (My Little pony)",
    "base": "Twilight Sparkle",
-   "title": "My Little pony",
+   "title": "My Little Pony",
    "letter": "T",
    "variants": [
     {

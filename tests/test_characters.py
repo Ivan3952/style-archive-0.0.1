@@ -88,4 +88,9 @@ ids = [dict(name="Old Name")]
 mod.assign_ids(ids, {"old name": "old-id"})
 check("id сохраняется из прошлого импорта", ids[0]["id"] == "old-id")
 
+check("алиас тайтла: опечатка -> одно написание", mod.split_name("Grave (Goddes of Victory: Nikke)") == ("Grave", "Goddess of Victory: Nikke"))
+check("алиас тайтла: верное написание не трогается", mod.canonical_title("Arknights") == "Arknights")
+aliases = mod.load_title_aliases()
+check("алиасы не ведут на другой алиас", not set(aliases.values()) & set(aliases), set(aliases.values()) & set(aliases))
+
 print(f"\n{passed} проверок пройдено")

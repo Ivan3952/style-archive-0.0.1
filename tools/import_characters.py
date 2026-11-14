@@ -48,6 +48,7 @@ SOURCE_URL = "https://sites.google.com/view/stable-waifu/characters-am"
 SOURCE_PATH = urlparse(SOURCE_URL).path
 SKIP_PATHS = ("/meme", "/oc-moderators")
 DATA_FILE = ROOT / "data" / "characters.json"
+TITLE_ALIASES_FILE = ROOT / "data" / "character_title_aliases.json"
 MEDIA_DIR = ROOT / "media" / "characters"
 MEDIA_URL = "/media/characters/"
 USER_AGENT = "StyleArchiveImporter/1.0 (+https://stylearchive.art)"
@@ -134,10 +135,25 @@ def classify(line: str) -> dict:
     return {"note": line}
 
 
+def load_title_aliases() -> dict[str, str]:
+    if not TITLE_ALIASES_FILE.exists():
+        return {}
+    return json.loads(TITLE_ALIASES_FILE.read_text(encoding="utf-8")).get("aliases", {})
+
+
+TITLE_ALIASES = load_title_aliases()
+
+
+def canonical_title(title: str) -> str:
+    """Опечатки и разные написания тайтла -> одно написание (data/character_title_aliases.json)."""
+    title = title.strip()
+    return TITLE_ALIASES.get(title, title)
+
+
 def split_name(name: str) -> tuple[str, str]:
     match = TITLED.match(name)
     if match:
-        return match.group(1).strip(), match.group(2).strip()
+        return match.group(1).strip(), canonical_title(match.group(2))
     return name, ""
 
 
@@ -365,6 +381,8 @@ def media_only() -> int:
         print("Нет data/characters.json: сначала python3 tools/import_characters.py --apply", file=sys.stderr)
         return 1
     payload = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    for character in payload["characters"]:
+        character["title"] = canonical_title(character.get("title") or "")
     total = sum(attach_media(character) for character in payload["characters"])
     variants = sum(
         1 for c in payload["characters"] for v in c.get("variants") or [] if v.get("image")
