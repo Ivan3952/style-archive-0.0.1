@@ -28,18 +28,43 @@
     "u-47-azur-lane",
     "u-110-azur-lane",
     "kofune-ushio-summertime-render",
-    "muromi-san-namiuchigiwa-no-muromi-san"
+    "muromi-san-namiuchigiwa-no-muromi-san",
+    "akane-blue-archive--2",
+    "chloe-von-einzbern-fate--2",
+    "hatsune-miku-vocaloid--22",
+    "hibiki-blue-archive--2",
+    "karin-blue-archive--2",
+    "le-malin-azur-lane--2",
+    "neru-blue-archive--2",
+    "pa-15-girls-frontline--2",
+    "sakurajima-mai-seishun-buta-yarou--2",
+    "toki-blue-archive--2",
+    "yaoyozoru-momo-boku-no-hero-academia--2",
+    "asuna-blue-archive--3",
+    "super-creek-umamusume--4"
    ]
   },
   "near_nude": {
-   "reason": "взрослый персонаж, на превью почти без одежды",
+   "reason": "взрослый персонаж, на превью почти без одежды или с акцентом на грудь (бани-костюмы с декольте и т. п.)",
    "keys": [
     "cinderella-goddess-of-victory-nikke",
     "felicia-darkstalkers",
     "green-heart-neptunia",
     "observer-alpha-azur-lane",
     "tiamat-fate",
-    "melona-queen-s-blade"
+    "melona-queen-s-blade",
+    "ade-goddess-of-victory-nikke--2",
+    "indomitable-azur-lane--2",
+    "mary-goddess-of-victory-nikke--3",
+    "red-hood-goddess-of-victory-nikke--2",
+    "scarlet-goddess-of-victory-nikke--3",
+    "taihou-azur-lane--2",
+    "taihou-azur-lane--3",
+    "taihou-azur-lane--8",
+    "tamamo-fate--16",
+    "viper-goddess-of-victory-nikke--2",
+    "zuikaku-azur-lane--2",
+    "modernia-goddess-of-victory-nikke--3"
    ]
   }
  }
