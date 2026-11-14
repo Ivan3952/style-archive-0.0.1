@@ -66,16 +66,22 @@ check("в пересмотре только безопасные превью и
 check("причина записана", xxx["reason"] == "выше R")
 
 row = mod.pack(ba)
+check("в строке число доп. превью", row[-1] == len(ba["images"]) - 1, row)
+row = row
 check("компактная строка — массив по FIELDS", isinstance(row, list) and len(row) == len(mod.FIELDS), row)
-check("префикс картинки вынесен", row[-1][0] == "88745feb-cdb2-4993-8021-5b64c1a594b6/130846892.jpeg", row[-1])
+check("префикс картинки вынесен", row[-2][0] == "88745feb-cdb2-4993-8021-5b64c1a594b6/130846892.jpeg", row[-2])
 back = mod.unpack(row)
 check("pack/unpack без потерь (кроме версии и лишних картинок)", back == {k: v for k, v in ba.items() if k != "version"} | {"images": ba["images"][:1]}, back)
 check("чужой хост картинки хранится полным URL", mod.pack_image({"url": "https://x.org/a.jpg", "width": 1, "height": 2})[0] == "https://x.org/a.jpg")
-check("без картинки", mod.pack({**ba, "images": []})[-1] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
+check("без картинки", mod.pack({**ba, "images": []})[-2] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
 
 tr = mod.clean_triggers(["a, B, a", "b, a", "b, " + "x" * 61, ", c ,"] + [f"t{i}, u{i}" for i in range(40)])
 check("триггеры: дубли наборов и проза отброшены", tr[:3] == [["a", "B"], ["b"], ["c"]], tr)
 check("тег <lora:…> из триггеров убран", mod.clean_triggers(["<lora:momo_ayase:0.8>, momo ayase"]) == [["momo ayase"]])
 check("триггеры: не больше 6 наборов", len(tr) == 6, tr)
+
+multi = {**ba, "images": [{"url": f"{mod.IMAGE_PREFIX}u{i}/width=450/{i}.jpeg", "width": 1, "height": 2} for i in range(4)]}
+shards = mod.gallery_shards([multi, {**ba, "id": 7}])
+check("галерея: без первой картинки, по шарду id % N", shards == {ba["id"] % mod.GALLERY_SHARDS: {str(ba["id"]): [[f"u{i}/{i}.jpeg", 1, 2] for i in (1, 2, 3)]}}, shards)
 
 print(f"\n{passed} проверок пройдено")

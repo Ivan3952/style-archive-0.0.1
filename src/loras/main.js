@@ -19,6 +19,7 @@ import "../css/loras-v010.css";
 import "../legacy/scroll-lock-v009.js";
 
 const DATA_URL = "./data/loras.json";
+const GALLERY_URL = "./data/loras-gallery"; // доп. превью: <id % shards>.json, грузятся при открытии окна
 const LANG_KEY = "style-archive:lang";
 const THEME_KEY = "style-archive:theme";
 const TRAY_KEY = "style-archive:tray";
@@ -73,6 +74,7 @@ const DICT = {
     sets: (n) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "набор" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "набора" : "наборов"}`,
     inLine: (n) => `в строке тегов: ${n}`,
     allTriggers: "все триггеры",
+    previews: "Превью: открой карточку, чтобы посмотреть все",
     close: "ЗАКРЫТЬ",
     empty: "Ничего не нашли. Попробуй имя латиницей, название тайтла или другую категорию.",
     emptyData: "Каталог ещё не загружен.",
@@ -122,6 +124,7 @@ const DICT = {
     sets: (n) => `${n} sets`,
     inLine: (n) => `tags in the line: ${n}`,
     allTriggers: "all triggers",
+    previews: "Previews: open the card to see them all",
     close: "CLOSE",
     empty: "Nothing found. Try a romanized name, a series title or another category.",
     emptyData: "The catalog is not loaded yet.",
@@ -161,6 +164,9 @@ const state = {
   triggersOn: new Map(), // id -> Set("набор:тег") включённых; нет записи — по умолчанию
   loaded: false,
   updatedAt: "",
+  shards: 100,
+  galleryCache: new Map(), // номер шарда -> Promise<объект id -> картинки>
+  viewerImage: 0,
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -220,11 +226,24 @@ function mixLine() {
 /* Формат 2 (tools/import_loras.py): LoRA — массив в порядке data.fields, одна картинка
    ["uuid/123.jpeg", w, h] без общего префикса, категория — индекс в data.categories.
    Старый формат (объекты) проходит без изменений. */
+function imageUnpacker(data) {
+  const prefix = data.image_prefix || "";
+  const width = data.image_width || 450;
+  return (image) => {
+    if (!Array.isArray(image)) return null;
+    let [url, w, h] = image;
+    if (!/^https?:/.test(url)) {
+      const cut = url.lastIndexOf("/");
+      url = `${prefix}${url.slice(0, cut)}/width=${width}/${url.slice(cut + 1)}`;
+    }
+    return { url, width: w, height: h };
+  };
+}
+
 function unpackRow(data) {
   const fields = data.fields || [];
   const categories = data.categories || [];
-  const prefix = data.image_prefix || "";
-  const width = data.image_width || 450;
+  const unpackImage = imageUnpacker(data);
   return (row) => {
     if (!Array.isArray(row)) return row;
     const lora = {};
@@ -233,14 +252,9 @@ function unpackRow(data) {
     const image = lora.image;
     delete lora.image;
     lora.images = [];
-    if (Array.isArray(image)) {
-      let [url, w, h] = image;
-      if (!/^https?:/.test(url)) {
-        const cut = url.lastIndexOf("/");
-        url = `${prefix}${url.slice(0, cut)}/width=${width}/${url.slice(cut + 1)}`;
-      }
-      lora.images.push({ url, width: w, height: h });
-    }
+    const unpacked = unpackImage(image);
+    if (unpacked) lora.images.push(unpacked);
+    lora.more = Number(lora.more) || 0;
     lora.url = `https://civitai.com/models/${lora.id}?modelVersionId=${lora.version_id}`;
     return lora;
   };
@@ -264,6 +278,8 @@ async function load() {
     }));
     state.byId = new Map(state.all.map((lora) => [String(lora.id), lora]));
     state.updatedAt = data.updated_at || "";
+    state.shards = data.gallery_shards || 100;
+    state.unpackImage = imageUnpacker(data);
     state.loaded = true;
   } catch {
     state.loaded = false;
@@ -432,6 +448,7 @@ function cardHtml(lora) {
       <button type="button" class="ch-media-v008 lr-media-v010" data-open style="aspect-ratio:${ratio}" aria-label="${esc(lora.name)}">
         ${image ? `<img src="${esc(image.url)}" alt="" loading="lazy" decoding="async">` : ""}
         <span class="lr-cat-v010">${esc(t(lora.category))}</span>
+        ${lora.more ? `<span class="lr-count-v010" title="${esc(t("previews"))}">▣ ${lora.more + 1}</span>` : ""}
       </button>
       <div class="ch-body-v008">
         <h3 class="ch-name-v008 lr-name-v010" title="${esc(lora.name)}"><button type="button" data-open>${esc(lora.name)}</button></h3>
@@ -442,12 +459,70 @@ function cardHtml(lora) {
     </article>`;
 }
 
+/* ---------- галерея превью ---------- */
+
+function loadGallery(lora) {
+  if (lora.gallery) return Promise.resolve(lora.gallery);
+  if (!lora.more) return Promise.resolve((lora.gallery = lora.images));
+  const shard = Number(lora.id) % state.shards;
+  if (!state.galleryCache.has(shard)) {
+    state.galleryCache.set(
+      shard,
+      fetch(`${GALLERY_URL}/${shard}.json`)
+        .then((response) => (response.ok ? response.json() : {}))
+        .catch(() => ({}))
+    );
+  }
+  return state.galleryCache.get(shard).then((data) => {
+    const extra = (data[String(lora.id)] || []).map(state.unpackImage).filter(Boolean);
+    lora.gallery = [...lora.images, ...extra];
+    return lora.gallery;
+  });
+}
+
+function mediaHtml(lora) {
+  const images = lora.gallery || lora.images;
+  const count = Math.max(images.length, lora.images.length + (lora.gallery ? 0 : lora.more));
+  const index = Math.min(state.viewerImage, Math.max(0, images.length - 1));
+  const image = images[index];
+  if (!image) return `<div class="ch-viewer-media-v008 empty"></div>`;
+  const nav =
+    count > 1
+      ? `<button type="button" class="lr-nav-v010 prev" data-gallery="-1" aria-label="←" ${index === 0 ? "disabled" : ""}>‹</button>
+         <button type="button" class="lr-nav-v010 next" data-gallery="1" aria-label="→" ${index >= images.length - 1 ? "disabled" : ""}>›</button>
+         <span class="lr-counter-v010">${index + 1} / ${count}</span>`
+      : "";
+  const thumbs =
+    images.length > 1
+      ? `<div class="lr-thumbs-v010">${images
+          .map(
+            (item, i) =>
+              `<button type="button" data-gallery-to="${i}" class="${i === index ? "on" : ""}" aria-label="${i + 1}"><img src="${esc(item.url)}" alt="" loading="lazy" decoding="async"></button>`
+          )
+          .join("")}</div>`
+      : "";
+  return `<div class="ch-viewer-media-v008 lr-gallery-v010">
+      <div class="lr-stage-v010"><img src="${esc(image.url)}" alt="${esc(lora.name)}">${nav}</div>
+      ${thumbs}
+    </div>`;
+}
+
+function renderMedia(lora) {
+  const media = el.viewer.querySelector(".lr-gallery-v010, .ch-viewer-media-v008");
+  if (media) media.outerHTML = mediaHtml(lora);
+}
+
+function stepGallery(lora, delta, absolute = false) {
+  const images = lora.gallery || lora.images;
+  const next = absolute ? delta : state.viewerImage + delta;
+  if (next < 0 || next >= images.length || next === state.viewerImage) return;
+  state.viewerImage = next;
+  renderMedia(lora);
+}
+
 function viewerHtml(lora) {
-  const image = lora.images[0];
   return `
-    <div class="ch-viewer-media-v008${image ? "" : " empty"}">
-      ${image ? `<img src="${esc(image.url)}" alt="${esc(lora.name)}">` : ""}
-    </div>
+    ${mediaHtml(lora)}
     <div class="ch-viewer-info-v008 lr-viewer-info-v010" data-id="${esc(lora.id)}">
       <header>
         <div>
@@ -464,11 +539,22 @@ function viewerHtml(lora) {
 function openViewer(id) {
   const lora = state.byId.get(String(id));
   if (!lora) return;
+  const reopen = el.viewer.open && el.viewer.dataset.id === String(lora.id);
+  if (!reopen) state.viewerImage = 0;
   el.viewer.dataset.id = String(lora.id);
-  const scroll = el.viewer.querySelector(".lr-viewer-info-v010")?.scrollTop || 0;
+  const info = el.viewer.querySelector(".lr-viewer-info-v010");
+  const scroll = [info?.scrollTop || 0, el.viewer.querySelector(".ch-viewer-shell-v008").scrollTop];
   el.viewer.querySelector(".ch-viewer-shell-v008").innerHTML = viewerHtml(lora);
   if (!el.viewer.open) el.viewer.showModal();
-  else el.viewer.querySelector(".lr-viewer-info-v010").scrollTop = scroll;
+  else if (reopen) {
+    el.viewer.querySelector(".lr-viewer-info-v010").scrollTop = scroll[0];
+    el.viewer.querySelector(".ch-viewer-shell-v008").scrollTop = scroll[1];
+  }
+  if (!lora.gallery && lora.more) {
+    loadGallery(lora).then(() => {
+      if (el.viewer.open && el.viewer.dataset.id === String(lora.id)) renderMedia(lora);
+    });
+  }
 }
 
 /* ---------- меню «на CivitAI»: перейти / скопировать ссылку / скопировать ID ---------- */
@@ -694,6 +780,11 @@ function bind() {
 
   el.viewer.addEventListener("click", (event) => {
     if (el.menu.contains(event.target)) return;
+    const viewerLora = state.byId.get(el.viewer.dataset.id);
+    const step = event.target.closest("[data-gallery]");
+    if (step && viewerLora) return stepGallery(viewerLora, Number(step.dataset.gallery));
+    const jump = event.target.closest("[data-gallery-to]");
+    if (jump && viewerLora) return stepGallery(viewerLora, Number(jump.dataset.galleryTo), true);
     if (event.target === el.viewer || event.target.closest("[data-close]")) {
       closeMenu();
       return el.viewer.close();
@@ -701,6 +792,29 @@ function bind() {
     onLoraClick(event);
   });
   el.viewer.addEventListener("close", closeMenu);
+
+  /* галерея: стрелки клавиатуры и свайп по картинке */
+  el.viewer.addEventListener("keydown", (event) => {
+    const lora = state.byId.get(el.viewer.dataset.id);
+    if (!lora || !el.menu.hidden || event.target.closest("input, textarea")) return;
+    if (event.key === "ArrowLeft") stepGallery(lora, -1);
+    if (event.key === "ArrowRight") stepGallery(lora, 1);
+  });
+  let touchX = null;
+  el.viewer.addEventListener(
+    "touchstart",
+    (event) => {
+      touchX = event.target.closest(".lr-stage-v010") ? event.touches[0].clientX : null;
+    },
+    { passive: true }
+  );
+  el.viewer.addEventListener("touchend", (event) => {
+    const lora = state.byId.get(el.viewer.dataset.id);
+    if (touchX === null || !lora) return;
+    const dx = event.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 40) stepGallery(lora, dx < 0 ? 1 : -1);
+  });
 
   el.menu.addEventListener("click", (event) => {
     const item = event.target.closest("[data-menu]");

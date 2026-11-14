@@ -49,7 +49,7 @@ BASE_MODEL = "Anima"
 MAX_MODEL_LEVEL = 7  # порог «R»
 SAFE_IMAGE_LEVEL = 1  # превью только PG
 IMAGE_WIDTH = 450
-MAX_IMAGES = 3
+MAX_IMAGES = 10  # первая — на карточке (loras.json), остальные — галерея в окне (loras-gallery/)
 MAX_TAGS = 8
 MAX_TRIGGERS = 32  # тегов во всех наборах вместе
 MAX_TRIGGER_LEN = 60
@@ -170,9 +170,27 @@ def clean_triggers(words: list[str]) -> list[list[str]]:
     return groups
 
 
+def gallery_images(model: dict, version: dict) -> list[dict]:
+    """Безопасные картинки выбранной версии, затем других публичных версий под Anima; без повторов."""
+    versions = [version] + [
+        v for v in model.get("modelVersions") or []
+        if v is not version and v.get("baseModel") == BASE_MODEL and v.get("availability", "Public") == "Public"
+    ]
+    out, seen = [], set()
+    for v in versions:
+        for image in safe_images(v):
+            if image["url"] in seen:
+                continue
+            seen.add(image["url"])
+            out.append(image)
+            if len(out) >= MAX_IMAGES:
+                return out
+    return out
+
+
 def convert(model: dict) -> dict:
     version = anima_version(model)
-    images = safe_images(version)[:MAX_IMAGES]
+    images = gallery_images(model, version)
     tags = [str(tag).strip() for tag in model.get("tags") or [] if str(tag).strip()]
     stats = model.get("stats") or {}
     return {
@@ -204,7 +222,11 @@ def convert(model: dict) -> dict:
 # Формат 2: каждая LoRA — массив значений в порядке FIELDS (без повторения ключей),
 # одна картинка (на карточке показывается только первая), общий префикс URL картинок вынесен.
 FORMAT = 2
-FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads", "likes", "published", "triggers", "image"]
+FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads", "likes", "published", "triggers", "image", "more"]
+# Галерея: остальные превью раскладываются по GALLERY_SHARDS файлам (id % N): окно просмотра
+# грузит один небольшой файл, а не все картинки каталога сразу.
+GALLERY_DIR = ROOT / "data" / "loras-gallery"
+GALLERY_SHARDS = 100
 CATEGORY_CODES = ["character", "style", "concept", "tool", "other"]
 IMAGE_PREFIX = "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/"
 
@@ -243,6 +265,7 @@ def pack(lora: dict) -> list:
         lora["published"],
         lora["triggers"],
         pack_image(lora["images"][0] if lora["images"] else None),
+        max(0, len(lora["images"]) - 1),
     ]
 
 
@@ -251,9 +274,32 @@ def unpack(row: list) -> dict:
     if isinstance(item["category"], int):
         item["category"] = CATEGORY_CODES[item["category"]]
     image = unpack_image(item.pop("image"))
+    item.pop("more", None)
     item["images"] = [image] if image else []
     item["url"] = f"https://civitai.com/models/{item['id']}?modelVersionId={item['version_id']}"
     return item
+
+
+def gallery_shards(loras: list[dict]) -> dict[int, dict]:
+    shards: dict[int, dict] = {}
+    for lora in loras:
+        if len(lora["images"]) > 1:
+            shards.setdefault(lora["id"] % GALLERY_SHARDS, {})[str(lora["id"])] = [
+                pack_image(image) for image in lora["images"][1:]
+            ]
+    return shards
+
+
+def write_gallery(loras: list[dict]) -> int:
+    GALLERY_DIR.mkdir(parents=True, exist_ok=True)
+    for old in GALLERY_DIR.glob("*.json"):
+        old.unlink()
+    shards = gallery_shards(loras)
+    for index, shard in shards.items():
+        (GALLERY_DIR / f"{index}.json").write_text(
+            json.dumps(shard, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
+        )
+    return sum(len(path.read_bytes()) for path in GALLERY_DIR.glob("*.json"))
 
 
 def review_entry(model: dict, reason: str) -> dict:
@@ -401,11 +447,15 @@ def main() -> int:
         "categories": CATEGORY_CODES,
         "image_prefix": IMAGE_PREFIX,
         "image_width": IMAGE_WIDTH,
+        "gallery_shards": GALLERY_SHARDS,
         "loras": [pack(lora) for lora in loras],
     }
     DATA_FILE.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     size = DATA_FILE.stat().st_size / 1024 / 1024
     print(f"\nЗаписано: {DATA_FILE.relative_to(ROOT)} ({len(loras)} LoRA, {size:.1f} МБ)")
+    gallery = write_gallery(loras)
+    extra = sum(max(0, len(lora["images"]) - 1) for lora in loras)
+    print(f"Галерея: {GALLERY_DIR.relative_to(ROOT)}/ ({extra} доп. превью, {gallery / 1024 / 1024:.1f} МБ в {GALLERY_SHARDS} файлах)")
 
     review_payload = {
         "note": "Исключённые LoRA для ручного пересмотра. Только локально: не публикуется и не коммитится.",

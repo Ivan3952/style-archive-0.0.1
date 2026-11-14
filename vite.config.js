@@ -54,11 +54,13 @@ function copyRuntimeData() {
       if (existsSync(resolve(root, "data/characters.json"))) files.add("./data/characters.json");
       /* каталог LoRA: файл появляется после первого импорта (tools/import_loras.py) */
       if (existsSync(resolve(root, "data/loras.json"))) files.add("./data/loras.json");
+      /* галерея превью LoRA: каталог небольших файлов, грузятся по одному при открытии окна */
+      if (existsSync(resolve(root, "data/loras-gallery"))) files.add("./data/loras-gallery");
       for (const rel of files) {
         const from = resolve(root, rel);
         const to = resolve(root, "dist", rel);
         mkdirSync(dirname(to), { recursive: true });
-        cpSync(from, to);
+        cpSync(from, to, { recursive: true });
       }
       console.log(`copy-runtime-data: ${files.size} файлов данных в dist/data`);
     },
