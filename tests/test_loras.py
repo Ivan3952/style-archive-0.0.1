@@ -75,6 +75,7 @@ check("без картинки", mod.pack({**ba, "images": []})[-1] == 0 and mod
 
 tr = mod.clean_triggers(["a, B, a", "b, a", "b, " + "x" * 61, ", c ,"] + [f"t{i}, u{i}" for i in range(40)])
 check("триггеры: дубли наборов и проза отброшены", tr[:3] == [["a", "B"], ["b"], ["c"]], tr)
+check("тег <lora:…> из триггеров убран", mod.clean_triggers(["<lora:momo_ayase:0.8>, momo ayase"]) == [["momo ayase"]])
 check("триггеры: не больше 6 наборов", len(tr) == 6, tr)
 
 print(f"\n{passed} проверок пройдено")

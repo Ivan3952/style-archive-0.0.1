@@ -156,3 +156,140 @@
 .filter-chip span {
   color: var(--muted-2);
 }
+
+/* ---------- компактная карточка: первые теги и «+N», остальное в окне ---------- */
+
+.lr-name-v010 button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lr-triggers-v010.compact {
+  max-height: 56px; /* две строки чипов: высота карточек не зависит от числа триггеров */
+  overflow: hidden;
+}
+
+.lr-triggers-v010 button.lr-more-v010 {
+  border-style: solid;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.lr-inline-v010 {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.lr-inline-v010 button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+button.lr-open-v010 {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* ---------- окно просмотра ---------- */
+
+/* на телефоне картинка по своей высоте: height: 100% в строке auto давала наезд на заголовок */
+@media (max-width: 720px) {
+  .lr-viewer-v010 .ch-viewer-media-v008 img {
+    height: auto;
+    max-height: 56dvh;
+  }
+}
+
+.lr-viewer-info-v010 h2 {
+  overflow-wrap: anywhere;
+}
+
+.lr-viewer-info-v010 .lr-triggers-v010 button {
+  font-size: 12px;
+}
+
+.lr-viewer-info-v010 .lr-line-v010 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- меню «на CivitAI» ---------- */
+
+.lr-menu-v010 {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+.lr-menu-v010[hidden] {
+  display: none;
+}
+
+.lr-menu-v010 a,
+.lr-menu-v010 button {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lr-menu-v010 a:hover,
+.lr-menu-v010 button:hover,
+.lr-menu-v010 a:focus-visible,
+.lr-menu-v010 button:focus-visible {
+  background: var(--line-soft);
+  outline: none;
+}
+
+.lr-menu-v010 span {
+  color: var(--muted);
+}
+
+/* на телефоне — панель снизу: крупные пункты, не промахнуться пальцем */
+.lr-menu-v010.sheet {
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  left: 10px;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.lr-menu-v010.sheet a,
+.lr-menu-v010.sheet button {
+  padding: 14px;
+  font-size: 15px;
+}

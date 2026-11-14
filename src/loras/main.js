@@ -24,6 +24,7 @@ const THEME_KEY = "style-archive:theme";
 const TRAY_KEY = "style-archive:tray";
 const MIX_KEY = "style-archive:mix-v006";
 const BATCH = 36;
+const CARD_TAGS = 6; // тегов на карточке; остальные — в окне просмотра
 const WEIGHT_MIN = 0.3;
 const WEIGHT_MAX = 1.2;
 const WEIGHT_DEFAULT = 0.8;
@@ -63,6 +64,16 @@ const DICT = {
     copiedWithMix: "СКОПИРОВАНО ВМЕСТЕ С МИКСОМ",
     copyFailed: "НЕ УДАЛОСЬ СКОПИРОВАТЬ",
     open: "на CivitAI ↗",
+    menuGo: "Перейти на CivitAI",
+    menuCopyLink: "Скопировать ссылку",
+    menuCopyId: "Скопировать ID",
+    linkCopied: "ССЫЛКА СКОПИРОВАНА",
+    idCopied: "ID СКОПИРОВАН",
+    more: "ещё",
+    sets: (n) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "набор" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "набора" : "наборов"}`,
+    inLine: (n) => `в строке тегов: ${n}`,
+    allTriggers: "все триггеры",
+    close: "ЗАКРЫТЬ",
     empty: "Ничего не нашли. Попробуй имя латиницей, название тайтла или другую категорию.",
     emptyData: "Каталог ещё не загружен.",
     reset: "СБРОСИТЬ",
@@ -102,6 +113,16 @@ const DICT = {
     copiedWithMix: "COPIED WITH THE MIX",
     copyFailed: "COULD NOT COPY",
     open: "on CivitAI ↗",
+    menuGo: "Open on CivitAI",
+    menuCopyLink: "Copy link",
+    menuCopyId: "Copy ID",
+    linkCopied: "LINK COPIED",
+    idCopied: "ID COPIED",
+    more: "more",
+    sets: (n) => `${n} sets`,
+    inLine: (n) => `tags in the line: ${n}`,
+    allTriggers: "all triggers",
+    close: "CLOSE",
     empty: "Nothing found. Try a romanized name, a series title or another category.",
     emptyData: "The catalog is not loaded yet.",
     reset: "RESET",
@@ -160,6 +181,8 @@ const el = {
   themeButton: $("#lrThemeButton"),
   themeColor: $("#themeColor"),
   toast: $("#toast"),
+  viewer: $("#lrViewer"),
+  menu: $("#lrMenu"),
 };
 
 /* ---------- микс со страницы стилей (тот же расчёт, что у панели микса) ---------- */
@@ -257,7 +280,7 @@ function triggerGroups(raw) {
     .map((group) =>
       (Array.isArray(group) ? group : String(group).split(","))
         .map((tag) => String(tag).trim())
-        .filter(Boolean)
+        .filter((tag) => tag && !/^<\s*lora\s*:/i.test(tag))
     )
     .filter((group) => group.length);
 }
@@ -343,40 +366,51 @@ function syncUrl() {
 
 /* ---------- карточки ---------- */
 
-function cardHtml(lora) {
-  const image = lora.images[0];
-  const ratio = image?.width && image?.height ? `${image.width}/${image.height}` : "2/3";
+function tagButton(lora, on, g, i) {
+  const tag = lora.triggers[g][i];
+  return `<button type="button" data-trigger="${g}:${i}" class="${on.has(`${g}:${i}`) ? "on" : ""}" title="${esc(tag)}">${esc(tag)}</button>`;
+}
+
+/* Все наборы с переключателями — в окне просмотра. */
+function triggersFullHtml(lora) {
+  if (!lora.triggers.length) return `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
   const on = triggersOn(lora);
   const many = lora.triggers.length > 1;
-  const weight = weightOf(lora);
+  return `<div class="lr-triggers-v010" aria-label="${esc(t(many ? "triggerSets" : "triggers"))}">${lora.triggers
+    .map((group, g) => {
+      const tags = group.map((_, i) => tagButton(lora, on, g, i)).join("");
+      if (!many) return tags;
+      const keys = keysOf(lora, g);
+      const all = keys.every((key) => on.has(key));
+      return `<div class="lr-tgroup-v010${keys.some((key) => on.has(key)) ? " on" : ""}"><button type="button" class="lr-tset-v010${all ? " on" : ""}" data-trigger-set="${g}" title="${esc(t("toggleSet"))}">${g + 1}</button>${tags}</div>`;
+    })
+    .join("")}</div>`;
+}
 
+/* На карточке — только первые теги первого набора, остальное за «+N»: карточки одной высоты. */
+function triggersCardHtml(lora) {
+  if (!lora.triggers.length) return `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
+  const on = triggersOn(lora);
+  const shown = lora.triggers[0].slice(0, CARD_TAGS);
+  const total = lora.triggers.reduce((sum, group) => sum + group.length, 0);
+  const hidden = total - shown.length;
+  const sets = lora.triggers.length > 1 ? ` · ${t("sets")(lora.triggers.length)}` : "";
+  return `<div class="lr-triggers-v010 compact">${shown.map((_, i) => tagButton(lora, on, 0, i)).join("")}${
+    hidden > 0 ? `<button type="button" class="lr-more-v010" data-open>+${hidden}${esc(sets)}</button>` : ""
+  }</div>`;
+}
+
+function controlsHtml(lora, { full = false } = {}) {
+  const weight = weightOf(lora);
+  const active = activeTriggers(lora).length;
+  const visible = full ? active : lora.triggers[0]?.slice(0, CARD_TAGS).filter((_, i) => triggersOn(lora).has(`0:${i}`)).length || 0;
   return `
-    <article class="ch-card-v008 lr-card-v010" data-id="${esc(lora.id)}">
-      <a class="ch-media-v008 lr-media-v010" href="${esc(lora.url)}" target="_blank" rel="noopener" style="aspect-ratio:${ratio}" aria-label="${esc(lora.name)} — CivitAI">
-        ${image ? `<img src="${esc(image.url)}" alt="" loading="lazy" decoding="async">` : ""}
-        <span class="lr-cat-v010">${esc(t(lora.category))}</span>
-      </a>
-      <div class="ch-body-v008">
-        <h3 class="ch-name-v008 lr-name-v010" title="${esc(lora.name)}">${esc(lora.name)}</h3>
-        <p class="lr-meta-v010">${esc(t("by"))} ${esc(lora.creator)} · ${fmt(lora.downloads)} ${esc(t("downloads"))}</p>
+        <code class="lr-line-v010" title="${esc(loraLine(lora))}">${esc(loraLine(lora))}</code>
         ${
-          lora.triggers.length
-            ? `<div class="lr-triggers-v010" aria-label="${esc(t(many ? "triggerSets" : "triggers"))}">${lora.triggers
-                .map((group, g) => {
-                  const tags = group
-                    .map(
-                      (tag, i) =>
-                        `<button type="button" data-trigger="${g}:${i}" class="${on.has(`${g}:${i}`) ? "on" : ""}" title="${esc(tag)}">${esc(tag)}</button>`
-                    )
-                    .join("");
-                  if (!many) return tags;
-                  const all = keysOf(lora, g).every((key) => on.has(key));
-                  return `<div class="lr-tgroup-v010${keysOf(lora, g).some((key) => on.has(key)) ? " on" : ""}"><button type="button" class="lr-tset-v010${all ? " on" : ""}" data-trigger-set="${g}" title="${esc(t("toggleSet"))}">${g + 1}</button>${tags}</div>`;
-                })
-                .join("")}</div>`
-            : `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`
+          !full && active > visible
+            ? `<p class="lr-inline-v010">${esc(t("inLine")(active))} · <button type="button" data-open>${esc(t("allTriggers"))}</button></p>`
+            : ""
         }
-        <code class="lr-line-v010">${esc(loraLine(lora))}</code>
         <div class="lr-weight-v010">
           <span>${esc(t("weight"))}</span>
           <button type="button" data-weight="-1" ${weight <= WEIGHT_MIN ? "disabled" : ""} aria-label="−">−</button>
@@ -386,10 +420,92 @@ function cardHtml(lora) {
         <div class="ch-actions-v008">
           <button class="ch-btn-v008 primary" type="button" data-copy>${esc(t("copy"))}</button>
           <button class="ch-btn-v008 ch-mix-btn-v008" type="button" data-copy-mix title="${esc(t("copyWithMixTitle"))}">${esc(t("copyWithMix"))}</button>
-          <a class="ch-source-link-v008 lr-open-v010" href="${esc(lora.url)}" target="_blank" rel="noopener">${esc(t("open"))}</a>
-        </div>
+          <button class="ch-source-link-v008 lr-open-v010" type="button" data-civitai aria-haspopup="menu">${esc(t("open"))}</button>
+        </div>`;
+}
+
+function cardHtml(lora) {
+  const image = lora.images[0];
+  const ratio = image?.width && image?.height ? `${image.width}/${image.height}` : "2/3";
+  return `
+    <article class="ch-card-v008 lr-card-v010" data-id="${esc(lora.id)}">
+      <button type="button" class="ch-media-v008 lr-media-v010" data-open style="aspect-ratio:${ratio}" aria-label="${esc(lora.name)}">
+        ${image ? `<img src="${esc(image.url)}" alt="" loading="lazy" decoding="async">` : ""}
+        <span class="lr-cat-v010">${esc(t(lora.category))}</span>
+      </button>
+      <div class="ch-body-v008">
+        <h3 class="ch-name-v008 lr-name-v010" title="${esc(lora.name)}"><button type="button" data-open>${esc(lora.name)}</button></h3>
+        <p class="lr-meta-v010">${esc(t("by"))} ${esc(lora.creator)} · ${fmt(lora.downloads)} ${esc(t("downloads"))}</p>
+        ${triggersCardHtml(lora)}
+        ${controlsHtml(lora)}
       </div>
     </article>`;
+}
+
+function viewerHtml(lora) {
+  const image = lora.images[0];
+  return `
+    <div class="ch-viewer-media-v008${image ? "" : " empty"}">
+      ${image ? `<img src="${esc(image.url)}" alt="${esc(lora.name)}">` : ""}
+    </div>
+    <div class="ch-viewer-info-v008 lr-viewer-info-v010" data-id="${esc(lora.id)}">
+      <header>
+        <div>
+          <span class="eyebrow">${esc(t(lora.category))} · ${esc(t("by"))} ${esc(lora.creator)} · ${fmt(lora.downloads)} ${esc(t("downloads"))}</span>
+          <h2>${esc(lora.name)}</h2>
+        </div>
+        <button class="text-button" type="button" data-close>${esc(t("close"))}</button>
+      </header>
+      ${triggersFullHtml(lora)}
+      ${controlsHtml(lora, { full: true })}
+    </div>`;
+}
+
+function openViewer(id) {
+  const lora = state.byId.get(String(id));
+  if (!lora) return;
+  el.viewer.dataset.id = String(lora.id);
+  const scroll = el.viewer.querySelector(".lr-viewer-info-v010")?.scrollTop || 0;
+  el.viewer.querySelector(".ch-viewer-shell-v008").innerHTML = viewerHtml(lora);
+  if (!el.viewer.open) el.viewer.showModal();
+  else el.viewer.querySelector(".lr-viewer-info-v010").scrollTop = scroll;
+}
+
+/* ---------- меню «на CivitAI»: перейти / скопировать ссылку / скопировать ID ---------- */
+
+function closeMenu() {
+  if (el.menu.hidden) return;
+  el.menu.hidden = true;
+  el.menu.dataset.id = "";
+}
+
+function openMenu(button, lora) {
+  if (!el.menu.hidden && el.menu.dataset.id === String(lora.id) && el.menu.anchor === button) return closeMenu();
+  /* в открытом модальном окне меню должно жить внутри него, иначе оно под окном и не кликается */
+  const host = button.closest("dialog") || document.body;
+  if (el.menu.parentElement !== host) host.append(el.menu);
+  el.menu.dataset.id = String(lora.id);
+  el.menu.anchor = button;
+  el.menu.scrollAt = window.scrollY;
+  el.menu.innerHTML = `
+    <a role="menuitem" href="${esc(lora.url)}" target="_blank" rel="noopener" data-menu="go">${esc(t("menuGo"))} ↗</a>
+    <button role="menuitem" type="button" data-menu="link">${esc(t("menuCopyLink"))}</button>
+    <button role="menuitem" type="button" data-menu="id">${esc(t("menuCopyId"))} <span>${esc(lora.id)}</span></button>`;
+  el.menu.hidden = false;
+  const sheet = window.matchMedia("(max-width: 640px)").matches;
+  el.menu.classList.toggle("sheet", sheet);
+  if (sheet) {
+    el.menu.style.left = el.menu.style.top = "";
+  } else {
+    const rect = button.getBoundingClientRect();
+    const width = el.menu.offsetWidth;
+    const height = el.menu.offsetHeight;
+    const left = Math.min(window.innerWidth - width - 8, Math.max(8, rect.right - width));
+    const below = rect.bottom + 6 + height <= window.innerHeight;
+    el.menu.style.left = `${left}px`;
+    el.menu.style.top = `${below ? rect.bottom + 6 : rect.top - height - 6}px`;
+  }
+  el.menu.querySelector("[data-menu]")?.focus({ preventScroll: true });
 }
 
 function renderMore() {
@@ -521,12 +637,21 @@ function bind() {
     applyFilters();
   });
 
-  el.grid.addEventListener("click", (event) => {
-    const card = event.target.closest(".lr-card-v010");
-    if (!card) return;
-    const lora = state.byId.get(card.dataset.id);
+  const onLoraClick = (event) => {
+    const host = event.target.closest("[data-id]");
+    if (!host) return;
+    const lora = state.byId.get(host.dataset.id);
     if (!lora) return;
     const id = String(lora.id);
+    const refresh = () => {
+      rerenderCard(id);
+      if (el.viewer.open && el.viewer.dataset.id === id) openViewer(id);
+    };
+
+    const civitai = event.target.closest("[data-civitai]");
+    if (civitai) return openMenu(civitai, lora);
+
+    if (event.target.closest("[data-open]")) return openViewer(id);
 
     const set = event.target.closest("[data-trigger-set]");
     if (set) {
@@ -535,8 +660,7 @@ function bind() {
       const all = keys.every((key) => on.has(key));
       keys.forEach((key) => (all ? on.delete(key) : on.add(key)));
       state.triggersOn.set(id, on);
-      rerenderCard(id);
-      return;
+      return refresh();
     }
 
     const trigger = event.target.closest("[data-trigger]");
@@ -546,16 +670,14 @@ function bind() {
       if (on.has(key)) on.delete(key);
       else on.add(key);
       state.triggersOn.set(id, on);
-      rerenderCard(id);
-      return;
+      return refresh();
     }
 
     const weight = event.target.closest("[data-weight]");
     if (weight) {
       const next = Math.round((weightOf(lora) + Number(weight.dataset.weight) * 0.1) * 10) / 10;
       state.weights.set(id, Math.min(WEIGHT_MAX, Math.max(WEIGHT_MIN, next)));
-      rerenderCard(id);
-      return;
+      return refresh();
     }
 
     if (event.target.closest("[data-copy]")) return copyText(loraLine(lora), t("copied"));
@@ -566,7 +688,60 @@ function bind() {
         mix ? t("copiedWithMix") : t("copied")
       );
     }
+  };
+
+  el.grid.addEventListener("click", onLoraClick);
+
+  el.viewer.addEventListener("click", (event) => {
+    if (el.menu.contains(event.target)) return;
+    if (event.target === el.viewer || event.target.closest("[data-close]")) {
+      closeMenu();
+      return el.viewer.close();
+    }
+    onLoraClick(event);
   });
+  el.viewer.addEventListener("close", closeMenu);
+
+  el.menu.addEventListener("click", (event) => {
+    const item = event.target.closest("[data-menu]");
+    const lora = state.byId.get(el.menu.dataset.id);
+    if (!item || !lora) return;
+    if (item.dataset.menu === "link") copyText(lora.url, t("linkCopied"));
+    if (item.dataset.menu === "id") copyText(String(lora.id), t("idCopied"));
+    closeMenu();
+  });
+
+  /* клик мимо меню и Esc закрывают его; Esc в окне сначала закрывает меню, а не окно */
+  document.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (!el.menu.hidden && !el.menu.contains(event.target) && !event.target.closest("[data-civitai]")) closeMenu();
+    },
+    true
+  );
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Escape" && !el.menu.hidden) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeMenu();
+      }
+    },
+    true
+  );
+  el.viewer.addEventListener("cancel", (event) => {
+    if (!el.menu.hidden) event.preventDefault();
+  });
+  window.addEventListener("resize", closeMenu);
+  /* меню привязано к кнопке: при заметной прокрутке закрывается (мелкий сдвиг от клика не в счёт) */
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!el.menu.hidden && !el.menu.classList.contains("sheet") && Math.abs(window.scrollY - el.menu.scrollAt) > 40) closeMenu();
+    },
+    { passive: true }
+  );
 
   el.empty.addEventListener("click", (event) => {
     if (!event.target.closest("[data-reset]")) return;

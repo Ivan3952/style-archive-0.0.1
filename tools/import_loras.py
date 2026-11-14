@@ -54,6 +54,7 @@ MAX_TAGS = 8
 MAX_TRIGGERS = 32  # тегов во всех наборах вместе
 MAX_TRIGGER_LEN = 60
 MAX_TRIGGER_GROUPS = 6
+LORA_TAG = re.compile(r"^<\s*lora\s*:", re.I)
 
 NSFW_TAGS = {
     "nsfw", "hentai", "porn", "nude", "nudity", "naked", "sex", "sexual", "erotic", "ecchi", "lewd",
@@ -150,7 +151,8 @@ def clean_triggers(words: list[str]) -> list[list[str]]:
         group, seen = [], set()
         for part in str(word).split(","):
             text = re.sub(r"\s+", " ", part).strip()
-            if not text or len(text) > MAX_TRIGGER_LEN or text.lower() in seen:
+            # некоторые авторы вписывают в триггеры собственный тег <lora:файл:вес> — это не триггер
+            if not text or len(text) > MAX_TRIGGER_LEN or text.lower() in seen or LORA_TAG.match(text):
                 continue
             seen.add(text.lower())
             group.append(text)
