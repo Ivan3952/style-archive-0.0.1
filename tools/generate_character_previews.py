@@ -28,6 +28,7 @@ import datetime as dt
 import hashlib
 import io
 import json
+import re
 import sys
 import time
 import urllib.error
@@ -58,6 +59,17 @@ PREVIEW_QUALITY = 84
 QUEUE_DEPTH = 2  # держим в очереди ComfyUI на одну задачу больше, чтобы видеокарта не простаивала
 
 SAMPLERS = ("KSampler", "KSamplerAdvanced")
+
+# Наряды с бельём, купальниками и откровенными тегами не генерируются: сайт публичный, среди персонажей
+# есть детской внешности, а «safe» в промпте — просьба к модели, не гарантия. У таких нарядов на сайте
+# показывается основное превью персонажа. Обычная одежда (чулки, колготки, боди) сюда не входит.
+REVEALING = re.compile(
+    r"\b(panties|panty|pantsu|bikini|swimsuit|lingerie|underwear|bra|nude|naked|topless|bottomless|micro|"
+    r"thong|g-string|cleavage|breasts|nipples?|bunny suit|playboy bunny|reverse bunnysuit|pasties|bandeau|"
+    r"sarashi|fundoshi|see-through|revealing|slingshot|buruma|bloomers|towel|harem outfit|loincloth|"
+    r"negligee|nightgown|babydoll|garter belt)\b",
+    re.I,
+)
 
 
 # ---------------------------------------------------------------- workflow
@@ -249,6 +261,7 @@ def main() -> int:
         characters = [c for c in characters if c["id"] in wanted]
 
     todo = []  # (character, файл, ключ лога, промпт)
+    skipped = 0  # наряды с откровенными тегами
     for character in characters:
         if args.all_variants:
             jobs = [(i, v) for i, v in enumerate(character.get("variants", [])) if v.get("tags")]
@@ -259,6 +272,9 @@ def main() -> int:
             name = variant_file(character["id"], index)
             if (MEDIA_DIR / name).exists() and not args.overwrite:
                 continue
+            if REVEALING.search(variant["tags"]):
+                skipped += 1
+                continue
             todo.append((character, name, name.removesuffix(".webp"), args.template.replace("{tags}", variant["tags"])))
     if args.limit:
         todo = todo[: args.limit]
@@ -267,7 +283,7 @@ def main() -> int:
         f"Workflow: {args.workflow.name} (модели: {', '.join(parts['models']) or '?'}); "
         f"{args.width}×{args.height}, сид {args.seed}"
     )
-    print(f"К генерации: {len(todo)} из {len(characters)} персонажей")
+    print(f"К генерации: {len(todo)} (персонажей {len(characters)}); пропущено с откровенными тегами: {skipped}")
     if args.dry_run:
         for character, name, _, prompt in todo[:20]:
             print(f"\n[{name}] {character['name']}\n  {prompt}")
