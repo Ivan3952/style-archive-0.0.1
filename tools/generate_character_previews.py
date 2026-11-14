@@ -9,7 +9,8 @@
   python3 tools/generate_character_previews.py --dry-run --limit 5     # какие промпты уйдут, ничего не генерирует
   python3 tools/generate_character_previews.py --limit 20              # пробный прогон: скорость и качество
   python3 tools/generate_character_previews.py                         # все остальные
-  python3 tools/import_characters.py --apply                           # прописать превью в data/characters.json
+  python3 tools/generate_character_previews.py --all-variants          # превью остальных нарядов (<id>--2.webp…)
+  python3 tools/import_characters.py --media-only                      # прописать превью в data/characters.json
 
 Workflow: tools/comfy/anima_character_preview.json (экспорт ComfyUI «Export (API)»). Скрипт сам находит
 KSampler, его позитивный промпт, пустой латент и узел сохранения, поэтому граф можно менять в ComfyUI
@@ -201,6 +202,11 @@ def write_log(log: dict) -> None:
     tmp.replace(LOG_FILE)
 
 
+def variant_file(character_id: str, index: int) -> str:
+    """Первый наряд — <id>.webp (как раньше), остальные — <id>--2.webp, <id>--3.webp… по номеру наряда."""
+    return f"{character_id}.webp" if index == 0 else f"{character_id}--{index + 1}.webp"
+
+
 def pick_variant(character: dict, index: int) -> dict | None:
     variants = [v for v in character.get("variants", []) if v.get("tags")]
     if not variants:
@@ -217,6 +223,9 @@ def main() -> int:
     ap.add_argument("--width", type=int, default=DEFAULT_WIDTH)
     ap.add_argument("--height", type=int, default=DEFAULT_HEIGHT)
     ap.add_argument("--variant", type=int, default=0, help="какой вариант образа брать (0 — первый)")
+    ap.add_argument(
+        "--all-variants", action="store_true", help="превью всех нарядов, а не только первого (<id>--N.webp)"
+    )
     ap.add_argument("--limit", type=int, help="сгенерировать не больше N новых превью")
     ap.add_argument("--title", help="только персонажи этого тайтла (например «Blue Archive»)")
     ap.add_argument("--ids", help="только эти id через запятую")
@@ -239,14 +248,18 @@ def main() -> int:
         wanted = {item.strip() for item in args.ids.split(",")}
         characters = [c for c in characters if c["id"] in wanted]
 
-    todo = []
+    todo = []  # (character, файл, ключ лога, промпт)
     for character in characters:
-        variant = pick_variant(character, args.variant)
-        if not variant:
-            continue
-        if (MEDIA_DIR / f"{character['id']}.webp").exists() and not args.overwrite:
-            continue
-        todo.append((character, args.template.replace("{tags}", variant["tags"])))
+        if args.all_variants:
+            jobs = [(i, v) for i, v in enumerate(character.get("variants", [])) if v.get("tags")]
+        else:
+            variant = pick_variant(character, args.variant)
+            jobs = [(0, variant)] if variant else []
+        for index, variant in jobs:
+            name = variant_file(character["id"], index)
+            if (MEDIA_DIR / name).exists() and not args.overwrite:
+                continue
+            todo.append((character, name, name.removesuffix(".webp"), args.template.replace("{tags}", variant["tags"])))
     if args.limit:
         todo = todo[: args.limit]
 
@@ -256,8 +269,8 @@ def main() -> int:
     )
     print(f"К генерации: {len(todo)} из {len(characters)} персонажей")
     if args.dry_run:
-        for character, prompt in todo[:20]:
-            print(f"\n[{character['id']}] {character['name']}\n  {prompt}")
+        for character, name, _, prompt in todo[:20]:
+            print(f"\n[{name}] {character['name']}\n  {prompt}")
         return 0
     if not todo:
         return 0
@@ -271,29 +284,27 @@ def main() -> int:
         "seed": args.seed,
         "width": args.width,
         "height": args.height,
-        "variant": args.variant,
+        "variant": "all" if args.all_variants else args.variant,
         "models": parts["models"],
         "workflow_sha1": hashlib.sha1(args.workflow.read_bytes()).hexdigest()[:12],
     }
 
-    pending: deque = deque()  # (prompt_id, character, prompt, queued_at)
+    pending: deque = deque()  # (prompt_id, character, файл, ключ лога, prompt, queued_at)
     waiting = deque(todo)
     done = failed = 0
     started = time.time()
 
     def submit() -> None:
-        character, prompt = waiting.popleft()
-        job = build_job(
-            workflow, parts, prompt, args.seed, args.width, args.height, f"style_archive/characters/{character['id']}"
-        )
-        pending.append((comfy.queue(job), character, prompt, time.time()))
+        character, name, key, prompt = waiting.popleft()
+        job = build_job(workflow, parts, prompt, args.seed, args.width, args.height, f"style_archive/characters/{key}")
+        pending.append((comfy.queue(job), character, name, key, prompt, time.time()))
 
     try:
         while waiting or pending:
             while waiting and len(pending) < QUEUE_DEPTH:
                 submit()
 
-            prompt_id, character, prompt, queued_at = pending[0]
+            prompt_id, character, name, key, prompt, queued_at = pending[0]
             entry = comfy.result(prompt_id)
             if entry is None:
                 time.sleep(0.4)
@@ -307,9 +318,9 @@ def main() -> int:
                 print(f"  ✗ {character['name']}: ComfyUI не вернул картинку ({status})", file=sys.stderr)
                 continue
 
-            width, height = save_preview(comfy.image(images[0]), MEDIA_DIR / f"{character['id']}.webp")
+            width, height = save_preview(comfy.image(images[0]), MEDIA_DIR / name)
             done += 1
-            log["items"][character["id"]] = {
+            log["items"][key] = {
                 "prompt": prompt,
                 "width": width,
                 "height": height,
@@ -321,7 +332,7 @@ def main() -> int:
             per_image = elapsed / done
             left = len(waiting) + len(pending)
             print(
-                f"  ✓ {done}/{len(todo)} {character['name']} — {per_image:.1f} с/шт, "
+                f"  ✓ {done}/{len(todo)} {key} — {per_image:.1f} с/шт, "
                 f"осталось ~{left * per_image / 60:.0f} мин"
             )
     except KeyboardInterrupt:
@@ -329,7 +340,7 @@ def main() -> int:
         print(f"\nОстановлено. Готово: {done}. Запустите ту же команду, чтобы продолжить.")
         return 130
 
-    print(f"\nГотово: {done}, ошибок: {failed}. Дальше: python3 tools/import_characters.py --apply")
+    print(f"\nГотово: {done}, ошибок: {failed}. Дальше: python3 tools/import_characters.py --media-only")
     return 0 if not failed else 1
 
 

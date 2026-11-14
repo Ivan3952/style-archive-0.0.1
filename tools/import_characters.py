@@ -314,13 +314,63 @@ def print_report(report: dict, total: int, pages: int, variants: int, notes: int
             print(f"    … и ещё {len(names) - 25}")
 
 
+def image_size(path: Path) -> tuple[int, int] | None:
+    if not path.exists():
+        return None
+    from PIL import Image  # pillow нужен только для размеров готовых превью
+
+    with Image.open(path) as picture:
+        return picture.size
+
+
+def attach_media(character: dict) -> int:
+    """Превью персонажа (<id>.webp) и остальных нарядов (<id>--N.webp, N — номер наряда с 1).
+    Возвращает, сколько превью нашлось."""
+    found = 0
+    size = image_size(MEDIA_DIR / f"{character['id']}.webp")
+    character["image"] = f"{MEDIA_URL}{character['id']}.webp" if size else None
+    character["width"], character["height"] = size or (None, None)
+    found += bool(size)
+    for index, variant in enumerate(character.get("variants") or []):
+        for key in ("image", "width", "height"):
+            variant.pop(key, None)
+        if index == 0:
+            continue
+        name = f"{character['id']}--{index + 1}.webp"
+        size = image_size(MEDIA_DIR / name)
+        if size:
+            variant.update(image=f"{MEDIA_URL}{name}", width=size[0], height=size[1])
+            found += 1
+    return found
+
+
+def media_only() -> int:
+    """Прописать превью в существующий data/characters.json без обхода сайта."""
+    if not DATA_FILE.exists():
+        print("Нет data/characters.json: сначала python3 tools/import_characters.py --apply", file=sys.stderr)
+        return 1
+    payload = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    total = sum(attach_media(character) for character in payload["characters"])
+    variants = sum(
+        1 for c in payload["characters"] for v in c.get("variants") or [] if v.get("image")
+    )
+    DATA_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"Записано: {DATA_FILE.relative_to(ROOT)} — превью {total}, из них доп. нарядов {variants}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--apply", action="store_true", help="записать data/characters.json")
     ap.add_argument("--only", help="только эти буквы через запятую (A,B или #); вместе с --apply запрещено")
     ap.add_argument("--inspect", type=int, metavar="N", help="показать, как разобраны первые N персонажей")
     ap.add_argument("--force", action="store_true", help="записать, даже если персонажей стало заметно меньше")
+    ap.add_argument(
+        "--media-only", action="store_true", help="только прописать готовые превью в data/characters.json, без обхода"
+    )
     args = ap.parse_args()
+    if args.media_only:
+        return media_only()
 
     only = {letter.strip().upper() for letter in args.only.split(",")} if args.only else None
     if only and args.apply:
@@ -365,14 +415,6 @@ def main() -> int:
 
     out, with_image = [], 0
     for character in characters:
-        image = MEDIA_DIR / f"{character['id']}.webp"
-        width = height = None
-        if image.exists():
-            from PIL import Image  # pillow нужен только для размеров готовых превью
-
-            with Image.open(image) as picture:
-                width, height = picture.size
-            with_image += 1
         page_url = urljoin(SOURCE_URL, SOURCE_PATH + (character["page"] if character["page"] != "/" else ""))
         out.append(
             {
@@ -384,11 +426,9 @@ def main() -> int:
                 "variants": character["variants"],
                 "notes": character["notes"],
                 "source_url": f"{page_url}#{character['anchor']}" if character["anchor"] else page_url,
-                "image": f"{MEDIA_URL}{character['id']}.webp" if width else None,
-                "width": width,
-                "height": height,
             }
         )
+        with_image += bool(attach_media(out[-1]))
 
     payload = {
         "source": SOURCE_URL,

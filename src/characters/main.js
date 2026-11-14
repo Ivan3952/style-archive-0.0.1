@@ -49,6 +49,7 @@ const DICT = {
     sourceLinkTitle: "Открыть персонажа на сайте Stable Waifu (там есть их превью)",
     generatedNote:
       "Превью сгенерировано Anima по тегам этой карточки: один промпт и сид для всех персонажей.",
+    sharedPreview: "У этого наряда своего превью пока нет: показан основной образ.",
     copied: "СКОПИРОВАНО",
     copiedWithMix: "СКОПИРОВАНО ВМЕСТЕ С МИКСОМ",
     copyFailed: "НЕ УДАЛОСЬ СКОПИРОВАТЬ",
@@ -92,6 +93,7 @@ const DICT = {
     sourceLinkTitle: "Open this character on the Stable Waifu site (they have their own preview)",
     generatedNote:
       "Preview generated with Anima from this card's tags: one prompt and seed for every character.",
+    sharedPreview: "This outfit has no preview of its own yet: the main look is shown.",
     copied: "COPIED",
     copiedWithMix: "COPIED WITH THE MIX",
     copyFailed: "COULD NOT COPY",
@@ -311,6 +313,15 @@ function currentVariant(character) {
   return { index, variant: character.variants[index] };
 }
 
+/* Превью выбранного наряда; у наряда без своего превью — основное превью персонажа. */
+function imageOf(character, index) {
+  const variant = character.variants[index];
+  if (index > 0 && variant?.image) return { src: variant.image, width: variant.width, height: variant.height, own: true };
+  return character.image
+    ? { src: character.image, width: character.width, height: character.height, own: index === 0 }
+    : null;
+}
+
 function variantLabel(variant, index) {
   return variant.label || `${t("variant")} ${index + 1}`;
 }
@@ -324,17 +335,14 @@ function cardHtml(character) {
   const { index, variant } = currentVariant(character);
   const saved = state.saved.has(character.id);
   /* без превью — низкая заглушка, чтобы тысячи пустых карточек не выглядели поломкой */
-  const ratio = character.image
-    ? character.width && character.height
-      ? `${character.width}/${character.height}`
-      : "2/3"
-    : "3/2";
+  const image = imageOf(character, index);
+  const ratio = image ? (image.width && image.height ? `${image.width}/${image.height}` : "2/3") : "3/2";
   const showVariants = character.variants.length > 1;
 
   return `
     <article class="ch-card-v008" data-id="${esc(character.id)}">
       <button class="ch-media-v008" type="button" data-open style="aspect-ratio:${ratio}" aria-label="${esc(t("open"))}: ${esc(character.name)}">
-        ${character.image ? `<img src=".${esc(character.image)}" alt="" loading="lazy" decoding="async">` : `<span class="ch-noimg-v008"><b>${esc((character.base || character.name).slice(0, 1))}</b><small>${esc(t("noPreview"))}</small></span>`}
+        ${image ? `<img src=".${esc(image.src)}" alt="" loading="lazy" decoding="async">` : `<span class="ch-noimg-v008"><b>${esc((character.base || character.name).slice(0, 1))}</b><small>${esc(t("noPreview"))}</small></span>`}
         ${showVariants ? `<span class="ch-vcount-v008">×${character.variants.length}</span>` : ""}
       </button>
       <div class="ch-body-v008">
@@ -548,13 +556,16 @@ function openViewer(id) {
   if (!character) return;
   const saved = state.saved.has(id);
   const { index } = currentVariant(character);
+  const image = imageOf(character, index);
+  const info = el.viewer.querySelector(".ch-viewer-info-v008");
+  const keepScroll = el.viewer.open && el.viewer.dataset.id === id ? info?.scrollTop || 0 : 0;
 
   el.viewer.dataset.id = id;
   el.viewer.querySelector(".ch-viewer-shell-v008").innerHTML = `
-    <div class="ch-viewer-media-v008${character.image ? "" : " empty"}">
+    <div class="ch-viewer-media-v008${image ? "" : " empty"}">
       ${
-        character.image
-          ? `<img src=".${esc(character.image)}" alt="${esc(character.name)}">`
+        image
+          ? `<img src=".${esc(image.src)}" alt="${esc(character.name)}">`
           : `<span class="ch-noimg-v008"><b>${esc((character.base || character.name).slice(0, 1))}</b><small>${esc(t("noPreview"))}</small></span>`
       }
     </div>
@@ -570,7 +581,7 @@ function openViewer(id) {
         ${character.variants
           .map(
             (variant, position) => `
-          <li class="${position === index ? "active" : ""}">
+          <li class="${position === index ? "active" : ""}${character.variants.length > 1 ? " pickable" : ""}" data-pick-variant="${position}">
             <div class="ch-viewer-variant-head-v008">
               <span>${esc(character.variants.length > 1 || variant.label ? variantLabel(variant, position) : "")}</span>
               <span class="ch-viewer-buttons-v008">
@@ -590,12 +601,13 @@ function openViewer(id) {
               .join("")}</div>`
           : ""
       }
-      ${character.image ? `<p class="ch-generated-v008">${esc(t("generatedNote"))}</p>` : ""}
+      ${image ? `<p class="ch-generated-v008">${esc(t(image.own ? "generatedNote" : "sharedPreview"))}</p>` : ""}
       ${sourceLink(character)}
       <button class="ch-btn-v008 ch-viewer-save-v008${saved ? " on" : ""}" type="button" data-viewer-save>${saved ? "★" : "☆"} ${esc(saved ? t("saveOff") : t("saveOn"))}</button>
     </div>`;
 
   if (!el.viewer.open) el.viewer.showModal();
+  else if (keepScroll) el.viewer.querySelector(".ch-viewer-info-v008").scrollTop = keepScroll;
 }
 
 /* ---------- события ---------- */
@@ -708,7 +720,14 @@ function bind() {
     if (copy) return copyCharacter(character, false, Number(copy.dataset.copyVariant));
     const copyMix = event.target.closest("[data-copy-variant-mix]");
     if (copyMix) return copyCharacter(character, true, Number(copyMix.dataset.copyVariantMix));
-    if (event.target.closest("[data-viewer-save]")) toggleSaved(character.id);
+    if (event.target.closest("[data-viewer-save]")) return toggleSaved(character.id);
+    /* клик по наряду (не по кнопкам) — показать его превью; выбор общий с карточкой */
+    const pick = event.target.closest("[data-pick-variant]");
+    if (pick && character.variants.length > 1 && !event.target.closest("button, a")) {
+      state.variant.set(character.id, Number(pick.dataset.pickVariant) || 0);
+      openViewer(character.id);
+      rerenderCard(character.id);
+    }
   });
 
   new IntersectionObserver(

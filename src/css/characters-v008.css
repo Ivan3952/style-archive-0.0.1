@@ -619,3 +619,16 @@ html.ch-has-mix-v008 .ch-mix-btn-v008 {
     max-height: calc(100dvh - 30px);
   }
 }
+
+/* выбор наряда в окне: клик по карточке наряда переключает превью */
+.ch-viewer-variants-v008 li.pickable {
+  cursor: pointer;
+}
+
+.ch-viewer-variants-v008 li.pickable:not(.active):hover {
+  border-color: var(--line);
+}
+
+.ch-viewer-variants-v008 li.pickable.active {
+  border-color: var(--accent);
+}
