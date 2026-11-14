@@ -13,7 +13,8 @@
 /* ---------- панель поиска ---------- */
 
 /* поле поиска как на странице стилей (там оно оформлено по id #searchInput) */
-#chSearch {
+#chSearch,
+#lrSearch {
   width: 100%;
   min-width: 0;
   padding: 0;
@@ -26,11 +27,13 @@
   letter-spacing: -0.025em;
 }
 
-#chSearch::placeholder {
+#chSearch::placeholder,
+#lrSearch::placeholder {
   color: #6a7684;
 }
 
-html[data-theme="light"] #chSearch::placeholder {
+html[data-theme="light"] #chSearch::placeholder,
+html[data-theme="light"] #lrSearch::placeholder {
   color: #7b8796;
 }
 

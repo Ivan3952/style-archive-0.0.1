@@ -51,5 +51,8 @@ jobs:
       - name: Characters importer test
         run: python3 tests/test_characters.py
 
+      - name: LoRA importer test
+        run: python3 tests/test_loras.py
+
       - name: Smoke test
         run: python3 tests/smoke.py

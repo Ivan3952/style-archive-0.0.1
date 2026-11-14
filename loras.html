@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta id="themeColor" name="theme-color" content="#0a0e14" />
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem("style-archive:theme");
+          const theme =
+            saved === "light" || saved === "dark"
+              ? saved
+              : window.matchMedia("(prefers-color-scheme: light)").matches
+                ? "light"
+                : "dark";
+          document.documentElement.dataset.theme = theme;
+          const lang = localStorage.getItem("style-archive:lang");
+          if (lang === "ru" || lang === "en") document.documentElement.lang = lang;
+          else if (
+            !String(navigator.language || "")
+              .toLowerCase()
+              .startsWith("ru")
+          )
+            document.documentElement.lang = "en";
+        } catch (_) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+    <title>LoRA под Anima: STYLE / ARCHIVE</title>
+    <meta
+      name="description"
+      content="LoRA под Anima для бота Stable Waifu: превью, триггеры и готовая строка &lt;lora:ID:вес&gt;. Только безопасные превью."
+    />
+    <link rel="canonical" href="https://stylearchive.art/loras.html" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="STYLE / ARCHIVE" />
+    <meta property="og:title" content="STYLE / ARCHIVE: LoRA под Anima" />
+    <meta
+      property="og:description"
+      content="LoRA под Anima для Stable Waifu с триггерами и готовой строкой для бота."
+    />
+    <meta property="og:url" content="https://stylearchive.art/loras.html" />
+    <meta property="og:image" content="https://stylearchive.art/og.jpg" />
+  </head>
+  <body class="characters-page loras-page">
+    <header class="topbar">
+      <div class="brand-row-v008">
+        <a class="brand" href="./" aria-label="Style Archive">
+          <span class="brand-mark">STYLE / ARCHIVE</span>
+        </a>
+        <nav class="section-switch-v008" aria-label="Раздел">
+          <a href="./" data-ch-i18n="styles">СТИЛИ</a>
+          <a href="./characters.html" data-ch-i18n="characters">ПЕРСОНАЖИ</a>
+          <a href="./loras.html" aria-current="page">LORA</a>
+        </nav>
+      </div>
+      <nav class="top-actions" aria-label="Основные действия">
+        <button class="text-button locale-button" id="lrLangButton" type="button">RU</button>
+        <button class="text-button theme-button" id="lrThemeButton" type="button">◐</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">
+            <span>CIVITAI · ANIMA</span> / <span data-lr-i18n="eyebrow">КАТАЛОГ LORA</span>
+          </p>
+          <h1>LoRA</h1>
+        </div>
+        <div class="intro-stats">
+          <div class="stat-block">
+            <span class="stat-value" id="lrStatCount">0</span>
+            <span class="stat-label" data-lr-i18n="statLoras">LORA</span>
+          </div>
+          <div class="stat-block">
+            <span class="stat-value" id="lrStatCharacters">0</span>
+            <span class="stat-label" data-lr-i18n="statCharacters">ПЕРСОНАЖЕЙ</span>
+          </div>
+        </div>
+      </section>
+
+      <p class="lr-lead-v010" id="lrLead"></p>
+
+      <section class="toolbar ch-toolbar-v008" aria-label="Поиск">
+        <div class="toolbar-bar-v005">
+          <label class="search-wrap">
+            <span class="search-label" data-lr-i18n="search">ПОИСК</span>
+            <input
+              id="lrSearch"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder=""
+            />
+            <span class="search-count" id="lrCount">0</span>
+          </label>
+        </div>
+        <div class="ch-filters-v008">
+          <div class="ch-chips-v008" id="lrCategories"></div>
+          <div class="ch-chips-v008 lr-sort-v010" id="lrSort"></div>
+        </div>
+      </section>
+
+      <div class="ch-grid-v008" id="lrGrid" aria-live="polite"></div>
+      <div class="ch-sentinel-v008" id="lrSentinel"></div>
+      <p class="ch-empty-v008" id="lrEmpty" hidden></p>
+
+      <p class="ch-source-v008" id="lrSource"></p>
+    </main>
+
+    <footer class="site-footer">
+      <span>STYLE / ARCHIVE</span>
+      <span>v%APP_VERSION%</span>
+      <span id="lrUpdated"></span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="./src/loras/main.js"></script>
+  </body>
+</html>

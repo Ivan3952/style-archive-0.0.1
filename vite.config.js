@@ -52,6 +52,8 @@ function copyRuntimeData() {
       }
       /* персонажи Stable Waifu (0.1.3): файл появляется после первого импорта */
       if (existsSync(resolve(root, "data/characters.json"))) files.add("./data/characters.json");
+      /* каталог LoRA: файл появляется после первого импорта (tools/import_loras.py) */
+      if (existsSync(resolve(root, "data/loras.json"))) files.add("./data/loras.json");
       for (const rel of files) {
         const from = resolve(root, rel);
         const to = resolve(root, "dist", rel);
@@ -92,6 +94,7 @@ export default defineConfig({
       input: {
         main: resolve(process.cwd(), "index.html"),
         characters: resolve(process.cwd(), "characters.html"),
+        loras: resolve(process.cwd(), "loras.html"),
       },
     },
   },

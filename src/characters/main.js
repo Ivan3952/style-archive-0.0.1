@@ -11,8 +11,10 @@ import "../css/style.css";
 import "../css/mobile.css";
 import "../css/usability-v005.css";
 import "../css/winter-v005.css";
+import "../css/scroll-lock-v009.css";
 import "../css/section-switch-v008.css";
 import "../css/characters-v008.css";
+import "../legacy/scroll-lock-v009.js";
 
 const DATA_URL = "./data/characters.json";
 const SAVED_KEY = "style-archive:characters-saved-v008";
