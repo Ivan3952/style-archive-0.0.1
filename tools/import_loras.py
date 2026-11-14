@@ -51,7 +51,8 @@ SAFE_IMAGE_LEVEL = 1  # превью только PG
 IMAGE_WIDTH = 450
 MAX_IMAGES = 3
 MAX_TAGS = 8
-MAX_TRIGGERS = 8
+MAX_TRIGGERS = 24  # отдельных тегов (сайт показывает столько же)
+MAX_TRIGGER_LEN = 60
 
 NSFW_TAGS = {
     "nsfw", "hentai", "porn", "nude", "nudity", "naked", "sex", "sexual", "erotic", "ecchi", "lewd",
@@ -140,10 +141,15 @@ def category_of(tags: list[str]) -> str:
 
 
 def clean_triggers(words: list[str]) -> list[str]:
-    out = []
+    """Триггеры — по одному тегу: авторы пишут их строками через запятую и повторяют
+    между строками. Длинные описания прозой отбрасываются (в чип они не годятся)."""
+    out, seen = [], set()
     for word in words or []:
-        text = re.sub(r"\s+", " ", str(word)).strip().strip(",").strip()
-        if text and text not in out:
+        for part in str(word).split(","):
+            text = re.sub(r"\s+", " ", part).strip()
+            if not text or len(text) > MAX_TRIGGER_LEN or text.lower() in seen:
+                continue
+            seen.add(text.lower())
             out.append(text)
     return out[:MAX_TRIGGERS]
 

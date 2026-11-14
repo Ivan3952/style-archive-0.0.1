@@ -49,8 +49,8 @@ check("ссылка на версию", ba["url"] == "https://civitai.com/models
 character = by_id[2400317]
 check("категория character", character["category"] == "character")
 check(
-    "триггеры очищены от висячих запятых",
-    character["triggers"][1].endswith("black capelet") and character["triggers"][0] == "cure arcana shadow, meitantei precure!",
+    "триггеры разбиты на отдельные теги",
+    character["triggers"][:2] == ["cure arcana shadow", "meitantei precure!"] and character["triggers"][-1] == "black capelet",
     character["triggers"],
 )
 
@@ -73,5 +73,8 @@ back = mod.unpack(row)
 check("pack/unpack без потерь (кроме версии и лишних картинок)", back == {k: v for k, v in ba.items() if k != "version"} | {"images": ba["images"][:1]}, back)
 check("чужой хост картинки хранится полным URL", mod.pack_image({"url": "https://x.org/a.jpg", "width": 1, "height": 2})[0] == "https://x.org/a.jpg")
 check("без картинки", mod.pack({**ba, "images": []})[-1] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
+
+tr = mod.clean_triggers(["a, B, a", "b, " + "x" * 61, ", c ,"] + [f"t{i}" for i in range(40)])
+check("триггеры: дубли без учёта регистра, без прозы, не больше 24", tr[:3] == ["a", "B", "c"] and len(tr) == 24, tr)
 
 print(f"\n{passed} проверок пройдено")
