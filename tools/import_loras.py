@@ -51,8 +51,9 @@ SAFE_IMAGE_LEVEL = 1  # превью только PG
 IMAGE_WIDTH = 450
 MAX_IMAGES = 3
 MAX_TAGS = 8
-MAX_TRIGGERS = 24  # отдельных тегов (сайт показывает столько же)
+MAX_TRIGGERS = 32  # тегов во всех наборах вместе
 MAX_TRIGGER_LEN = 60
+MAX_TRIGGER_GROUPS = 6
 
 NSFW_TAGS = {
     "nsfw", "hentai", "porn", "nude", "nudity", "naked", "sex", "sexual", "erotic", "ecchi", "lewd",
@@ -140,18 +141,31 @@ def category_of(tags: list[str]) -> str:
     return "other"
 
 
-def clean_triggers(words: list[str]) -> list[str]:
-    """Триггеры — по одному тегу: авторы пишут их строками через запятую и повторяют
-    между строками. Длинные описания прозой отбрасываются (в чип они не годятся)."""
-    out, seen = [], set()
+def clean_triggers(words: list[str]) -> list[list[str]]:
+    """Триггеры — наборами, как их ввёл автор: каждая строка trainedWords — отдельный набор
+    (часто это разные образы персонажа или альтернативные токены). Внутри набора — отдельные
+    теги без дублей; повторы целых наборов и описания прозой отбрасываются."""
+    groups, seen_groups, total = [], set(), 0
     for word in words or []:
+        group, seen = [], set()
         for part in str(word).split(","):
             text = re.sub(r"\s+", " ", part).strip()
             if not text or len(text) > MAX_TRIGGER_LEN or text.lower() in seen:
                 continue
             seen.add(text.lower())
-            out.append(text)
-    return out[:MAX_TRIGGERS]
+            group.append(text)
+        key = frozenset(seen)
+        if not group or key in seen_groups:
+            continue
+        group = group[: max(0, MAX_TRIGGERS - total)]
+        if not group:
+            break
+        seen_groups.add(key)
+        groups.append(group)
+        total += len(group)
+        if len(groups) >= MAX_TRIGGER_GROUPS:
+            break
+    return groups
 
 
 def convert(model: dict) -> dict:

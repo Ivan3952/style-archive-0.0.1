@@ -52,6 +52,8 @@ const DICT = {
     by: "автор",
     downloads: "скачиваний",
     triggers: "Триггеры (нажми, чтобы включить или выключить):",
+    triggerSets: "Наборы триггеров автора: другие образы персонажа выключены, дополнения включены",
+    toggleSet: "Включить или выключить весь набор",
     noTriggers: "Триггеров нет: автор их не указал, LoRA работает и так.",
     weight: "вес",
     copy: "КОПИРОВАТЬ",
@@ -89,6 +91,8 @@ const DICT = {
     by: "by",
     downloads: "downloads",
     triggers: "Triggers (tap to toggle):",
+    triggerSets: "Author's trigger sets: other outfits are off, add-ons are on",
+    toggleSet: "Toggle the whole set",
     noTriggers: "No triggers: the author listed none, the LoRA works as is.",
     weight: "weight",
     copy: "COPY",
@@ -133,7 +137,7 @@ const state = {
   category: CATEGORIES.includes(params.get("cat")) ? params.get("cat") : "all",
   sort: SORTS[params.get("sort")] ? params.get("sort") : "popular",
   weights: new Map(),
-  triggersOff: new Map(), // id -> Set(индексов выключенных триггеров)
+  triggersOn: new Map(), // id -> Set("набор:тег") включённых; нет записи — по умолчанию
   loaded: false,
   updatedAt: "",
 };
@@ -228,17 +232,10 @@ async function load() {
       ...lora,
       order,
       /* авторы часто пишут несколько триггеров одной строкой через запятую — делим на отдельные теги */
-      triggers: [
-        ...new Set(
-          (lora.triggers || [])
-            .flatMap((trigger) => String(trigger).split(","))
-            .map((trigger) => trigger.trim())
-            .filter(Boolean)
-        ),
-      ].slice(0, 24),
+      triggers: triggerGroups(lora.triggers),
       images: lora.images || [],
       hay: norm(
-        [lora.name, lora.creator, ...(lora.tags || []), ...(lora.triggers || [])].join(" | ")
+        [lora.name, lora.creator, ...(lora.tags || []), ...triggerGroups(lora.triggers).flat()].join(" | ")
       ),
       nameNorm: norm(lora.name),
     }));
@@ -250,13 +247,49 @@ async function load() {
   }
 }
 
+/* ---------- триггеры ---------- */
+
+/* Наборы триггеров, как их ввёл автор на CivitAI: это могут быть разные образы персонажа
+   (тогда они повторяют имя из первого набора) или дополнения к первому — см. triggersOn.
+   Старый формат (список строк) — каждая строка набор, теги через запятую. */
+function triggerGroups(raw) {
+  return (raw || [])
+    .map((group) =>
+      (Array.isArray(group) ? group : String(group).split(","))
+        .map((tag) => String(tag).trim())
+        .filter(Boolean)
+    )
+    .filter((group) => group.length);
+}
+
+const keysOf = (lora, groupIndex) => lora.triggers[groupIndex].map((_, index) => `${groupIndex}:${index}`);
+
+function triggersOn(lora) {
+  const saved = state.triggersOn.get(String(lora.id));
+  if (saved) return saved;
+  /* Набор, повторяющий теги первого (обычно имя персонажа), — самостоятельный другой образ:
+     выключен. Набор без пересечений — дополнение (костюм, токен стиля): включён. */
+  const first = new Set((lora.triggers[0] || []).map((tag) => tag.toLowerCase()));
+  const keys = [];
+  lora.triggers.forEach((group, g) => {
+    if (g === 0 || !group.some((tag) => first.has(tag.toLowerCase()))) keys.push(...keysOf(lora, g));
+  });
+  return new Set(keys);
+}
+
 /* ---------- строка для бота ---------- */
 
 const weightOf = (lora) => state.weights.get(String(lora.id)) ?? WEIGHT_DEFAULT;
 
 function activeTriggers(lora) {
-  const off = state.triggersOff.get(String(lora.id)) || new Set();
-  return lora.triggers.filter((_, index) => !off.has(index));
+  const on = triggersOn(lora);
+  const out = [];
+  lora.triggers.forEach((group, g) =>
+    group.forEach((tag, i) => {
+      if (on.has(`${g}:${i}`) && !out.some((x) => x.toLowerCase() === tag.toLowerCase())) out.push(tag);
+    })
+  );
+  return out;
 }
 
 function loraLine(lora) {
@@ -313,7 +346,8 @@ function syncUrl() {
 function cardHtml(lora) {
   const image = lora.images[0];
   const ratio = image?.width && image?.height ? `${image.width}/${image.height}` : "2/3";
-  const off = state.triggersOff.get(String(lora.id)) || new Set();
+  const on = triggersOn(lora);
+  const many = lora.triggers.length > 1;
   const weight = weightOf(lora);
 
   return `
@@ -327,11 +361,18 @@ function cardHtml(lora) {
         <p class="lr-meta-v010">${esc(t("by"))} ${esc(lora.creator)} · ${fmt(lora.downloads)} ${esc(t("downloads"))}</p>
         ${
           lora.triggers.length
-            ? `<div class="lr-triggers-v010" aria-label="${esc(t("triggers"))}">${lora.triggers
-                .map(
-                  (trigger, index) =>
-                    `<button type="button" data-trigger="${index}" class="${off.has(index) ? "" : "on"}" title="${esc(trigger)}">${esc(trigger)}</button>`
-                )
+            ? `<div class="lr-triggers-v010" aria-label="${esc(t(many ? "triggerSets" : "triggers"))}">${lora.triggers
+                .map((group, g) => {
+                  const tags = group
+                    .map(
+                      (tag, i) =>
+                        `<button type="button" data-trigger="${g}:${i}" class="${on.has(`${g}:${i}`) ? "on" : ""}" title="${esc(tag)}">${esc(tag)}</button>`
+                    )
+                    .join("");
+                  if (!many) return tags;
+                  const all = keysOf(lora, g).every((key) => on.has(key));
+                  return `<div class="lr-tgroup-v010${keysOf(lora, g).some((key) => on.has(key)) ? " on" : ""}"><button type="button" class="lr-tset-v010${all ? " on" : ""}" data-trigger-set="${g}" title="${esc(t("toggleSet"))}">${g + 1}</button>${tags}</div>`;
+                })
                 .join("")}</div>`
             : `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`
         }
@@ -487,13 +528,24 @@ function bind() {
     if (!lora) return;
     const id = String(lora.id);
 
+    const set = event.target.closest("[data-trigger-set]");
+    if (set) {
+      const on = new Set(triggersOn(lora));
+      const keys = keysOf(lora, Number(set.dataset.triggerSet));
+      const all = keys.every((key) => on.has(key));
+      keys.forEach((key) => (all ? on.delete(key) : on.add(key)));
+      state.triggersOn.set(id, on);
+      rerenderCard(id);
+      return;
+    }
+
     const trigger = event.target.closest("[data-trigger]");
     if (trigger) {
-      const off = new Set(state.triggersOff.get(id) || []);
-      const index = Number(trigger.dataset.trigger);
-      if (off.has(index)) off.delete(index);
-      else off.add(index);
-      state.triggersOff.set(id, off);
+      const on = new Set(triggersOn(lora));
+      const key = trigger.dataset.trigger;
+      if (on.has(key)) on.delete(key);
+      else on.add(key);
+      state.triggersOn.set(id, on);
       rerenderCard(id);
       return;
     }
@@ -562,6 +614,8 @@ async function start() {
   bind();
   await load();
   buildControls();
+  /* поле поиска заполняется из ?q= до фильтрации: applyFilters читает запрос из поля */
+  el.search.value = state.q;
   applyFilters();
 }
 

@@ -73,6 +73,32 @@
   text-decoration: none;
 }
 
+/* наборы триггеров (разные образы / варианты): номер набора включает весь набор */
+.lr-tgroup-v010 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 4px 6px 4px 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  opacity: 0.6;
+}
+
+.lr-tgroup-v010.on {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  opacity: 1;
+}
+
+.lr-triggers-v010 button.lr-tset-v010 {
+  flex: none;
+  min-width: 22px;
+  padding: 3px 6px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
 .lr-line-v010 {
   display: block;
   padding: 7px 9px;

@@ -49,10 +49,9 @@ check("ссылка на версию", ba["url"] == "https://civitai.com/models
 character = by_id[2400317]
 check("категория character", character["category"] == "character")
 check(
-    "триггеры разбиты на отдельные теги",
-    character["triggers"][:2] == ["cure arcana shadow", "meitantei precure!"] and character["triggers"][-1] == "black capelet",
-    character["triggers"],
-)
+    "триггеры: наборы автора сохранены, внутри — отдельные теги",
+    character["triggers"][0] == ["cure arcana shadow", "meitantei precure!"] and character["triggers"][1][-1] == "black capelet",
+    character["triggers"],)
 
 check("технические LoRA отдельно", by_id[2560840]["category"] == "tool")
 check("художник = style", by_id[2638819]["category"] == "style")
@@ -74,7 +73,8 @@ check("pack/unpack без потерь (кроме версии и лишних 
 check("чужой хост картинки хранится полным URL", mod.pack_image({"url": "https://x.org/a.jpg", "width": 1, "height": 2})[0] == "https://x.org/a.jpg")
 check("без картинки", mod.pack({**ba, "images": []})[-1] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
 
-tr = mod.clean_triggers(["a, B, a", "b, " + "x" * 61, ", c ,"] + [f"t{i}" for i in range(40)])
-check("триггеры: дубли без учёта регистра, без прозы, не больше 24", tr[:3] == ["a", "B", "c"] and len(tr) == 24, tr)
+tr = mod.clean_triggers(["a, B, a", "b, a", "b, " + "x" * 61, ", c ,"] + [f"t{i}, u{i}" for i in range(40)])
+check("триггеры: дубли наборов и проза отброшены", tr[:3] == [["a", "B"], ["b"], ["c"]], tr)
+check("триггеры: не больше 6 наборов", len(tr) == 6, tr)
 
 print(f"\n{passed} проверок пройдено")
