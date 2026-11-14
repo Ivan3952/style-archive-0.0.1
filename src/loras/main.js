@@ -57,6 +57,8 @@ const DICT = {
     triggerSets: "Наборы триггеров автора: другие образы персонажа выключены, дополнения включены",
     toggleSet: "Включить или выключить весь набор",
     noTriggers: "Триггеров нет: автор их не указал, LoRA работает и так.",
+    describedNote: "Из описания автора на CivitAI (поле триггеров пустое или неполное). Подобрано автоматически: включи нужное, например одного персонажа из пака.",
+    describedCount: (n) => `теги в описании: ${n}`,
     weight: "вес",
     copy: "КОПИРОВАТЬ",
     copyWithMix: "+ МИКС",
@@ -107,6 +109,8 @@ const DICT = {
     triggerSets: "Author's trigger sets: other outfits are off, add-ons are on",
     toggleSet: "Toggle the whole set",
     noTriggers: "No triggers: the author listed none, the LoRA works as is.",
+    describedNote: "From the author's description on CivitAI (the trigger field is empty or incomplete). Picked automatically: turn on what you need, e.g. one character from a pack.",
+    describedCount: (n) => `tags in description: ${n}`,
     weight: "weight",
     copy: "COPY",
     copyWithMix: "+ MIX",
@@ -270,9 +274,10 @@ async function load() {
       order,
       /* авторы часто пишут несколько триггеров одной строкой через запятую — делим на отдельные теги */
       triggers: triggerGroups(lora.triggers),
+      described: (lora.described || []).map((tag) => String(tag).trim()).filter(Boolean),
       images: lora.images || [],
       hay: norm(
-        [lora.name, lora.creator, ...(lora.tags || []), ...triggerGroups(lora.triggers).flat()].join(" | ")
+        [lora.name, lora.creator, ...(lora.tags || []), ...triggerGroups(lora.triggers).flat(), ...(lora.described || [])].join(" | ")
       ),
       nameNorm: norm(lora.name),
     }));
@@ -328,6 +333,9 @@ function activeTriggers(lora) {
       if (on.has(`${g}:${i}`) && !out.some((x) => x.toLowerCase() === tag.toLowerCase())) out.push(tag);
     })
   );
+  lora.described.forEach((tag, i) => {
+    if (on.has(`d:${i}`) && !out.some((x) => x.toLowerCase() === tag.toLowerCase())) out.push(tag);
+  });
   return out;
 }
 
@@ -388,8 +396,23 @@ function tagButton(lora, on, g, i) {
 }
 
 /* Все наборы с переключателями — в окне просмотра. */
+function describedHtml(lora) {
+  if (!lora.described.length) return "";
+  const on = triggersOn(lora);
+  return `<div class="lr-described-v010">
+      <p class="lr-note-v010">${esc(t("describedNote"))}</p>
+      <div class="lr-triggers-v010">${lora.described
+        .map(
+          (tag, i) =>
+            `<button type="button" data-trigger="d:${i}" class="${on.has(`d:${i}`) ? "on" : ""}" title="${esc(tag)}">${esc(tag)}</button>`
+        )
+        .join("")}</div>
+    </div>`;
+}
+
 function triggersFullHtml(lora) {
-  if (!lora.triggers.length) return `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
+  if (!lora.triggers.length)
+    return lora.described.length ? describedHtml(lora) : `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
   const on = triggersOn(lora);
   const many = lora.triggers.length > 1;
   return `<div class="lr-triggers-v010" aria-label="${esc(t(many ? "triggerSets" : "triggers"))}">${lora.triggers
@@ -400,12 +423,15 @@ function triggersFullHtml(lora) {
       const all = keys.every((key) => on.has(key));
       return `<div class="lr-tgroup-v010${keys.some((key) => on.has(key)) ? " on" : ""}"><button type="button" class="lr-tset-v010${all ? " on" : ""}" data-trigger-set="${g}" title="${esc(t("toggleSet"))}">${g + 1}</button>${tags}</div>`;
     })
-    .join("")}</div>`;
+    .join("")}</div>${describedHtml(lora)}`;
 }
 
 /* На карточке — только первые теги первого набора, остальное за «+N»: карточки одной высоты. */
 function triggersCardHtml(lora) {
-  if (!lora.triggers.length) return `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
+  if (!lora.triggers.length) {
+    if (!lora.described.length) return `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
+    return `<div class="lr-triggers-v010 compact"><button type="button" class="lr-more-v010" data-open>${esc(t("describedCount")(lora.described.length))}</button></div>`;
+  }
   const on = triggersOn(lora);
   const shown = lora.triggers[0].slice(0, CARD_TAGS);
   const total = lora.triggers.reduce((sum, group) => sum + group.length, 0);

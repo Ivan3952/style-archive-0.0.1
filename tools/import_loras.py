@@ -23,6 +23,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import datetime as dt
 import json
 import re
@@ -188,6 +189,55 @@ def gallery_images(model: dict, version: dict) -> list[dict]:
     return out
 
 
+# ---------------------------------------------------------------- теги из описания
+
+# Паки персонажей и многие LoRA не заполняют поле триггеров, а пишут теги в описании блоками кода.
+MAX_DESCRIBED = 48
+SETTINGS_LINE = re.compile(
+    r"\b(steps?|cfg|sampler|scheduler|seed|clip ?skip|denoise|hires|upscale|resolution|negative)\b\s*[:=]?|\d+\s*x\s*\d+",
+    re.I,
+)
+NEGATIVE_HINTS = ("worst quality", "low quality", "lowres", "bad anatomy", "bad hands", "jpeg artifacts", "watermark")
+
+
+def described_tags(*descriptions: str) -> list[str]:
+    """Теги из блоков кода (<pre>, <code>) описания: по строке на тег; строки настроек генерации
+    и негативных промптов отбрасываются. Порядок авторский, без повторов."""
+    out, seen = [], set()
+    for description in descriptions:
+        text = description or ""
+        blocks = re.findall(r"<pre[^>]*>(.*?)</pre>", text, re.S | re.I)
+        text = re.sub(r"<pre[^>]*>.*?</pre>", " ", text, flags=re.S | re.I)
+        blocks += re.findall(r"<code[^>]*>(.*?)</code>", text, re.S | re.I)
+        # пункты списка вида «имя \\(тайтл\\)» — так часто пишут новых персонажей в описании версии
+        blocks += [
+            item for item in re.findall(r"<li[^>]*>(.*?)</li>", text, re.S | re.I)
+            if re.search(r"\\\(", item) and len(re.sub(r"<[^>]+>", "", item)) <= MAX_TRIGGER_LEN
+        ]
+        for block in blocks:
+            plain = html.unescape(re.sub(r"<[^>]+>", "\n", block))
+            if any(hint in plain.lower() for hint in NEGATIVE_HINTS):
+                continue
+            for line in plain.splitlines():
+                line = re.sub(r"\s+", " ", line).strip().strip(",").strip()
+                if not line or SETTINGS_LINE.search(line) or LORA_TAG.match(line):
+                    continue
+                if len(line) <= MAX_TRIGGER_LEN:
+                    parts = [line]
+                else:
+                    parts = [p.strip() for p in line.split(",")]
+                    # длинная строка из коротких тегов — это теги; если части — фразы, это пример промпта
+                    if any(len(p.split()) > 4 for p in parts):
+                        continue
+                for part in parts:
+                    if part and len(part) <= MAX_TRIGGER_LEN and part.lower() not in seen:
+                        seen.add(part.lower())
+                        out.append(part)
+                        if len(out) >= MAX_DESCRIBED:
+                            return out
+    return out
+
+
 def convert(model: dict) -> dict:
     version = anima_version(model)
     images = gallery_images(model, version)
@@ -205,6 +255,7 @@ def convert(model: dict) -> dict:
         "likes": stats.get("thumbsUpCount") or 0,
         "published": (version.get("publishedAt") or "")[:10],
         "triggers": clean_triggers(version.get("trainedWords")),
+        "described": described_tags(version.get("description") or "", model.get("description") or ""),
         "images": [
             {
                 "url": resized(image["url"]),
@@ -222,7 +273,7 @@ def convert(model: dict) -> dict:
 # Формат 2: каждая LoRA — массив значений в порядке FIELDS (без повторения ключей),
 # одна картинка (на карточке показывается только первая), общий префикс URL картинок вынесен.
 FORMAT = 2
-FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads", "likes", "published", "triggers", "image", "more"]
+FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads", "likes", "published", "triggers", "image", "more", "described"]
 # Галерея: остальные превью раскладываются по GALLERY_SHARDS файлам (id % N): окно просмотра
 # грузит один небольшой файл, а не все картинки каталога сразу.
 GALLERY_DIR = ROOT / "data" / "loras-gallery"
@@ -266,6 +317,7 @@ def pack(lora: dict) -> list:
         lora["triggers"],
         pack_image(lora["images"][0] if lora["images"] else None),
         max(0, len(lora["images"]) - 1),
+        lora.get("described") or 0,
     ]
 
 
@@ -275,6 +327,7 @@ def unpack(row: list) -> dict:
         item["category"] = CATEGORY_CODES[item["category"]]
     image = unpack_image(item.pop("image"))
     item.pop("more", None)
+    item["described"] = item.get("described") or []
     item["images"] = [image] if image else []
     item["url"] = f"https://civitai.com/models/{item['id']}?modelVersionId={item['version_id']}"
     return item

@@ -66,14 +66,14 @@ check("в пересмотре только безопасные превью и
 check("причина записана", xxx["reason"] == "выше R")
 
 row = mod.pack(ba)
-check("в строке число доп. превью", row[-1] == len(ba["images"]) - 1, row)
+check("в строке число доп. превью", row[-2] == len(ba["images"]) - 1, row)
 row = row
 check("компактная строка — массив по FIELDS", isinstance(row, list) and len(row) == len(mod.FIELDS), row)
-check("префикс картинки вынесен", row[-2][0] == "88745feb-cdb2-4993-8021-5b64c1a594b6/130846892.jpeg", row[-2])
+check("префикс картинки вынесен", row[-3][0] == "88745feb-cdb2-4993-8021-5b64c1a594b6/130846892.jpeg", row[-3])
 back = mod.unpack(row)
-check("pack/unpack без потерь (кроме версии и лишних картинок)", back == {k: v for k, v in ba.items() if k != "version"} | {"images": ba["images"][:1]}, back)
+check("pack/unpack без потерь (кроме версии и лишних картинок)", back == {k: v for k, v in ba.items() if k != "version"} | {"described": []} | {"images": ba["images"][:1]}, back)
 check("чужой хост картинки хранится полным URL", mod.pack_image({"url": "https://x.org/a.jpg", "width": 1, "height": 2})[0] == "https://x.org/a.jpg")
-check("без картинки", mod.pack({**ba, "images": []})[-2] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
+check("без картинки", mod.pack({**ba, "images": []})[-3] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
 
 tr = mod.clean_triggers(["a, B, a", "b, a", "b, " + "x" * 61, ", c ,"] + [f"t{i}, u{i}" for i in range(40)])
 check("триггеры: дубли наборов и проза отброшены", tr[:3] == [["a", "B"], ["b"], ["c"]], tr)
@@ -83,5 +83,26 @@ check("триггеры: не больше 6 наборов", len(tr) == 6, tr)
 multi = {**ba, "images": [{"url": f"{mod.IMAGE_PREFIX}u{i}/width=450/{i}.jpeg", "width": 1, "height": 2} for i in range(4)]}
 shards = mod.gallery_shards([multi, {**ba, "id": 7}])
 check("галерея: без первой картинки, по шарду id % N", shards == {ba["id"] % mod.GALLERY_SHARDS: {str(ba["id"]): [[f"u{i}/{i}.jpeg", 1, 2] for i in (1, 2, 3)]}}, shards)
+
+desc = (
+    '<p><strong>Operators:</strong></p><pre><code>\nperlica \\(arknights\\)\nchen qianyu \\(arknights\\)\n\nperlica \\(arknights\\)\n</code></pre>'
+    "<p>Settings:</p><pre><code>Steps: 30, CFG: 4, Sampler: euler\n</code></pre>"
+    "<pre><code>worst quality, low quality, lowres</code></pre>"
+    "<p>trigger <code>arknights &amp; co</code></p>"
+)
+check(
+    "теги из описания: блоки кода, без настроек и негатива",
+    mod.described_tags(desc) == ["perlica \\(arknights\\)", "chen qianyu \\(arknights\\)", "arknights & co"],
+    mod.described_tags(desc),
+)
+check("теги из описания: версия первой, без повторов", mod.described_tags("<code>a</code>", "<code>a</code><code>b</code>") == ["a", "b"])
+
+real = json.loads((ROOT / "tests" / "fixtures" / "civitai_description.json").read_text(encoding="utf-8"))
+tags = mod.described_tags(*real)
+check(
+    "реальное описание (пак Arknights: Endfield): 34 персонажа, без примера промпта",
+    len(tags) == 34 and tags[0] == "arcane \\(arknights\\)" and "perlica \\(arknights\\)" in tags and not any(len(t.split()) > 4 for t in tags),
+    tags,
+)
 
 print(f"\n{passed} проверок пройдено")
