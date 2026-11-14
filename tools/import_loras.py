@@ -177,6 +177,63 @@ def convert(model: dict) -> dict:
     }
 
 
+# ---------------------------------------------------------------- компактный формат файла
+
+# Формат 2: каждая LoRA — массив значений в порядке FIELDS (без повторения ключей),
+# одна картинка (на карточке показывается только первая), общий префикс URL картинок вынесен.
+FORMAT = 2
+FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads", "likes", "published", "triggers", "image"]
+CATEGORY_CODES = ["character", "style", "concept", "tool", "other"]
+IMAGE_PREFIX = "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/"
+
+
+def pack_image(image: dict | None):
+    """{url,width,height} -> ["uuid/123.jpeg", w, h]; если префикс другой — полный URL."""
+    if not image:
+        return 0
+    url = image["url"]
+    marker = f"/width={IMAGE_WIDTH}/"
+    if url.startswith(IMAGE_PREFIX) and marker in url:
+        url = url[len(IMAGE_PREFIX):].replace(marker, "/", 1)
+    return [url, image.get("width") or 0, image.get("height") or 0]
+
+
+def unpack_image(packed) -> dict | None:
+    if not packed:
+        return None
+    url, width, height = packed
+    if not url.startswith("http"):
+        uuid, _, file = url.rpartition("/")
+        url = f"{IMAGE_PREFIX}{uuid}/width={IMAGE_WIDTH}/{file}"
+    return {"url": url, "width": width, "height": height}
+
+
+def pack(lora: dict) -> list:
+    return [
+        lora["id"],
+        lora["version_id"],
+        lora["name"],
+        CATEGORY_CODES.index(lora["category"]) if lora["category"] in CATEGORY_CODES else lora["category"],
+        lora["tags"],
+        lora["creator"],
+        lora["downloads"],
+        lora["likes"],
+        lora["published"],
+        lora["triggers"],
+        pack_image(lora["images"][0] if lora["images"] else None),
+    ]
+
+
+def unpack(row: list) -> dict:
+    item = dict(zip(FIELDS, row))
+    if isinstance(item["category"], int):
+        item["category"] = CATEGORY_CODES[item["category"]]
+    image = unpack_image(item.pop("image"))
+    item["images"] = [image] if image else []
+    item["url"] = f"https://civitai.com/models/{item['id']}?modelVersionId={item['version_id']}"
+    return item
+
+
 def review_entry(model: dict, reason: str) -> dict:
     """Исключённая модель для пересмотра: только безопасные превью и счётчики картинок по уровням."""
     version = next(
@@ -266,7 +323,8 @@ def crawl(max_pages: int | None) -> list[dict]:
 def load_previous() -> list[dict]:
     if not DATA_FILE.exists():
         return []
-    return json.loads(DATA_FILE.read_text(encoding="utf-8")).get("loras", [])
+    rows = json.loads(DATA_FILE.read_text(encoding="utf-8")).get("loras", [])
+    return [unpack(row) if isinstance(row, list) else row for row in rows]
 
 
 def main() -> int:
@@ -316,10 +374,16 @@ def main() -> int:
         "source": "https://civitai.com (open API, baseModel Anima)",
         "updated_at": dt.date.today().isoformat(),
         "count": len(loras),
-        "loras": loras,
+        "format": FORMAT,
+        "fields": FIELDS,
+        "categories": CATEGORY_CODES,
+        "image_prefix": IMAGE_PREFIX,
+        "image_width": IMAGE_WIDTH,
+        "loras": [pack(lora) for lora in loras],
     }
     DATA_FILE.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-    print(f"\nЗаписано: {DATA_FILE.relative_to(ROOT)} ({len(loras)} LoRA)")
+    size = DATA_FILE.stat().st_size / 1024 / 1024
+    print(f"\nЗаписано: {DATA_FILE.relative_to(ROOT)} ({len(loras)} LoRA, {size:.1f} МБ)")
 
     review_payload = {
         "note": "Исключённые LoRA для ручного пересмотра. Только локально: не публикуется и не коммитится.",

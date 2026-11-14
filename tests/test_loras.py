@@ -66,4 +66,12 @@ xxx = next(item for item in review if item["id"] == 929497)
 check("в пересмотре только безопасные превью и счётчики", xxx["image_levels"] == {"1": 1} and len(xxx["safe_images"]) == 1, xxx)
 check("причина записана", xxx["reason"] == "выше R")
 
+row = mod.pack(ba)
+check("компактная строка — массив по FIELDS", isinstance(row, list) and len(row) == len(mod.FIELDS), row)
+check("префикс картинки вынесен", row[-1][0] == "88745feb-cdb2-4993-8021-5b64c1a594b6/130846892.jpeg", row[-1])
+back = mod.unpack(row)
+check("pack/unpack без потерь (кроме версии и лишних картинок)", back == {k: v for k, v in ba.items() if k != "version"} | {"images": ba["images"][:1]}, back)
+check("чужой хост картинки хранится полным URL", mod.pack_image({"url": "https://x.org/a.jpg", "width": 1, "height": 2})[0] == "https://x.org/a.jpg")
+check("без картинки", mod.pack({**ba, "images": []})[-1] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
+
 print(f"\n{passed} проверок пройдено")

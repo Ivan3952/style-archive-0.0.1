@@ -190,12 +190,41 @@ function mixLine() {
 
 /* ---------- данные ---------- */
 
+/* Формат 2 (tools/import_loras.py): LoRA — массив в порядке data.fields, одна картинка
+   ["uuid/123.jpeg", w, h] без общего префикса, категория — индекс в data.categories.
+   Старый формат (объекты) проходит без изменений. */
+function unpackRow(data) {
+  const fields = data.fields || [];
+  const categories = data.categories || [];
+  const prefix = data.image_prefix || "";
+  const width = data.image_width || 450;
+  return (row) => {
+    if (!Array.isArray(row)) return row;
+    const lora = {};
+    fields.forEach((field, index) => (lora[field] = row[index]));
+    if (typeof lora.category === "number") lora.category = categories[lora.category] || "other";
+    const image = lora.image;
+    delete lora.image;
+    lora.images = [];
+    if (Array.isArray(image)) {
+      let [url, w, h] = image;
+      if (!/^https?:/.test(url)) {
+        const cut = url.lastIndexOf("/");
+        url = `${prefix}${url.slice(0, cut)}/width=${width}/${url.slice(cut + 1)}`;
+      }
+      lora.images.push({ url, width: w, height: h });
+    }
+    lora.url = `https://civitai.com/models/${lora.id}?modelVersionId=${lora.version_id}`;
+    return lora;
+  };
+}
+
 async function load() {
   try {
     const response = await fetch(DATA_URL, { cache: "no-cache" });
     if (!response.ok) throw new Error(String(response.status));
     const data = await response.json();
-    state.all = (data.loras || []).map((lora, order) => ({
+    state.all = (data.loras || []).map(unpackRow(data)).map((lora, order) => ({
       ...lora,
       order,
       /* авторы часто пишут несколько триггеров одной строкой через запятую — делим на отдельные теги */
