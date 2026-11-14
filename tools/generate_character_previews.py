@@ -43,6 +43,15 @@ CHARACTERS = ROOT / "data" / "characters.json"
 LOG_FILE = ROOT / "data" / "character_previews.json"
 MEDIA_DIR = ROOT / "media" / "characters"
 DEFAULT_WORKFLOW = ROOT / "tools" / "comfy" / "anima_character_preview.json"
+BLOCKLIST = ROOT / "data" / "character_preview_blocklist.json"
+
+
+def blocked_keys() -> set[str]:
+    """Превью, отбракованные при просмотре: не генерируются и не публикуются."""
+    if not BLOCKLIST.exists():
+        return set()
+    groups = json.loads(BLOCKLIST.read_text(encoding="utf-8")).get("groups", {})
+    return {key for group in groups.values() for key in group.get("keys", [])}
 
 # Одинаковый для всех персонажей промпт. {tags} — строка тегов персонажа с сайта Stable Waifu.
 # Anima лучше работает с тегами вместе с обычным текстом; «safe» — мета-тег рейтинга: сайт публичный,
@@ -262,6 +271,7 @@ def main() -> int:
 
     todo = []  # (character, файл, ключ лога, промпт)
     skipped = 0  # наряды с откровенными тегами
+    blocked = blocked_keys()
     for character in characters:
         if args.all_variants:
             jobs = [(i, v) for i, v in enumerate(character.get("variants", [])) if v.get("tags")]
@@ -270,6 +280,8 @@ def main() -> int:
             jobs = [(0, variant)] if variant else []
         for index, variant in jobs:
             name = variant_file(character["id"], index)
+            if name.removesuffix(".webp") in blocked:
+                continue
             if (MEDIA_DIR / name).exists() and not args.overwrite:
                 continue
             if REVEALING.search(variant["tags"]):

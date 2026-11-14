@@ -314,8 +314,23 @@ def print_report(report: dict, total: int, pages: int, variants: int, notes: int
             print(f"    … и ещё {len(names) - 25}")
 
 
+BLOCKLIST = ROOT / "data" / "character_preview_blocklist.json"
+
+
+def blocked_keys() -> set[str]:
+    """Превью, отбракованные при просмотре (data/character_preview_blocklist.json): не публикуются,
+    даже если файл лежит в media/characters/."""
+    if not BLOCKLIST.exists():
+        return set()
+    groups = json.loads(BLOCKLIST.read_text(encoding="utf-8")).get("groups", {})
+    return {key for group in groups.values() for key in group.get("keys", [])}
+
+
+BLOCKED = blocked_keys()
+
+
 def image_size(path: Path) -> tuple[int, int] | None:
-    if not path.exists():
+    if not path.exists() or path.stem in BLOCKED:
         return None
     from PIL import Image  # pillow нужен только для размеров готовых превью
 

@@ -317,9 +317,10 @@ function currentVariant(character) {
 function imageOf(character, index) {
   const variant = character.variants[index];
   if (index > 0 && variant?.image) return { src: variant.image, width: variant.width, height: variant.height, own: true };
-  return character.image
-    ? { src: character.image, width: character.width, height: character.height, own: index === 0 }
-    : null;
+  if (character.image) return { src: character.image, width: character.width, height: character.height, own: index === 0 };
+  /* основного превью нет (например, отбраковано) — показать превью другого наряда */
+  const other = character.variants.find((item) => item.image);
+  return other ? { src: other.image, width: other.width, height: other.height, own: false } : null;
 }
 
 function variantLabel(variant, index) {

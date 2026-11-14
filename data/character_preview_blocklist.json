@@ -1,0 +1,46 @@
+{
+ "note": "Превью, которые не публикуются и не генерируются заново (tools/generate_character_previews.py, tools/import_characters.py). Ключ — имя файла без .webp: <id> — основное превью, <id>--N — наряд N. Строки тегов персонажей остаются на сайте.",
+ "reviewed_at": "2026-11-14",
+ "groups": {
+  "child_appearance_revealing": {
+   "reason": "персонаж детской внешности в купальнике/белье; перегенерация не поможет — теги персонажа сами тянут к этому образу",
+   "keys": [
+    "albacore-azur-lane",
+    "bache-azur-lane",
+    "gretel-goddess-of-victory-nikke",
+    "hibari-senran-kagura",
+    "i-8-kantai-collection",
+    "i-13-kantai-collection",
+    "i-14-kantai-collection",
+    "i-19-azur-lane",
+    "i-19-kantai-collection",
+    "i-26-kantai-collection",
+    "i-47-kantai-collection",
+    "i-58-kantai-collection",
+    "i-168-kantai-collection",
+    "i-400-kantai-collection",
+    "i-401-kantai-collection",
+    "jack-the-ripper-fate",
+    "jashin-chan-jashin-chan-dropkick",
+    "ro-500-kantai-collection",
+    "sakimiya-iruka-dolphin-wave",
+    "tojou-michiru-dolphin-wave",
+    "u-47-azur-lane",
+    "u-110-azur-lane",
+    "kofune-ushio-summertime-render",
+    "muromi-san-namiuchigiwa-no-muromi-san"
+   ]
+  },
+  "near_nude": {
+   "reason": "взрослый персонаж, на превью почти без одежды",
+   "keys": [
+    "cinderella-goddess-of-victory-nikke",
+    "felicia-darkstalkers",
+    "green-heart-neptunia",
+    "observer-alpha-azur-lane",
+    "tiamat-fate",
+    "melona-queen-s-blade"
+   ]
+  }
+ }
+}
