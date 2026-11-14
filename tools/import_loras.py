@@ -197,6 +197,66 @@ SETTINGS_LINE = re.compile(
     r"\b(steps?|cfg|sampler|scheduler|seed|clip ?skip|denoise|hires|upscale|resolution|negative)\b\s*[:=]?|\d+\s*x\s*\d+",
     re.I,
 )
+SAMPLER_WORDS = {
+    "euler", "euler a", "euler_a", "euler ancestral", "dpm", "dpmpp", "dpm++", "karras", "exponential",
+    "simple", "beta", "normal", "sgm_uniform", "ddim", "uni_pc", "lcm", "heun", "er_sde", "res_multistep",
+}
+
+
+QUALITY_TAGS = {
+    "masterpiece", "best quality", "high quality", "good quality", "normal quality", "amazing quality",
+    "very aesthetic", "aesthetic", "absurdres", "highres", "newest", "recent", "year 2025", "year 2024", "safe",
+}
+
+
+def strip_label(text: str) -> str:
+    """«Trigger Words: x» / «经典造型：x» -> «x»; подписи веса и строки конфигов (a = b) -> ""."""
+    text = text.strip()
+    if "=" in text:
+        return ""
+    match = re.match(r"^([^:：,]{1,30})[:：]\s*(.+)$", text)
+    if match and len(match.group(1).split()) <= 3 and not re.search(r"\\\(", match.group(1)):
+        if re.search(r"weight|strength|вес|权重|強度", match.group(1), re.I):
+            return ""
+        return match.group(2).strip()
+    return text
+
+
+def clean_described(items: list[str], triggers: list[list[str]]) -> list[str]:
+    out, seen = [], set()
+    for item in items:
+        item = strip_label(item)
+        if tag_like(item) and item.lower() not in seen:
+            seen.add(item.lower())
+            out.append(item)
+    return without_triggers(out, triggers)
+
+
+def tag_like(text: str) -> bool:
+    """Похоже ли на тег промпта: не число/настройка, не заголовок «Имя:», не фраза."""
+    low = text.lower().strip()
+    if not low or len(text) > MAX_TRIGGER_LEN or LORA_TAG.match(text):
+        return False
+    if re.fullmatch(r"[\d\s.,:/x×*+\-]+", low):  # 1.0, 8, 832x1216
+        return False
+    if low.endswith(":") or SETTINGS_LINE.search(text):
+        return False
+    if re.search(r"dpm\+\+|\b(euler|karras|sde|ddim|unipc|beta\d+)\b", low):
+        return False
+    if any(word in SAMPLER_WORDS for word in re.split(r"[\s/,]+", low)) and len(low.split()) <= 2:
+        return False
+    if re.match(r"\d", low) and not re.match(r"\d+\+?(girl|boy|other)s?\b", low):  # 4-5 (Anima), 2.0 weight
+        return False
+    if re.search(r"\b(prodigy|adamw|adafactor|lion|came|schedulefree|lycoris|locon|dora|epochs?|dim|alpha)\b|scheduleFree", low, re.I):
+        return False
+    if re.search(r"[。！？]|https?:|\w/\S*/", text) or (re.search(r"[\u3040-\u30ff\u4e00-\u9fff]", text) and len(text) > 24):
+        return False  # проза на японском/китайском, ссылки, пути к файлам
+    parts = [part.strip() for part in low.split(",") if part.strip()]
+    if parts and all(part in QUALITY_TAGS or part.startswith("score_") for part in parts):
+        return False
+    return all(len(part.split()) <= 4 for part in text.split(","))
+
+
 NEGATIVE_HINTS = ("worst quality", "low quality", "lowres", "bad anatomy", "bad hands", "jpeg artifacts", "watermark")
 
 
@@ -220,7 +280,8 @@ def described_tags(*descriptions: str) -> list[str]:
                 continue
             for line in plain.splitlines():
                 line = re.sub(r"\s+", " ", line).strip().strip(",").strip()
-                if not line or SETTINGS_LINE.search(line) or LORA_TAG.match(line):
+                line = strip_label(line)
+                if not line or SETTINGS_LINE.search(line) or LORA_TAG.match(line) or line.endswith(":"):
                     continue
                 if len(line) <= MAX_TRIGGER_LEN:
                     parts = [line]
@@ -230,11 +291,23 @@ def described_tags(*descriptions: str) -> list[str]:
                     if any(len(p.split()) > 4 for p in parts):
                         continue
                 for part in parts:
-                    if part and len(part) <= MAX_TRIGGER_LEN and part.lower() not in seen:
+                    if tag_like(part) and part.lower() not in seen:
                         seen.add(part.lower())
                         out.append(part)
                         if len(out) >= MAX_DESCRIBED:
                             return out
+    return out
+
+
+def without_triggers(described: list[str], triggers: list[list[str]]) -> list[str]:
+    """Теги из описания, которых нет среди триггеров (иначе раздел дублирует триггеры)."""
+    known = {tag.lower() for group in triggers for tag in group}
+    out = []
+    for item in described:
+        parts = [part.strip().lower() for part in item.split(",") if part.strip()]
+        if parts and all(part in known for part in parts):
+            continue
+        out.append(item)
     return out
 
 
@@ -254,8 +327,10 @@ def convert(model: dict) -> dict:
         "downloads": stats.get("downloadCount") or 0,
         "likes": stats.get("thumbsUpCount") or 0,
         "published": (version.get("publishedAt") or "")[:10],
-        "triggers": clean_triggers(version.get("trainedWords")),
-        "described": described_tags(version.get("description") or "", model.get("description") or ""),
+        "triggers": (triggers := clean_triggers(version.get("trainedWords"))),
+        "described": clean_described(
+            described_tags(version.get("description") or "", model.get("description") or ""), triggers
+        ),
         "images": [
             {
                 "url": resized(image["url"]),

@@ -105,4 +105,16 @@ check(
     tags,
 )
 
+check(
+    "мусор из описаний отбрасывается",
+    [t for t in ["1.0", "8", "er_sde/simple", "Beta", "DoloresInsect:", "a realistic image of ashley graham", "832x1216", "ProdigyPlusScheduleFree", "4-5 (Anima)", "masterpiece, best quality, absurdres, score_7", "1girl", "ComfyUI/custom_nodes/", "子供っぽい性格で、負けず嫌い。ただ、根は素直。", "I always think of Ikatsuchi", "DPM++ 2M SDE GPU", "beta57", "perlica", "blonde hair,bob cut"] if mod.tag_like(t)] == ["1girl", "perlica", "blonde hair,bob cut"],
+)
+check(
+    "подписи снимаются, конфиги и вес отбрасываются",
+    mod.clean_described(["Trigger Words: Bleach Senna", "Weight: 0.8 - 1", "max_steps = 500", "经典造型：hair rings", "perlica \\(arknights\\)"], [])
+    == ["Bleach Senna", "hair rings", "perlica \\(arknights\\)"],
+    mod.clean_described(["Trigger Words: Bleach Senna", "Weight: 0.8 - 1", "max_steps = 500", "经典造型：hair rings", "perlica \\(arknights\\)"], []),
+)
+check("теги из описания без дублей триггеров", mod.without_triggers(["a", "a, b", "c"], [["a", "b"]]) == ["c"])
+
 print(f"\n{passed} проверок пройдено")
