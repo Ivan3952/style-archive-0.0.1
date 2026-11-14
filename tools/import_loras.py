@@ -10,7 +10,9 @@
   python3 tools/import_loras.py --apply                 # записать data/loras.json
 
 Что попадает в каталог (решено 14.11.2026, порог «R»):
-  - модель целиком не выше уровня R (nsfwLevel ≤ 7 по шкале CivitAI: 1 PG, 2 PG-13, 4 R, 8 X, 16 XXX);
+  - все публичные версии под Anima не выше уровня R (nsfwLevel ≤ 7 по шкале CivitAI: 1 PG, 2 PG-13, 4 R,
+    8 X, 16 XXX). Уровень модели целиком не годится: он собирает и версии под Pony/Illustrious и т. п.
+    (решено 14.11.2026). Если у версий нет nsfwLevel, берётся уровень модели;
   - не помечена как связанная с несовершеннолетними (minor) или реальными людьми (poi);
   - нет «взрослых» тегов (NSFW_TAGS) — даже если рядом стоит «sfw»: при сомнении не показываем;
   - у Anima-версии есть хотя бы одна безопасная картинка (nsfwLevel = 1, не minor/poi): только такие и показываются.
@@ -35,10 +37,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "data" / "loras.json"
+BLOCKLIST_FILE = ROOT / "data" / "lora_blocklist.json"
 # Исключённое для ручного пересмотра: только локально (в .gitignore, на сайт не копируется).
 REVIEW_FILE = ROOT / "data" / "loras_review.json"
 # Эти причины не пересматриваются и в файл пересмотра не попадают вообще.
-NEVER_REVIEW = {"minor", "реальный человек"}
+NEVER_REVIEW = {"minor", "реальный человек", "ручной блок-лист"}
 API_URL = (
     "https://civitai.com/api/v1/models?types=LORA&baseModels=Anima"
     "&sort=Most%20Downloaded&limit=100"
@@ -80,6 +83,22 @@ CATEGORIES = (
 # ---------------------------------------------------------------- разбор
 
 
+def anima_versions(model: dict) -> list[dict]:
+    return [
+        v for v in model.get("modelVersions") or []
+        if v.get("baseModel") == BASE_MODEL and v.get("availability", "Public") == "Public"
+    ]
+
+
+def anima_level(model: dict) -> int:
+    """Самый высокий nsfwLevel среди публичных версий под Anima: бот сам выбирает версию,
+    поэтому ни одна из них не должна быть выше порога. Без поля у версий — уровень модели."""
+    levels = [v.get("nsfwLevel") for v in anima_versions(model)]
+    if levels and all(isinstance(level, int) for level in levels):
+        return max(levels)
+    return model.get("nsfwLevel") or 0
+
+
 def anima_version(model: dict) -> dict | None:
     """Самая новая публичная версия под Anima, у которой есть безопасные картинки."""
     versions = [
@@ -111,17 +130,28 @@ def resized(url: str) -> str:
     return re.sub(r"/orig$", f"/width={IMAGE_WIDTH}", url)
 
 
+def load_blocklist() -> set[int]:
+    if not BLOCKLIST_FILE.exists():
+        return set()
+    return {int(k) for k in json.loads(BLOCKLIST_FILE.read_text(encoding="utf-8")).get("ids", {})}
+
+
+MANUAL_BLOCK = load_blocklist()
+
+
 def reject_reason(model: dict) -> str | None:
     if model.get("type") != "LORA":
         return "не LoRA"
-    if model.get("nsfw"):
-        return "nsfw"
-    if (model.get("nsfwLevel") or 0) > MAX_MODEL_LEVEL:
-        return "выше R"
+    if model.get("id") in MANUAL_BLOCK:
+        return "ручной блок-лист"
     if model.get("minor"):
         return "minor"
     if model.get("poi"):
         return "реальный человек"
+    if model.get("nsfw"):
+        return "nsfw"
+    if anima_level(model) > MAX_MODEL_LEVEL:
+        return "выше R"
     tags = {str(tag).strip().lower() for tag in model.get("tags") or []}
     if tags & NSFW_TAGS:
         return "взрослые теги"
@@ -446,6 +476,7 @@ def review_entry(model: dict, reason: str) -> dict:
         "name": re.sub(r"\s+", " ", model.get("name") or "").strip(),
         "reason": reason,
         "model_level": model.get("nsfwLevel"),
+        "anima_level": anima_level(model),
         "category": category_of(tags),
         "tags": tags[:MAX_TAGS],
         "creator": (model.get("creator") or {}).get("username") or "",

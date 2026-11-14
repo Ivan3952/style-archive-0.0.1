@@ -65,6 +65,15 @@ xxx = next(item for item in review if item["id"] == 929497)
 check("в пересмотре только безопасные превью и счётчики", xxx["image_levels"] == {"1": 1} and len(xxx["safe_images"]) == 1, xxx)
 check("причина записана", xxx["reason"] == "выше R")
 
+# уровень считается по версиям под Anima, а не по модели целиком
+pony_x = {"nsfwLevel": 31, "modelVersions": [
+    {"baseModel": "Anima", "nsfwLevel": 7}, {"baseModel": "Pony", "nsfwLevel": 31}]}
+check("X только у версии Pony — модель проходит по уровню", mod.anima_level(pony_x) == 7)
+two_anima = {"nsfwLevel": 15, "modelVersions": [
+    {"baseModel": "Anima", "nsfwLevel": 7}, {"baseModel": "Anima", "nsfwLevel": 15}]}
+check("X у любой версии под Anima — модель выше R", mod.anima_level(two_anima) == 15)
+check("без уровня у версий — уровень модели", mod.anima_level({"nsfwLevel": 31, "modelVersions": [{"baseModel": "Anima"}]}) == 31)
+
 row = mod.pack(ba)
 check("в строке число доп. превью", row[-2] == len(ba["images"]) - 1, row)
 row = row
@@ -116,5 +125,7 @@ check(
     mod.clean_described(["Trigger Words: Bleach Senna", "Weight: 0.8 - 1", "max_steps = 500", "经典造型：hair rings", "perlica \\(arknights\\)"], []),
 )
 check("теги из описания без дублей триггеров", mod.without_triggers(["a", "a, b", "c"], [["a", "b"]]) == ["c"])
+
+check("ручной блок-лист: 14 id, причина не пересматривается", len(mod.MANUAL_BLOCK) == 14 and mod.reject_reason({"id": 2272678, "type": "LORA"}) == "ручной блок-лист" and "ручной блок-лист" in mod.NEVER_REVIEW)
 
 print(f"\n{passed} проверок пройдено")
