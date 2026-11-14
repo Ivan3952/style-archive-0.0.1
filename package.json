@@ -1,6 +1,6 @@
 {
   "name": "style-archive",
-  "version": "0.1.3",
+  "version": "0.1.2",
   "private": true,
   "type": "module",
   "description": "STYLE / ARCHIVE: визуальный архив стилей (stylearchive.art)",
