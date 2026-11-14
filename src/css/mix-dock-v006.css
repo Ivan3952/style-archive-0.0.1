@@ -1,0 +1,359 @@
+/* =========================================================
+   ПАНЕЛЬ МИКСА 0.1.2
+   Нижняя полоса: состав микса, готовая строка промпта, веса, замки.
+   ========================================================= */
+
+.mix-dock-v006 {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.mix-dock-v006[hidden] {
+  display: none;
+}
+
+/* чтобы панель не закрывала последний ряд галереи и подсказки */
+html.mix-dock-on-v006 body {
+  padding-bottom: 72px;
+}
+
+html.mix-dock-on-v006 .toast {
+  bottom: 84px;
+}
+
+/* кнопка «наверх» поднимается над панелью; при раскрытой панели уведомление уходит вверх, кнопка прячется */
+html.mix-dock-on-v006 .back-to-top-qol {
+  bottom: 84px;
+}
+
+html.mix-dock-open-v006 .back-to-top-qol {
+  display: none;
+}
+
+html.mix-dock-open-v006 .toast {
+  top: 76px;
+  bottom: auto;
+}
+
+.mix-dock-bar-v006 {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: 10px clamp(14px, 3vw, 40px);
+}
+
+.mix-dock-toggle-v006 {
+  appearance: none;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.mix-dock-toggle-v006:hover,
+.mix-dock-v006.open .mix-dock-toggle-v006 {
+  border-color: var(--text);
+}
+
+.mix-dock-count-v006 {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #0a0e14;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mix-dock-chevron-v006 {
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+  transform: translateY(1px) rotate(45deg);
+  transition: transform 0.15s;
+}
+
+.mix-dock-v006.open .mix-dock-chevron-v006 {
+  transform: translateY(-1px) rotate(225deg);
+}
+
+.mix-dock-line-v006 {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mix-dock-copy-v006 {
+  appearance: none;
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.mix-dock-copy-v006:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #0a0e14;
+}
+
+.mix-dock-panel-v006 {
+  display: grid;
+  gap: 12px;
+  width: min(1440px, 100%);
+  max-height: min(60vh, 520px);
+  margin: 0 auto;
+  padding: 4px clamp(14px, 3vw, 40px) 14px;
+  overflow-y: auto;
+  border-top: 1px solid var(--line-soft);
+}
+
+.mix-dock-panel-v006[hidden] {
+  display: none;
+}
+
+.mix-dock-controls-v006 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.mix-dock-seg-v006 {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mix-dock-seg-v006 button,
+.mix-dock-action-v006 {
+  appearance: none;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.mix-dock-seg-v006 button:hover,
+.mix-dock-action-v006:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.mix-dock-seg-v006 button.active {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.mix-dock-clear-v006 {
+  margin-left: auto;
+}
+
+.mix-dock-base-v006 {
+  display: grid;
+  gap: 6px;
+}
+
+.mix-dock-base-v006 span {
+  color: var(--muted-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.mix-dock-base-v006 input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.mix-dock-base-v006 input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.mix-dock-items-v006 {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mix-dock-items-v006 li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+}
+
+.mix-dock-items-v006 li.locked {
+  border-color: var(--accent);
+}
+
+.mix-dock-name-v006 {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mix-dock-lock-v006,
+.mix-dock-remove-v006,
+.mix-dock-weight-v006 button {
+  appearance: none;
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.mix-dock-lock-v006[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.mix-dock-lock-v006:hover,
+.mix-dock-remove-v006:hover,
+.mix-dock-weight-v006 button:hover:not(:disabled) {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.mix-dock-weight-v006 {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.mix-dock-weight-v006 button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.mix-dock-weight-v006 output {
+  min-width: 28px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+}
+
+.mix-dock-weight-v006.changed output {
+  color: var(--accent);
+}
+
+.mix-dock-note-v006 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .mix-dock-bar-v006 {
+    gap: 8px;
+    padding: 8px 14px;
+  }
+
+  html.mix-dock-on-v006 body {
+    padding-bottom: 64px;
+  }
+
+  html.mix-dock-on-v006 .toast {
+    bottom: 76px;
+  }
+
+  html.mix-dock-on-v006 .back-to-top-qol {
+    bottom: 76px;
+  }
+
+  html.mix-dock-open-v006 .toast {
+    top: 12px;
+    bottom: auto;
+  }
+
+  .mix-dock-line-v006 {
+    font-size: 11px;
+  }
+
+  .mix-dock-panel-v006 {
+    max-height: 62vh;
+  }
+
+  .mix-dock-clear-v006 {
+    margin-left: 0;
+  }
+
+  .mix-dock-items-v006 li {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .mix-dock-remove-v006 {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .mix-dock-weight-v006 {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    justify-self: start;
+  }
+}

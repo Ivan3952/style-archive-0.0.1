@@ -1,0 +1,100 @@
+/* =========================================================
+   РАБОЧИЙ СТОЛ 0.1.2: «Отменить», метка «Новое», кнопка «Новое».
+   ========================================================= */
+
+/* уведомление с кнопкой «Отменить» */
+.toast.has-action {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.toast-undo {
+  appearance: none;
+  padding: 4px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.toast-undo:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* метка на карточке (.card-media уже position: relative) */
+.card-fresh-v006 {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #0a0e14;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+/* кнопка «Новое · N» в строке фильтров */
+.fresh-chip-v006 {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fresh-chip-v006 button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.fresh-chip-main-v006 {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 4px 6px 10px;
+}
+
+.fresh-chip-count-v006 {
+  color: var(--accent);
+}
+
+.fresh-chip-close-v006 {
+  padding: 6px 9px 6px 5px;
+  color: var(--muted);
+}
+
+.fresh-chip-close-v006:hover {
+  color: var(--text);
+}
+
+.fresh-chip-v006.active {
+  background: var(--accent);
+}
+
+.fresh-chip-v006.active button,
+.fresh-chip-v006.active .fresh-chip-count-v006 {
+  color: #0a0e14;
+}
+
+/* на странице избранного кнопка «Новое» не нужна */
+html[data-saved-view-v004="true"] .fresh-chip-v006 {
+  display: none;
+}

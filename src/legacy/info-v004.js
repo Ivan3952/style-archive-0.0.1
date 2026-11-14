@@ -244,11 +244,31 @@
           </div>
 
           <div>
-            <b>${tr("ДОБАВЛЕННЫЕ", "ADDED")}</b>
+            <b>${tr("МИКС", "MIX")}</b>
             <span>
               ${tr(
-                "Временный список: набрать стили и скопировать одной строкой.",
-                "A scratch list: gather styles and copy them as one line."
+                "Набор стилей для одного промпта. Панель внизу показывает готовую строку, там же веса, замки и формат.",
+                "A set of styles for one prompt. The bottom bar shows the ready line, with weights, locks and format."
+              )}
+            </span>
+          </div>
+
+          <div>
+            <b>${tr("ПРОМПТ", "PROMPT")}</b>
+            <span>
+              ${tr(
+                "Вставь чужой или свой промпт: сайт найдёт в нём стили, покажет превью и перенесёт их в микс. Промпт можно вставить и прямо в поиск.",
+                "Paste any prompt: the site finds the styles in it, shows previews and moves them to the mix. Pasting into search works too."
+              )}
+            </span>
+          </div>
+
+          <div>
+            <b>${tr("БЫСТРЫЙ ПРОСМОТР", "QUICK PEEK")}</b>
+            <span>
+              ${tr(
+                "Задержи курсор на превью (на телефоне — долгое нажатие): покажем крупно и все варианты стиля. S — сохранить, A — в микс, Enter — открыть. Выключается в «Фильтрах».",
+                "Hover a preview (long-press on a phone) to see it large with every variant. S saves, A adds to the mix, Enter opens. Turn it off in Filters."
               )}
             </span>
           </div>

@@ -45,5 +45,8 @@ jobs:
       - name: Embeddings tools test
         run: python3 tests/test_embed.py
 
+      - name: Prompt parser test
+        run: node tests/prompt_parse.test.mjs
+
       - name: Smoke test
         run: python3 tests/smoke.py
