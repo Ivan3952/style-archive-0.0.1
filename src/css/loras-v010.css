@@ -434,6 +434,17 @@ button.lr-open-v010 {
   font-size: 11px;
 }
 
+/* двойной класс и жёсткая ширина: в колонке с align-items: center ряд миниатюр раздувался до суммы
+   всех кнопок (610px при окне 360px) и сдвигал окно, на iPhone содержимое уезжало влево */
+.lr-gallery-v010 .lr-thumbs-v010 {
+  align-self: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overscroll-behavior-x: contain;
+}
+
 .lr-thumbs-v010 {
   display: flex;
   flex: none;
