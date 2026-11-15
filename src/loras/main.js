@@ -17,6 +17,7 @@ import "../css/section-switch-v008.css";
 import "../css/characters-v008.css";
 import "../css/loras-v010.css";
 import "../legacy/scroll-lock-v009.js";
+import { extractLoraRef } from "./id-search.js";
 
 const DATA_URL = "./data/loras.json";
 const GALLERY_URL = "./data/loras-gallery"; // доп. превью: <id % shards>.json, грузятся при открытии окна
@@ -38,7 +39,7 @@ const DICT = {
     statLoras: "LORA",
     statCharacters: "ПЕРСОНАЖЕЙ",
     search: "ПОИСК",
-    searchPlaceholder: "название, автор, тег или триггер",
+    searchPlaceholder: "название, автор, тег, триггер или ID",
     lead: "LoRA подключаются в боте Stable Waifu прямо из промпта: скопируй строку и вставь в промпт. Работают только с моделью AM Preview. Функция в боте пока в бета-версии; вес обычно 0.6–1.0, несколько LoRA сразу делают картинку нестабильнее.",
     source:
       "Модели и превью принадлежат их авторам на CivitAI, у каждой карточки есть ссылка. Показываются только LoRA не откровеннее уровня R и только безопасные превью.",
@@ -57,7 +58,8 @@ const DICT = {
     triggerSets: "Наборы триггеров автора: другие образы персонажа выключены, дополнения включены",
     toggleSet: "Включить или выключить весь набор",
     noTriggers: "Триггеров нет: автор их не указал, LoRA работает и так.",
-    describedNote: "Из описания автора на CivitAI (поле триггеров пустое или неполное). Подобрано автоматически: включи нужное, например одного персонажа из пака.",
+    describedNote:
+      "Из описания автора на CivitAI (поле триггеров пустое или неполное). Подобрано автоматически: включи нужное, например одного персонажа из пака.",
     describedCount: (n) => `теги в описании: ${n}`,
     weight: "вес",
     copy: "КОПИРОВАТЬ",
@@ -73,12 +75,16 @@ const DICT = {
     linkCopied: "ССЫЛКА СКОПИРОВАНА",
     idCopied: "ID СКОПИРОВАН",
     more: "ещё",
-    sets: (n) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "набор" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "набора" : "наборов"}`,
+    sets: (n) =>
+      `${n} ${n % 10 === 1 && n % 100 !== 11 ? "набор" : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "набора" : "наборов"}`,
     inLine: (n) => `в строке тегов: ${n}`,
     allTriggers: "все триггеры",
     previews: "Превью: открой карточку, чтобы посмотреть все",
     close: "ЗАКРЫТЬ",
     empty: "Ничего не нашли. Попробуй имя латиницей, название тайтла или другую категорию.",
+    emptyId:
+      "LoRA с ID {id} нет в каталоге: её могли удалить, она откровеннее уровня R или без безопасных превью.",
+    openCivitai: "ОТКРЫТЬ НА CIVITAI",
     emptyData: "Каталог ещё не загружен.",
     reset: "СБРОСИТЬ",
     updated: "LORA ОБНОВЛЕНЫ",
@@ -90,7 +96,7 @@ const DICT = {
     statLoras: "LORA",
     statCharacters: "CHARACTERS",
     search: "SEARCH",
-    searchPlaceholder: "name, author, tag or trigger",
+    searchPlaceholder: "name, author, tag, trigger or ID",
     lead: "In the Stable Waifu bot a LoRA is added right in the prompt: copy the line and paste it. Works only with the AM Preview model. The feature is in beta; weight is usually 0.6–1.0, and several LoRAs at once make the result less stable.",
     source:
       "Models and previews belong to their authors on CivitAI; every card links there. Only LoRAs rated up to R and only safe previews are shown.",
@@ -109,7 +115,8 @@ const DICT = {
     triggerSets: "Author's trigger sets: other outfits are off, add-ons are on",
     toggleSet: "Toggle the whole set",
     noTriggers: "No triggers: the author listed none, the LoRA works as is.",
-    describedNote: "From the author's description on CivitAI (the trigger field is empty or incomplete). Picked automatically: turn on what you need, e.g. one character from a pack.",
+    describedNote:
+      "From the author's description on CivitAI (the trigger field is empty or incomplete). Picked automatically: turn on what you need, e.g. one character from a pack.",
     describedCount: (n) => `tags in description: ${n}`,
     weight: "weight",
     copy: "COPY",
@@ -131,6 +138,9 @@ const DICT = {
     previews: "Previews: open the card to see them all",
     close: "CLOSE",
     empty: "Nothing found. Try a romanized name, a series title or another category.",
+    emptyId:
+      "No LoRA with ID {id} in the catalog: it may be removed, rated above R or have no safe previews.",
+    openCivitai: "OPEN ON CIVITAI",
     emptyData: "The catalog is not loaded yet.",
     reset: "RESET",
     updated: "LORA UPDATED",
@@ -161,7 +171,8 @@ const state = {
   byId: new Map(),
   filtered: [],
   rendered: 0,
-  q: params.get("q") || "",
+  q: params.get("q") || params.get("id") || "",
+  idRef: "",
   category: CATEGORIES.includes(params.get("cat")) ? params.get("cat") : "all",
   sort: SORTS[params.get("sort")] ? params.get("sort") : "popular",
   weights: new Map(),
@@ -277,7 +288,13 @@ async function load() {
       described: (lora.described || []).map((tag) => String(tag).trim()).filter(Boolean),
       images: lora.images || [],
       hay: norm(
-        [lora.name, lora.creator, ...(lora.tags || []), ...triggerGroups(lora.triggers).flat(), ...(lora.described || [])].join(" | ")
+        [
+          lora.name,
+          lora.creator,
+          ...(lora.tags || []),
+          ...triggerGroups(lora.triggers).flat(),
+          ...(lora.described || []),
+        ].join(" | ")
       ),
       nameNorm: norm(lora.name),
     }));
@@ -306,7 +323,8 @@ function triggerGroups(raw) {
     .filter((group) => group.length);
 }
 
-const keysOf = (lora, groupIndex) => lora.triggers[groupIndex].map((_, index) => `${groupIndex}:${index}`);
+const keysOf = (lora, groupIndex) =>
+  lora.triggers[groupIndex].map((_, index) => `${groupIndex}:${index}`);
 
 function triggersOn(lora) {
   const saved = state.triggersOn.get(String(lora.id));
@@ -316,7 +334,8 @@ function triggersOn(lora) {
   const first = new Set((lora.triggers[0] || []).map((tag) => tag.toLowerCase()));
   const keys = [];
   lora.triggers.forEach((group, g) => {
-    if (g === 0 || !group.some((tag) => first.has(tag.toLowerCase()))) keys.push(...keysOf(lora, g));
+    if (g === 0 || !group.some((tag) => first.has(tag.toLowerCase())))
+      keys.push(...keysOf(lora, g));
   });
   return new Set(keys);
 }
@@ -330,7 +349,8 @@ function activeTriggers(lora) {
   const out = [];
   lora.triggers.forEach((group, g) =>
     group.forEach((tag, i) => {
-      if (on.has(`${g}:${i}`) && !out.some((x) => x.toLowerCase() === tag.toLowerCase())) out.push(tag);
+      if (on.has(`${g}:${i}`) && !out.some((x) => x.toLowerCase() === tag.toLowerCase()))
+        out.push(tag);
     })
   );
   lora.described.forEach((tag, i) => {
@@ -354,6 +374,11 @@ function applyFilters() {
     if (state.category !== "all" && lora.category !== state.category) return false;
     return tokens.every((token) => lora.hay.includes(token));
   });
+
+  /* ID, строка <lora:ID:вес> или ссылка CivitAI: показываем ровно эту LoRA (категория не мешает) */
+  const ref = extractLoraRef(state.q);
+  state.idRef = ref ? ref.id : "";
+  if (ref) list = state.byId.has(ref.id) ? [state.byId.get(ref.id)] : [];
 
   const by = {
     popular: (a, b) => b.downloads - a.downloads,
@@ -382,6 +407,7 @@ function syncUrl() {
   const url = new URL(window.location.href);
   const set = (key, value) =>
     value ? url.searchParams.set(key, value) : url.searchParams.delete(key);
+  url.searchParams.delete("id");
   set("q", state.q.trim());
   set("cat", state.category === "all" ? "" : state.category);
   set("sort", state.sort === "popular" ? "" : state.sort);
@@ -412,7 +438,9 @@ function describedHtml(lora) {
 
 function triggersFullHtml(lora) {
   if (!lora.triggers.length)
-    return lora.described.length ? describedHtml(lora) : `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
+    return lora.described.length
+      ? describedHtml(lora)
+      : `<p class="lr-note-v010">${esc(t("noTriggers"))}</p>`;
   const on = triggersOn(lora);
   const many = lora.triggers.length > 1;
   return `<div class="lr-triggers-v010" aria-label="${esc(t(many ? "triggerSets" : "triggers"))}">${lora.triggers
@@ -438,14 +466,19 @@ function triggersCardHtml(lora) {
   const hidden = total - shown.length;
   const sets = lora.triggers.length > 1 ? ` · ${t("sets")(lora.triggers.length)}` : "";
   return `<div class="lr-triggers-v010 compact">${shown.map((_, i) => tagButton(lora, on, 0, i)).join("")}${
-    hidden > 0 ? `<button type="button" class="lr-more-v010" data-open>+${hidden}${esc(sets)}</button>` : ""
+    hidden > 0
+      ? `<button type="button" class="lr-more-v010" data-open>+${hidden}${esc(sets)}</button>`
+      : ""
   }</div>`;
 }
 
 function controlsHtml(lora, { full = false } = {}) {
   const weight = weightOf(lora);
   const active = activeTriggers(lora).length;
-  const visible = full ? active : lora.triggers[0]?.slice(0, CARD_TAGS).filter((_, i) => triggersOn(lora).has(`0:${i}`)).length || 0;
+  const visible = full
+    ? active
+    : lora.triggers[0]?.slice(0, CARD_TAGS).filter((_, i) => triggersOn(lora).has(`0:${i}`))
+        .length || 0;
   return `
         <code class="lr-line-v010" title="${esc(loraLine(lora))}">${esc(loraLine(lora))}</code>
         ${
@@ -592,7 +625,8 @@ function closeMenu() {
 }
 
 function openMenu(button, lora) {
-  if (!el.menu.hidden && el.menu.dataset.id === String(lora.id) && el.menu.anchor === button) return closeMenu();
+  if (!el.menu.hidden && el.menu.dataset.id === String(lora.id) && el.menu.anchor === button)
+    return closeMenu();
   /* в открытом модальном окне меню должно жить внутри него, иначе оно под окном и не кликается */
   const host = button.closest("dialog") || document.body;
   if (el.menu.parentElement !== host) host.append(el.menu);
@@ -649,7 +683,10 @@ function syncStatus() {
   }
   el.empty.hidden = state.filtered.length > 0;
   if (!el.empty.hidden) {
-    el.empty.innerHTML = `${esc(t("empty"))} <button class="ch-btn-v008" type="button" data-reset>${esc(t("reset"))}</button>`;
+    const reset = `<button class="ch-btn-v008" type="button" data-reset>${esc(t("reset"))}</button>`;
+    el.empty.innerHTML = state.idRef
+      ? `${esc(t("emptyId").replace("{id}", state.idRef))} <a class="ch-btn-v008" href="https://civitai.com/models/${esc(state.idRef)}" target="_blank" rel="noopener">${esc(t("openCivitai"))} ↗</a> ${reset}`
+      : `${esc(t("empty"))} ${reset}`;
   }
 }
 
@@ -855,7 +892,12 @@ function bind() {
   document.addEventListener(
     "pointerdown",
     (event) => {
-      if (!el.menu.hidden && !el.menu.contains(event.target) && !event.target.closest("[data-civitai]")) closeMenu();
+      if (
+        !el.menu.hidden &&
+        !el.menu.contains(event.target) &&
+        !event.target.closest("[data-civitai]")
+      )
+        closeMenu();
     },
     true
   );
@@ -878,7 +920,12 @@ function bind() {
   window.addEventListener(
     "scroll",
     () => {
-      if (!el.menu.hidden && !el.menu.classList.contains("sheet") && Math.abs(window.scrollY - el.menu.scrollAt) > 40) closeMenu();
+      if (
+        !el.menu.hidden &&
+        !el.menu.classList.contains("sheet") &&
+        Math.abs(window.scrollY - el.menu.scrollAt) > 40
+      )
+        closeMenu();
     },
     { passive: true }
   );
@@ -932,6 +979,9 @@ async function start() {
   /* поле поиска заполняется из ?q= до фильтрации: applyFilters читает запрос из поля */
   el.search.value = state.q;
   applyFilters();
+  /* ссылка loras.html?id=… сразу открывает карточку */
+  const linked = params.get("id");
+  if (linked && state.byId.has(linked)) openViewer(linked);
 }
 
 start();
