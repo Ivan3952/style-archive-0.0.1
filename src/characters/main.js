@@ -316,8 +316,15 @@ function currentVariant(character) {
 /* Превью выбранного наряда; у наряда без своего превью — основное превью персонажа. */
 function imageOf(character, index) {
   const variant = character.variants[index];
-  if (index > 0 && variant?.image) return { src: variant.image, width: variant.width, height: variant.height, own: true };
-  if (character.image) return { src: character.image, width: character.width, height: character.height, own: index === 0 };
+  if (index > 0 && variant?.image)
+    return { src: variant.image, width: variant.width, height: variant.height, own: true };
+  if (character.image)
+    return {
+      src: character.image,
+      width: character.width,
+      height: character.height,
+      own: index === 0,
+    };
   /* основного превью нет (например, отбраковано) — показать превью другого наряда */
   const other = character.variants.find((item) => item.image);
   return other ? { src: other.image, width: other.width, height: other.height, own: false } : null;
@@ -337,7 +344,11 @@ function cardHtml(character) {
   const saved = state.saved.has(character.id);
   /* без превью — низкая заглушка, чтобы тысячи пустых карточек не выглядели поломкой */
   const image = imageOf(character, index);
-  const ratio = image ? (image.width && image.height ? `${image.width}/${image.height}` : "2/3") : "3/2";
+  const ratio = image
+    ? image.width && image.height
+      ? `${image.width}/${image.height}`
+      : "2/3"
+    : "3/2";
   const showVariants = character.variants.length > 1;
 
   return `
