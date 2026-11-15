@@ -1,33 +1,132 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "characters.schema.json",
-  "title": "Поддерживаемые персонажи (data/characters.json), заготовка",
-  "description": "Каталог AM (XL позже). Превью хранятся у нас, а не ссылками на Google Sites.",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "additionalProperties": false,
-    "required": ["id", "name", "model", "variants"],
-    "properties": {
-      "id": { "type": "string", "pattern": "^chr_[A-Za-z0-9_-]+$" },
-      "name": { "type": "string", "minLength": 1 },
-      "franchise": { "type": ["string", "null"] },
-      "model": { "enum": ["am", "xl"] },
-      "variants": {
-        "type": "array",
-        "minItems": 1,
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["tags"],
-          "properties": {
-            "label": { "type": ["string", "null"], "description": "Подпись наряда: стандарт, теннис, школа…" },
-            "tags": { "type": "string", "minLength": 1, "description": "Строка тегов дословно, с экранированием \\( \\)" }
+  "title": "Персонажи AM (data/characters.json)",
+  "description": "Каталог персонажей из таблиц Stable Waifu (AM). Превью лежат у нас (public/media/characters), а не ссылками на Google Sites. Генерируется tools/import_characters.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source",
+    "updated_at",
+    "count",
+    "characters"
+  ],
+  "properties": {
+    "source": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "base",
+          "title",
+          "letter",
+          "variants"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "base": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "letter": {
+            "type": "string"
+          },
+          "variants": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "tags"
+              ],
+              "properties": {
+                "label": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Подпись наряда: стандарт, теннис, школа…"
+                },
+                "tags": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Строка тегов дословно, с экранированием \\( \\)"
+                },
+                "image": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Превью наряда (<id>--N.webp), если есть"
+                },
+                "width": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "height": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source_url": {
+            "type": "string"
+          },
+          "image": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Основное превью персонажа; null — превью нет или оно отбраковано"
+          },
+          "width": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "height": {
+            "type": [
+              "integer",
+              "null"
+            ]
           }
         }
-      },
-      "media": { "type": "array", "items": { "type": "string" } },
-      "source": { "type": "object" }
+      }
     }
   }
 }

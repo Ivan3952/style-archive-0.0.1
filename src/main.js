@@ -25,6 +25,7 @@ import "./css/mix-dock-v006.css";
 import "./css/workspace-v006.css";
 import "./css/prompt-parse-v007.css";
 import "./css/scroll-lock-v009.css";
+import "./css/section-switch-v008.css";
 
 // Скрипты
 import "./legacy/grid-density-v004.js";

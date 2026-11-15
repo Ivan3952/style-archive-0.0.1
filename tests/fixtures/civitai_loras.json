@@ -1,0 +1,332 @@
+{
+  "_comment": "Сокращённые ответы API CivitAI /api/v1/models?types=LORA&baseModels=Anima (14.11.2026): по 1-2 картинки, без описаний. Для tests/test_loras.py.",
+  "items": [
+    {
+      "id": 2540444,
+      "name": "Anima Highres/Aesthetic Boost",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 1,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["style", "anime"],
+      "creator": { "username": "circlestone_labs" },
+      "stats": { "downloadCount": 48706, "thumbsUpCount": 2558 },
+      "modelVersions": [
+        {
+          "id": 2855073,
+          "name": "v1.0",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-04-13T18:09:29.020Z",
+          "trainedWords": [],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/91519397-ca49-4771-a3d6-c06bbae06b25/original=true/127347641.jpeg",
+              "nsfwLevel": 1,
+              "width": 2698,
+              "height": 1728,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2530730,
+      "name": "Anima B1 Blue Archive Style Lora",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 7,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["style", "bluearchive", "블아", "blue archive", "블루아카이브"],
+      "creator": { "username": "FlyingOyster" },
+      "stats": { "downloadCount": 15137, "thumbsUpCount": 877 },
+      "modelVersions": [
+        {
+          "id": 2949191,
+          "name": "Anima Base v1.0",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-05-16T04:37:23.747Z",
+          "trainedWords": [],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/88745feb-cdb2-4993-8021-5b64c1a594b6/original=true/130846892.jpeg",
+              "nsfwLevel": 1,
+              "width": 1024,
+              "height": 1536,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            },
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/e6e6644d-6a5c-47f0-81fb-e0ad760f3159/original=true/130846895.jpeg",
+              "nsfwLevel": 4,
+              "width": 1024,
+              "height": 1536,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        },
+        {
+          "id": 2844214,
+          "name": "Anima Pre3 v1.0",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-04-09T18:57:59.157Z",
+          "trainedWords": [],
+          "images": []
+        }
+      ]
+    },
+    {
+      "id": 2400317,
+      "name": "[Anima LoRA] キュアアルカナ・シャドウ / cure arcana shadow [名探偵プリキュア！/ Meitantei Precure!]",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 5,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["precure", "anime", "character"],
+      "creator": { "username": "aa4666lo" },
+      "stats": { "downloadCount": 4203, "thumbsUpCount": 275 },
+      "modelVersions": [
+        {
+          "id": 2698831,
+          "name": "v1.4(anima-preview)",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-02-17T20:03:39.079Z",
+          "trainedWords": [
+            "cure arcana shadow, meitantei precure!",
+            "blonde hair, pink hair, gradient hair, very long hair, black dress, black capelet,"
+          ],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/11cf094a-6048-4633-aeb6-cd1346103790/original=true/121456750.jpeg",
+              "nsfwLevel": 1,
+              "width": 832,
+              "height": 1216,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 929497,
+      "name": "Aesthetic Quality Modifiers - Masterpiece",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 31,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["styles", "anime", "aesthetic", "concept"],
+      "creator": { "username": "motimalu" },
+      "stats": { "downloadCount": 183931, "thumbsUpCount": 12660 },
+      "modelVersions": [
+        {
+          "id": 2961717,
+          "name": "v5.1 [anima-base-1]",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-05-20T12:54:59.076Z",
+          "trainedWords": ["masterpiece", "very aesthetic"],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/52fc411e-a343-4ed2-8dfd-f27d5bdf6cd5/original=true/131287900.jpeg",
+              "nsfwLevel": 1,
+              "width": 2016,
+              "height": 1152,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 465603,
+      "name": "age control 年齢操作",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 7,
+      "minor": true,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["concept"],
+      "creator": { "username": "mara_123" },
+      "stats": { "downloadCount": 24922, "thumbsUpCount": 1493 },
+      "modelVersions": [
+        {
+          "id": 2807761,
+          "name": "anima_v1.0",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-03-27T10:56:57.276Z",
+          "trainedWords": ["mature female", "aged up,"],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/a3109b16-545a-4f94-897b-9f0a5d7e81b1/original=true/125521769.jpeg",
+              "nsfwLevel": 1,
+              "width": 1024,
+              "height": 1280,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2640938,
+      "name": "p1ct0a1 Anima",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 3,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": false,
+      "tags": ["style"],
+      "creator": { "username": "FEEEEF" },
+      "stats": { "downloadCount": 6144, "thumbsUpCount": 433 },
+      "modelVersions": [
+        {
+          "id": 3119761,
+          "name": "v3.0",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-07-11T15:16:45.142Z",
+          "trainedWords": ["@p1ct01"],
+          "images": []
+        }
+      ]
+    },
+    {
+      "id": 2718862,
+      "name": "VöqiÐ | by UTdT69",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 7,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["style", "surreal", "anime", "nsfw", "sfw", "anima"],
+      "creator": { "username": "UTdT_69" },
+      "stats": { "downloadCount": 3795, "thumbsUpCount": 325 },
+      "modelVersions": [
+        {
+          "id": 3055236,
+          "name": "v1_Anima",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-06-21T19:03:45.725Z",
+          "trainedWords": ["v0q1d"],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/832b30a7-ae33-486e-8780-d82433876ed3/original=true/134428913.jpeg",
+              "nsfwLevel": 1,
+              "width": 3072,
+              "height": 4608,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2638819,
+      "name": "748cm (ANIMA) | Artist styles | Mexes",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 7,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["art style", "style", "748cm", "artist style"],
+      "creator": { "username": "Mexes" },
+      "stats": { "downloadCount": 4977, "thumbsUpCount": 384 },
+      "modelVersions": [
+        {
+          "id": 3020719,
+          "name": "Anima V2",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-06-10T15:40:11.905Z",
+          "trainedWords": [],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/3f592bdd-34da-40a1-9ab5-e9c35f8888e6/original=true/133387242.jpeg",
+              "nsfwLevel": 1,
+              "width": 840,
+              "height": 1080,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        },
+        {
+          "id": 2962831,
+          "name": "Anima v1",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-05-20T21:25:46.423Z",
+          "trainedWords": [],
+          "images": []
+        }
+      ]
+    },
+    {
+      "id": 2560840,
+      "name": "Anima Turbo LoRA",
+      "type": "LORA",
+      "nsfw": false,
+      "nsfwLevel": 3,
+      "minor": false,
+      "poi": false,
+      "allowNoCredit": true,
+      "tags": ["anime", "turbo", "distill", "base model"],
+      "creator": { "username": "circlestone_labs" },
+      "stats": { "downloadCount": 82274, "thumbsUpCount": 3100 },
+      "modelVersions": [
+        {
+          "id": 2979642,
+          "name": "v0.2",
+          "baseModel": "Anima",
+          "availability": "Public",
+          "publishedAt": "2026-05-25T10:00:00.000Z",
+          "trainedWords": [],
+          "images": [
+            {
+              "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/f5c2c926-b326-45e9-9496-1154c44010d2/original=true/131900000.jpeg",
+              "nsfwLevel": 1,
+              "width": 1024,
+              "height": 1024,
+              "type": "image",
+              "minor": false,
+              "poi": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {}
+}

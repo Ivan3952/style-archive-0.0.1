@@ -1,0 +1,430 @@
+/* =========================================================
+   КАТАЛОГ LORA (CivitAI, Anima)
+   Карточки на основе стилей раздела «Персонажи» (characters-v008.css).
+   ========================================================= */
+
+.lr-lead-v010 {
+  max-width: 820px;
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.lr-media-v010 {
+  max-height: 380px;
+}
+
+.lr-cat-v010 {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(10, 14, 20, 0.72);
+  color: #eef3f8;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.lr-name-v010 {
+  display: -webkit-box;
+  white-space: normal;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.lr-meta-v010,
+.lr-note-v010 {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.lr-triggers-v010 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.lr-triggers-v010 button {
+  max-width: 100%;
+  padding: 3px 8px;
+  overflow: hidden;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-decoration: line-through;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.lr-triggers-v010 button.on {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* наборы триггеров (разные образы / варианты): номер набора включает весь набор */
+.lr-tgroup-v010 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 4px 6px 4px 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  opacity: 0.6;
+}
+
+.lr-tgroup-v010.on {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  opacity: 1;
+}
+
+.lr-triggers-v010 button.lr-tset-v010 {
+  flex: none;
+  min-width: 22px;
+  padding: 3px 6px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.lr-line-v010 {
+  display: block;
+  padding: 7px 9px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--line-soft);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lr-weight-v010 {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.lr-weight-v010 button {
+  min-width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.lr-weight-v010 button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.lr-weight-v010 output {
+  min-width: 26px;
+  color: var(--accent);
+  text-align: center;
+}
+
+.lr-open-v010 {
+  align-self: center;
+  margin-left: auto;
+}
+
+.lr-sort-v010 {
+  flex: 0 0 auto;
+}
+
+.filter-chip span {
+  color: var(--muted-2);
+}
+
+/* ---------- компактная карточка: первые теги и «+N», остальное в окне ---------- */
+
+.lr-name-v010 button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lr-triggers-v010.compact {
+  max-height: 56px; /* две строки чипов: высота карточек не зависит от числа триггеров */
+  overflow: hidden;
+}
+
+.lr-triggers-v010 button.lr-more-v010 {
+  border-style: solid;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.lr-inline-v010 {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.lr-inline-v010 button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+button.lr-open-v010 {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* ---------- окно просмотра ---------- */
+
+/* на телефоне картинка по своей высоте: height: 100% в строке auto давала наезд на заголовок */
+@media (max-width: 720px) {
+  .lr-viewer-v010 .ch-viewer-media-v008 img {
+    height: auto;
+    max-height: 56dvh;
+  }
+}
+
+.lr-viewer-info-v010 h2 {
+  overflow-wrap: anywhere;
+}
+
+.lr-viewer-info-v010 .lr-triggers-v010 button {
+  font-size: 12px;
+}
+
+.lr-viewer-info-v010 .lr-line-v010 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- меню «на CivitAI» ---------- */
+
+.lr-menu-v010 {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+.lr-menu-v010[hidden] {
+  display: none;
+}
+
+.lr-menu-v010 a,
+.lr-menu-v010 button {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lr-menu-v010 a:hover,
+.lr-menu-v010 button:hover,
+.lr-menu-v010 a:focus-visible,
+.lr-menu-v010 button:focus-visible {
+  background: var(--line-soft);
+  outline: none;
+}
+
+.lr-menu-v010 span {
+  color: var(--muted);
+}
+
+/* на телефоне — панель снизу: крупные пункты, не промахнуться пальцем */
+.lr-menu-v010.sheet {
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  left: 10px;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.lr-menu-v010.sheet a,
+.lr-menu-v010.sheet button {
+  padding: 14px;
+  font-size: 15px;
+}
+
+/* ---------- галерея превью в окне ---------- */
+
+.lr-count-v010 {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(10, 14, 20, 0.72);
+  color: #eef3f8;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.ch-viewer-media-v008.lr-gallery-v010 {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.lr-stage-v010 {
+  position: relative;
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  place-items: center;
+  touch-action: pan-y;
+}
+
+.lr-gallery-v010 .lr-stage-v010 img {
+  width: 100%;
+  height: 100%;
+  max-height: calc(100dvh - 120px);
+  object-fit: contain;
+}
+
+.lr-nav-v010 {
+  position: absolute;
+  top: 50%;
+  width: 38px;
+  height: 38px;
+  margin-top: -19px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(10, 14, 20, 0.6);
+  color: #eef3f8;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lr-nav-v010.prev {
+  left: 10px;
+}
+
+.lr-nav-v010.next {
+  right: 10px;
+}
+
+.lr-nav-v010:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lr-counter-v010 {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(10, 14, 20, 0.72);
+  color: #eef3f8;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.lr-thumbs-v010 {
+  display: flex;
+  flex: none;
+  gap: 6px;
+  padding: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.lr-thumbs-v010 button {
+  flex: none;
+  width: 54px;
+  height: 72px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  background: var(--bg);
+  opacity: 0.65;
+  cursor: pointer;
+}
+
+.lr-thumbs-v010 button.on {
+  border-color: var(--accent);
+  opacity: 1;
+}
+
+.lr-thumbs-v010 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .lr-gallery-v010 .lr-stage-v010 img {
+    height: auto;
+    max-height: 56dvh;
+  }
+
+  .lr-nav-v010 {
+    display: none; /* на телефоне листается свайпом и миниатюрами */
+  }
+}
+
+/* ---------- теги из описания автора (по умолчанию выключены) ---------- */
+
+.lr-described-v010 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--line);
+}
+
+.lr-triggers-v010 + .lr-described-v010 {
+  margin-top: 4px;
+}
