@@ -75,14 +75,15 @@ check("X у любой версии под Anima — модель выше R", m
 check("без уровня у версий — уровень модели", mod.anima_level({"nsfwLevel": 31, "modelVersions": [{"baseModel": "Anima"}]}) == 31)
 
 row = mod.pack(ba)
-check("в строке число доп. превью", row[-2] == len(ba["images"]) - 1, row)
+F = mod.FIELDS.index
+check("в строке число доп. превью", row[F("more")] == len(ba["images"]) - 1, row)
 row = row
 check("компактная строка — массив по FIELDS", isinstance(row, list) and len(row) == len(mod.FIELDS), row)
-check("префикс картинки вынесен", row[-3][0] == "88745feb-cdb2-4993-8021-5b64c1a594b6/130846892.jpeg", row[-3])
+check("префикс картинки вынесен", row[F("image")][0] == "88745feb-cdb2-4993-8021-5b64c1a594b6/130846892.jpeg", row[F("image")])
 back = mod.unpack(row)
 check("pack/unpack без потерь (кроме версии и лишних картинок)", back == {k: v for k, v in ba.items() if k != "version"} | {"described": []} | {"images": ba["images"][:1]}, back)
 check("чужой хост картинки хранится полным URL", mod.pack_image({"url": "https://x.org/a.jpg", "width": 1, "height": 2})[0] == "https://x.org/a.jpg")
-check("без картинки", mod.pack({**ba, "images": []})[-3] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
+check("без картинки", mod.pack({**ba, "images": []})[F("image")] == 0 and mod.unpack(mod.pack({**ba, "images": []}))["images"] == [])
 
 tr = mod.clean_triggers(["a, B, a", "b, a", "b, " + "x" * 61, ", c ,"] + [f"t{i}, u{i}" for i in range(40)])
 check("триггеры: дубли наборов и проза отброшены", tr[:3] == [["a", "B"], ["b"], ["c"]], tr)
@@ -127,5 +128,42 @@ check(
 check("теги из описания без дублей триггеров", mod.without_triggers(["a", "a, b", "c"], [["a", "b"]]) == ["c"])
 
 check("ручной блок-лист: 14 id, причина не пересматривается", len(mod.MANUAL_BLOCK) == 14 and mod.reject_reason({"id": 2272678, "type": "LORA"}) == "ручной блок-лист" and "ручной блок-лист" in mod.NEVER_REVIEW)
+
+# ---- форматы (LoCon, DoRA) и платный ранний доступ (16.11.2026)
+def synth(model_id, model_type="LORA", versions=None, **extra):
+    safe = [{"url": f"{mod.IMAGE_PREFIX}u{model_id}/original=true/{model_id}.jpeg", "nsfwLevel": 1, "width": 1, "height": 2}]
+    versions = versions or [{"id": model_id * 10, "baseModel": "Anima", "availability": "Public", "nsfwLevel": 1, "images": safe}]
+    for version in versions:
+        version.setdefault("images", safe)
+        version.setdefault("baseModel", "Anima")
+        version.setdefault("nsfwLevel", 1)
+    return {"id": model_id, "type": model_type, "name": f"m{model_id}", "tags": ["style"], "nsfwLevel": 1,
+            "stats": {"downloadCount": 5}, "modelVersions": versions, **extra}
+
+
+made, why, _ = mod.select([
+    synth(1), synth(2, "LoCon"), synth(3, "DoRA"), synth(4, "Checkpoint"),
+    synth(5, versions=[{"id": 50, "availability": "EarlyAccess", "earlyAccessEndsAt": "2026-12-01T00:00:00.000Z"}]),
+    synth(6, versions=[{"id": 61, "availability": "EarlyAccess", "earlyAccessEndsAt": "2026-12-01T00:00:00.000Z"}, {"id": 60, "availability": "Public"}]),
+    synth(7, versions=[{"id": 70, "availability": "Private"}]),
+])
+got = {lora["id"]: lora for lora in made}
+check("типы LoRA, LoCon и DoRA берутся, Checkpoint нет", sorted(got) == [1, 2, 3, 5, 6] and why.get("не LoRA") == 1, (sorted(got), why))
+check("kind по типу модели", [got[i]["kind"] for i in (1, 2, 3)] == ["lora", "locon", "dora"])
+check("только платная версия: access=1 и дата", got[5]["access"] == 1 and got[5]["until"] == "2026-12-01" and got[5]["version_id"] == 50, got[5])
+check("есть бесплатная версия — модель бесплатная, берётся она", got[6]["access"] == 0 and got[6]["until"] == "" and got[6]["version_id"] == 60, got[6])
+check("Private-версии не берутся", 7 not in got and why.get("нет версии под Anima") == 1, why)
+mixed = synth(8, versions=[
+    {"id": 81, "availability": "EarlyAccess", "images": [{"url": f"{mod.IMAGE_PREFIX}paid/original=true/1.jpeg", "nsfwLevel": 1}]},
+    {"id": 80, "availability": "Public", "images": [{"url": f"{mod.IMAGE_PREFIX}free/original=true/2.jpeg", "nsfwLevel": 1}]},
+])
+check("в галерею бесплатной версии не попадают превью платной",
+      [im["url"].split("/")[-3] for im in mod.gallery_images(mixed, mod.anima_version(mixed))] == ["free"])
+for lora in (got[2], got[5]):
+    again = mod.unpack(mod.pack(lora))
+    check(f"pack/unpack: kind и access сохраняются ({lora['id']})", (again["kind"], again["access"], again["until"]) == (lora["kind"], lora["access"], lora["until"]), again)
+old_row = mod.pack(got[1])[: mod.FIELDS.index("kind")]
+old = mod.unpack(old_row)
+check("старая строка без новых полей читается как бесплатная LoRA", (old["kind"], old["access"], old["until"]) == ("lora", 0, ""), old)
 
 print(f"\n{passed} проверок пройдено")

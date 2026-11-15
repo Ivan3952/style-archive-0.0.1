@@ -154,6 +154,48 @@
   flex: 0 0 auto;
 }
 
+/* формат (LoRA / LoCon / DoRA) и платный доступ: отдельный ряд под категориями */
+.lr-kinds-v010 {
+  margin-top: 10px;
+}
+
+.lr-kinds-v010[hidden] {
+  display: none;
+}
+
+/* метки в верхнем правом углу превью: формат и «ПЛАТНАЯ» */
+.lr-flags-v010 {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.lr-flags-v010 span {
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(10, 14, 20, 0.72);
+  color: #eef3f8;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.lr-flags-v010 .paid {
+  background: #ffd166;
+  color: #1d1500;
+}
+
+.lr-paid-note-v010 {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border: 1px solid #ffd166;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .filter-chip span {
   color: var(--muted-2);
 }
