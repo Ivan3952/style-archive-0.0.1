@@ -6,6 +6,7 @@
 
 Порядок (на своём ПК, из корня репозитория):
   python3 tools/import_loras.py --pages 2 --inspect 3   # как разобраны первые модели, ничего не пишет
+  python3 tools/import_loras.py --probe 1030872         # что API отдаёт про доступность версий одной модели
   python3 tools/import_loras.py                         # пробный прогон: отчёт «добавлено / изменено / пропало»
   python3 tools/import_loras.py --apply                 # записать data/loras.json
 
@@ -129,8 +130,22 @@ def anima_version(model: dict) -> dict | None:
     return None
 
 
+def early_ends(version: dict) -> str:
+    """Дата (ГГГГ-ММ-ДД), когда ранний доступ закончится, если он ещё идёт; иначе пустая строка.
+    API может отдавать availability=Public и при этом earlyAccessEndsAt в будущем (так и было замечено
+    у платной LoRA 1030872), поэтому смотрим на дату, а не только на availability."""
+    raw = version.get("earlyAccessEndsAt") or ""
+    try:
+        ends = dt.datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    if ends.tzinfo is None:
+        ends = ends.replace(tzinfo=dt.timezone.utc)
+    return raw[:10] if ends > dt.datetime.now(dt.timezone.utc) else ""
+
+
 def is_early(version: dict) -> bool:
-    return version.get("availability") == EARLY
+    return version.get("availability") == EARLY or bool(early_ends(version))
 
 
 def safe_images(version: dict) -> list[dict]:
@@ -594,8 +609,16 @@ def main() -> int:
     ap.add_argument("--apply", action="store_true", help="записать data/loras.json")
     ap.add_argument("--pages", type=int, help="не больше N страниц по 100 (для проверки)")
     ap.add_argument("--inspect", type=int, metavar="N", help="показать первые N отобранных и выйти")
+    ap.add_argument("--probe", type=int, metavar="ID", help="показать, что API отдаёт про доступность версий модели ID, и выйти")
     ap.add_argument("--force", action="store_true", help="записать, даже если LoRA стало заметно меньше")
     args = ap.parse_args()
+    if args.probe:
+        model = fetch_json(f"https://civitai.com/api/v1/models/{args.probe}")
+        print(f"{model.get('name')} (type={model.get('type')})")
+        for v in model.get("modelVersions") or []:
+            print({k: v.get(k) for k in ("id", "name", "baseModel", "availability", "earlyAccessEndsAt", "earlyAccessConfig", "publishedAt")})
+            print("  → платная по импортёру:", is_early(v), "| до:", early_ends(v) or "-")
+        return 0
     if args.pages and args.apply:
         print("--pages нельзя совмещать с --apply: каталог получился бы неполным.", file=sys.stderr)
         return 2

@@ -164,6 +164,12 @@ check("в галерею бесплатной версии не попадают
 for lora in (got[2], got[5]):
     again = mod.unpack(mod.pack(lora))
     check(f"pack/unpack: kind и access сохраняются ({lora['id']})", (again["kind"], again["access"], again["until"]) == (lora["kind"], lora["access"], lora["until"]), again)
+sneaky = synth(9, versions=[{"id": 90, "availability": "Public", "earlyAccessEndsAt": "2999-01-01T00:00:00.000Z"}])
+past = synth(10, versions=[{"id": 100, "availability": "Public", "earlyAccessEndsAt": "2020-01-01T00:00:00.000Z"}])
+mod_made, _, _ = mod.select([sneaky, past])
+by_id = {lora["id"]: lora for lora in mod_made}
+check("Public с ранним доступом в будущем считается платной", by_id[9]["access"] == 1 and by_id[9]["until"] == "2999-01-01", by_id[9])
+check("ранний доступ в прошлом — уже бесплатная", by_id[10]["access"] == 0 and by_id[10]["until"] == "", by_id[10])
 mod.ENABLED_TYPES = ("LORA",)
 off, off_why, _ = mod.select([synth(2, "LoCon"), synth(3, "DoRA")])
 check("пока форматы выключены, LoCon и DoRA отбрасываются", off == [] and off_why.get("не LoRA") == 2, off_why)
