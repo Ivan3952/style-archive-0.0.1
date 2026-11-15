@@ -27,8 +27,8 @@ const TRAY_KEY = "style-archive:tray";
 const MIX_KEY = "style-archive:mix-v006";
 const BATCH = 36;
 const CARD_TAGS = 6; // тегов на карточке; остальные — в окне просмотра
-const WEIGHT_MIN = 0.3;
-const WEIGHT_MAX = 1.2;
+const WEIGHT_MIN = 0;
+const WEIGHT_MAX = 1;
 const WEIGHT_DEFAULT = 0.8;
 
 const DICT = {
