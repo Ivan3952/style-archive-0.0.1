@@ -52,6 +52,14 @@ const DICT = {
     sortPopular: "ПОПУЛЯРНЫЕ",
     sortNew: "НОВЫЕ",
     sortLiked: "ЛАЙКИ",
+    free: "БЕСПЛАТНЫЕ",
+    paid: "ПЛАТНЫЕ",
+    paidBadge: "ПЛАТНАЯ",
+    paidTitle: "Платный ранний доступ на CivitAI",
+    paidNote: (date) =>
+      date
+        ? `Платная: ранний доступ на CivitAI, бесплатной станет ${date}. Без покупки в боте может не работать.`
+        : "Платная: ранний доступ на CivitAI. Без покупки в боте может не работать.",
     by: "автор",
     downloads: "скачиваний",
     triggers: "Триггеры (нажми, чтобы включить или выключить):",
@@ -109,6 +117,14 @@ const DICT = {
     sortPopular: "POPULAR",
     sortNew: "NEW",
     sortLiked: "LIKED",
+    free: "FREE",
+    paid: "PAID",
+    paidBadge: "PAID",
+    paidTitle: "Paid early access on CivitAI",
+    paidNote: (date) =>
+      date
+        ? `Paid: early access on CivitAI, becomes free on ${date}. Until you buy it, it may not work in the bot.`
+        : "Paid: early access on CivitAI. Until you buy it, it may not work in the bot.",
     by: "by",
     downloads: "downloads",
     triggers: "Triggers (tap to toggle):",
@@ -149,6 +165,9 @@ const DICT = {
 
 const CATEGORIES = ["all", "character", "style", "concept", "tool", "other"];
 const SORTS = { popular: "sortPopular", new: "sortNew", liked: "sortLiked" };
+/* форматы файла (tools/import_loras.py, TYPES): подпись на карточке и в фильтре */
+const KINDS = { lora: "LoRA", locon: "LoCon", dora: "DoRA" };
+const ACCESS = ["free", "paid"];
 
 const lang = () => (document.documentElement.lang === "en" ? "en" : "ru");
 const t = (key) => DICT[lang()][key] ?? DICT.ru[key] ?? key;
@@ -175,6 +194,8 @@ const state = {
   idRef: "",
   category: CATEGORIES.includes(params.get("cat")) ? params.get("cat") : "all",
   sort: SORTS[params.get("sort")] ? params.get("sort") : "popular",
+  kind: KINDS[params.get("kind")] ? params.get("kind") : "all",
+  access: ACCESS.includes(params.get("access")) ? params.get("access") : "all",
   weights: new Map(),
   triggersOn: new Map(), // id -> Set("набор:тег") включённых; нет записи — по умолчанию
   loaded: false,
@@ -193,6 +214,7 @@ const el = {
   count: $("#lrCount"),
   categories: $("#lrCategories"),
   sort: $("#lrSort"),
+  kinds: $("#lrKinds"),
   lead: $("#lrLead"),
   source: $("#lrSource"),
   statCount: $("#lrStatCount"),
@@ -258,12 +280,18 @@ function imageUnpacker(data) {
 function unpackRow(data) {
   const fields = data.fields || [];
   const categories = data.categories || [];
+  const kinds = data.kinds || ["lora", "locon", "dora"];
   const unpackImage = imageUnpacker(data);
   return (row) => {
     if (!Array.isArray(row)) return row;
     const lora = {};
     fields.forEach((field, index) => (lora[field] = row[index]));
     if (typeof lora.category === "number") lora.category = categories[lora.category] || "other";
+    /* kind и access появились 16.11.2026; в старых строках их нет — это бесплатная LoRA */
+    if (typeof lora.kind === "number") lora.kind = kinds[lora.kind] || "lora";
+    lora.kind = KINDS[lora.kind] ? lora.kind : "lora";
+    lora.access = Number(lora.access) || 0;
+    lora.until = lora.until || "";
     const image = lora.image;
     delete lora.image;
     lora.images = [];
@@ -372,6 +400,9 @@ function applyFilters() {
   const tokens = norm(state.q).split(" ").filter(Boolean);
   let list = state.all.filter((lora) => {
     if (state.category !== "all" && lora.category !== state.category) return false;
+    if (state.kind !== "all" && lora.kind !== state.kind) return false;
+    if (state.access === "free" && lora.access) return false;
+    if (state.access === "paid" && !lora.access) return false;
     return tokens.every((token) => lora.hay.includes(token));
   });
 
@@ -411,6 +442,8 @@ function syncUrl() {
   set("q", state.q.trim());
   set("cat", state.category === "all" ? "" : state.category);
   set("sort", state.sort === "popular" ? "" : state.sort);
+  set("kind", state.kind === "all" ? "" : state.kind);
+  set("access", state.access === "all" ? "" : state.access);
   history.replaceState(null, "", url);
 }
 
@@ -499,6 +532,15 @@ function controlsHtml(lora, { full = false } = {}) {
         </div>`;
 }
 
+/* Метки в углу превью: формат (если не обычная LoRA) и «ПЛАТНАЯ» для раннего доступа. */
+function flagsHtml(lora) {
+  const flags = [];
+  if (lora.kind !== "lora") flags.push(`<span>${esc(KINDS[lora.kind])}</span>`);
+  if (lora.access)
+    flags.push(`<span class="paid" title="${esc(t("paidTitle"))}">${esc(t("paidBadge"))}</span>`);
+  return flags.length ? `<span class="lr-flags-v010">${flags.join("")}</span>` : "";
+}
+
 function cardHtml(lora) {
   const image = lora.images[0];
   const ratio = image?.width && image?.height ? `${image.width}/${image.height}` : "2/3";
@@ -507,6 +549,7 @@ function cardHtml(lora) {
       <button type="button" class="ch-media-v008 lr-media-v010" data-open style="aspect-ratio:${ratio}" aria-label="${esc(lora.name)}">
         ${image ? `<img src="${esc(image.url)}" alt="" loading="lazy" decoding="async">` : ""}
         <span class="lr-cat-v010">${esc(t(lora.category))}</span>
+        ${flagsHtml(lora)}
         ${lora.more ? `<span class="lr-count-v010" title="${esc(t("previews"))}">▣ ${lora.more + 1}</span>` : ""}
       </button>
       <div class="ch-body-v008">
@@ -585,11 +628,12 @@ function viewerHtml(lora) {
     <div class="ch-viewer-info-v008 lr-viewer-info-v010" data-id="${esc(lora.id)}">
       <header>
         <div>
-          <span class="eyebrow">${esc(t(lora.category))} · ${esc(t("by"))} ${esc(lora.creator)} · ${fmt(lora.downloads)} ${esc(t("downloads"))}</span>
+          <span class="eyebrow">${esc(t(lora.category))}${lora.kind === "lora" ? "" : ` · ${esc(KINDS[lora.kind])}`} · ${esc(t("by"))} ${esc(lora.creator)} · ${fmt(lora.downloads)} ${esc(t("downloads"))}</span>
           <h2>${esc(lora.name)}</h2>
         </div>
         <button class="text-button" type="button" data-close>${esc(t("close"))}</button>
       </header>
+      ${lora.access ? `<p class="lr-paid-note-v010">${esc(t("paidNote")(lora.until ? lora.until.split("-").reverse().join(".") : ""))}</p>` : ""}
       ${triggersFullHtml(lora)}
       ${controlsHtml(lora, { full: true })}
     </div>`;
@@ -707,6 +751,30 @@ function buildControls() {
         `<button class="filter-chip" type="button" data-sort="${key}">${esc(t(label))}</button>`
     )
     .join("");
+  /* формат и доступ: ряд появляется, только когда в каталоге есть из чего выбирать */
+  const kindCounts = {};
+  let paid = 0;
+  state.all.forEach((lora) => {
+    kindCounts[lora.kind] = (kindCounts[lora.kind] || 0) + 1;
+    if (lora.access) paid += 1;
+  });
+  const kindChips =
+    Object.keys(kindCounts).length > 1
+      ? Object.keys(KINDS)
+          .filter((kind) => kindCounts[kind])
+          .map(
+            (kind) =>
+              `<button class="filter-chip" type="button" data-kind="${kind}">${esc(KINDS[kind])} <span>${fmt(kindCounts[kind])}</span></button>`
+          )
+      : [];
+  const accessChips = paid
+    ? ACCESS.map(
+        (key) =>
+          `<button class="filter-chip" type="button" data-access="${key}">${esc(t(key))} <span>${fmt(key === "paid" ? paid : state.all.length - paid)}</span></button>`
+      )
+    : [];
+  el.kinds.innerHTML = [...kindChips, ...accessChips].join("");
+  el.kinds.hidden = !el.kinds.innerHTML;
   el.statCount.textContent = fmt(state.all.length);
   el.statCharacters.textContent = fmt(counts.character || 0);
   el.updated.textContent = state.updatedAt
@@ -721,6 +789,12 @@ function syncControls() {
   });
   el.sort.querySelectorAll("[data-sort]").forEach((button) => {
     button.classList.toggle("active", button.dataset.sort === state.sort);
+  });
+  el.kinds.querySelectorAll("[data-kind]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.kind === state.kind);
+  });
+  el.kinds.querySelectorAll("[data-access]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.access === state.access);
   });
 }
 
@@ -776,6 +850,17 @@ function bind() {
     const button = event.target.closest("[data-category]");
     if (!button) return;
     state.category = button.dataset.category;
+    applyFilters();
+  });
+
+  /* повторный клик по включённому чипу снимает фильтр */
+  el.kinds.addEventListener("click", (event) => {
+    const kind = event.target.closest("[data-kind]");
+    const access = event.target.closest("[data-access]");
+    if (kind) state.kind = state.kind === kind.dataset.kind ? "all" : kind.dataset.kind;
+    else if (access)
+      state.access = state.access === access.dataset.access ? "all" : access.dataset.access;
+    else return;
     applyFilters();
   });
 
@@ -932,7 +1017,7 @@ function bind() {
 
   el.empty.addEventListener("click", (event) => {
     if (!event.target.closest("[data-reset]")) return;
-    Object.assign(state, { q: "", category: "all" });
+    Object.assign(state, { q: "", category: "all", kind: "all", access: "all" });
     applyFilters();
   });
 

@@ -9,8 +9,12 @@
   python3 tools/import_loras.py                         # пробный прогон: отчёт «добавлено / изменено / пропало»
   python3 tools/import_loras.py --apply                 # записать data/loras.json
 
-Что попадает в каталог (решено 14.11.2026, порог «R»):
-  - все публичные версии под Anima не выше уровня R (nsfwLevel ≤ 7 по шкале CivitAI: 1 PG, 2 PG-13, 4 R,
+Что попадает в каталог (решено 14.11.2026, порог «R»; форматы и платный доступ — 16.11.2026):
+  - типы моделей: сейчас только LORA; LoCon и DoRA готовы, но выключены (ENABLED_TYPES), у записи есть поле kind;
+  - версии Public и EarlyAccess (платный ранний доступ): для платных access = 1 и until = дата, когда
+    версия станет бесплатной. Выбирается новейшая публичная версия с безопасным превью; платная — только
+    если у модели нет ни одной бесплатной версии под Anima;
+  - все версии под Anima не выше уровня R (nsfwLevel ≤ 7 по шкале CivitAI: 1 PG, 2 PG-13, 4 R,
     8 X, 16 XXX). Уровень модели целиком не годится: он собирает и версии под Pony/Illustrious и т. п.
     (решено 14.11.2026). Если у версий нет nsfwLevel, берётся уровень модели;
   - не помечена как связанная с несовершеннолетними (minor) или реальными людьми (poi);
@@ -42,10 +46,19 @@ BLOCKLIST_FILE = ROOT / "data" / "lora_blocklist.json"
 REVIEW_FILE = ROOT / "data" / "loras_review.json"
 # Эти причины не пересматриваются и в файл пересмотра не попадают вообще.
 NEVER_REVIEW = {"minor", "реальный человек", "ручной блок-лист"}
+# Типы моделей CivitAI, которые берём (по одному запросу на тип): kind -> код в файле.
+TYPES = {"LORA": "lora", "LoCon": "locon", "DoRA": "dora"}
+KIND_CODES = ["lora", "locon", "dora"]
+# Что реально берётся в каталог. LoCon и DoRA включаются, когда выяснится, работают ли они в боте
+# Stable Waifu по тому же <lora:ID:вес>: добавить "LoCon", "DoRA" в кортеж.
+ENABLED_TYPES = ("LORA",)
 API_URL = (
-    "https://civitai.com/api/v1/models?types=LORA&baseModels=Anima"
+    "https://civitai.com/api/v1/models?types={type}&baseModels=Anima"
     "&sort=Most%20Downloaded&limit=100"
 )
+PUBLIC = "Public"
+EARLY = "EarlyAccess"  # платный ранний доступ: бесплатной версия станет к earlyAccessEndsAt
+AVAILABLE = (PUBLIC, EARLY)
 USER_AGENT = "StyleArchiveImporter/1.0 (+https://stylearchive.art)"
 REQUEST_DELAY = 1.0
 BASE_MODEL = "Anima"
@@ -84,14 +97,15 @@ CATEGORIES = (
 
 
 def anima_versions(model: dict) -> list[dict]:
+    """Версии под Anima: бесплатные и в платном раннем доступе (Private и прочие не берём)."""
     return [
         v for v in model.get("modelVersions") or []
-        if v.get("baseModel") == BASE_MODEL and v.get("availability", "Public") == "Public"
+        if v.get("baseModel") == BASE_MODEL and v.get("availability", PUBLIC) in AVAILABLE
     ]
 
 
 def anima_level(model: dict) -> int:
-    """Самый высокий nsfwLevel среди публичных версий под Anima: бот сам выбирает версию,
+    """Самый высокий nsfwLevel среди версий под Anima: бот сам выбирает версию,
     поэтому ни одна из них не должна быть выше порога. Без поля у версий — уровень модели."""
     levels = [v.get("nsfwLevel") for v in anima_versions(model)]
     if levels and all(isinstance(level, int) for level in levels):
@@ -100,15 +114,23 @@ def anima_level(model: dict) -> int:
 
 
 def anima_version(model: dict) -> dict | None:
-    """Самая новая публичная версия под Anima, у которой есть безопасные картинки."""
-    versions = [
-        v for v in model.get("modelVersions") or []
-        if v.get("baseModel") == BASE_MODEL and v.get("availability", "Public") == "Public"
-    ]
-    for version in versions:
-        if safe_images(version):
-            return version
-    return versions[0] if versions else None
+    """Самая новая бесплатная версия под Anima с безопасными картинками; если бесплатных нет вовсе —
+    самая новая платная (ранний доступ). Так записи, которые уже в каталоге, не меняются."""
+    versions = anima_versions(model)
+    for pool in (
+        [v for v in versions if v.get("availability", PUBLIC) == PUBLIC],
+        [v for v in versions if v.get("availability") == EARLY],
+    ):
+        for version in pool:
+            if safe_images(version):
+                return version
+        if pool:
+            return pool[0]
+    return None
+
+
+def is_early(version: dict) -> bool:
+    return version.get("availability") == EARLY
 
 
 def safe_images(version: dict) -> list[dict]:
@@ -140,7 +162,7 @@ MANUAL_BLOCK = load_blocklist()
 
 
 def reject_reason(model: dict) -> str | None:
-    if model.get("type") != "LORA":
+    if model.get("type") not in ENABLED_TYPES:
         return "не LoRA"
     if model.get("id") in MANUAL_BLOCK:
         return "ручной блок-лист"
@@ -204,8 +226,8 @@ def clean_triggers(words: list[str]) -> list[list[str]]:
 def gallery_images(model: dict, version: dict) -> list[dict]:
     """Безопасные картинки выбранной версии, затем других публичных версий под Anima; без повторов."""
     versions = [version] + [
-        v for v in model.get("modelVersions") or []
-        if v is not version and v.get("baseModel") == BASE_MODEL and v.get("availability", "Public") == "Public"
+        v for v in anima_versions(model)
+        if v is not version and is_early(v) == is_early(version)
     ]
     out, seen = [], set()
     for v in versions:
@@ -352,6 +374,9 @@ def convert(model: dict) -> dict:
         "version": version.get("name") or "",
         "name": re.sub(r"\s+", " ", model.get("name") or "").strip(),
         "category": category_of(tags),
+        "kind": TYPES.get(model.get("type"), "lora"),
+        "access": 1 if is_early(version) else 0,
+        "until": (version.get("earlyAccessEndsAt") or "")[:10] if is_early(version) else "",
         "tags": tags[:MAX_TAGS],
         "creator": (model.get("creator") or {}).get("username") or "",
         "downloads": stats.get("downloadCount") or 0,
@@ -378,7 +403,7 @@ def convert(model: dict) -> dict:
 # Формат 2: каждая LoRA — массив значений в порядке FIELDS (без повторения ключей),
 # одна картинка (на карточке показывается только первая), общий префикс URL картинок вынесен.
 FORMAT = 2
-FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads", "likes", "published", "triggers", "image", "more", "described"]
+FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads", "likes", "published", "triggers", "image", "more", "described", "kind", "access", "until"]
 # Галерея: остальные превью раскладываются по GALLERY_SHARDS файлам (id % N): окно просмотра
 # грузит один небольшой файл, а не все картинки каталога сразу.
 GALLERY_DIR = ROOT / "data" / "loras-gallery"
@@ -423,6 +448,9 @@ def pack(lora: dict) -> list:
         pack_image(lora["images"][0] if lora["images"] else None),
         max(0, len(lora["images"]) - 1),
         lora.get("described") or 0,
+        KIND_CODES.index(lora.get("kind", "lora")),
+        lora.get("access") or 0,
+        lora.get("until") or 0,
     ]
 
 
@@ -432,6 +460,9 @@ def unpack(row: list) -> dict:
         item["category"] = CATEGORY_CODES[item["category"]]
     image = unpack_image(item.pop("image"))
     item.pop("more", None)
+    item["kind"] = KIND_CODES[item["kind"]] if isinstance(item.get("kind"), int) else "lora"
+    item["access"] = item.get("access") or 0
+    item["until"] = item.get("until") or ""
     item["described"] = item.get("described") or []
     item["images"] = [image] if image else []
     item["url"] = f"https://civitai.com/models/{item['id']}?modelVersionId={item['version_id']}"
@@ -532,15 +563,19 @@ def fetch_json(url: str, retries: int = 4) -> dict:
 
 
 def crawl(max_pages: int | None) -> list[dict]:
-    url, pages, models = API_URL, 0, []
-    while url and (max_pages is None or pages < max_pages):
-        data = fetch_json(url)
-        pages += 1
-        items = data.get("items") or []
-        models.extend(items)
-        print(f"  страница {pages}: {len(items)} (всего {len(models)})", file=sys.stderr)
-        url = (data.get("metadata") or {}).get("nextPage")
-        time.sleep(REQUEST_DELAY)
+    """По одному обходу на тип модели (LORA, LoCon, DoRA); --pages ограничивает каждый обход."""
+    models = []
+    for api_type in ENABLED_TYPES:
+        url, pages, got = API_URL.format(type=api_type), 0, 0
+        while url and (max_pages is None or pages < max_pages):
+            data = fetch_json(url)
+            pages += 1
+            items = data.get("items") or []
+            models.extend(items)
+            got += len(items)
+            print(f"  {api_type}, страница {pages}: {len(items)} (тип: {got}, всего {len(models)})", file=sys.stderr)
+            url = (data.get("metadata") or {}).get("nextPage")
+            time.sleep(REQUEST_DELAY)
     return models
 
 
@@ -578,6 +613,9 @@ def main() -> int:
     for lora in loras:
         by_category[lora["category"]] = by_category.get(lora["category"], 0) + 1
     print(f"Получено моделей: {len(models)}, в каталог: {len(loras)}")
+    by_kind = {k: sum(1 for lora in loras if lora["kind"] == k) for k in KIND_CODES}
+    paid = sum(1 for lora in loras if lora["access"])
+    print("  форматы: " + ", ".join(f"{k} {v}" for k, v in by_kind.items()) + f"; платных (ранний доступ): {paid}")
     print("  по категориям: " + ", ".join(f"{k} {v}" for k, v in sorted(by_category.items(), key=lambda x: -x[1])))
     print("  исключено: " + ", ".join(f"{k} {v}" for k, v in sorted(reasons.items(), key=lambda x: -x[1])))
 
@@ -599,6 +637,7 @@ def main() -> int:
 
     payload = {
         "source": "https://civitai.com (open API, baseModel Anima)",
+        "kinds": KIND_CODES,
         "updated_at": dt.date.today().isoformat(),
         "count": len(loras),
         "format": FORMAT,
