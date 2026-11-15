@@ -10,7 +10,7 @@
   python3 tools/import_loras.py --apply                 # записать data/loras.json
 
 Что попадает в каталог (решено 14.11.2026, порог «R»; форматы и платный доступ — 16.11.2026):
-  - типы моделей: LORA, LoCon (LyCORIS) и DoRA (TYPES); у каждой записи поле kind;
+  - типы моделей: сейчас только LORA; LoCon и DoRA готовы, но выключены (ENABLED_TYPES), у записи есть поле kind;
   - версии Public и EarlyAccess (платный ранний доступ): для платных access = 1 и until = дата, когда
     версия станет бесплатной. Выбирается новейшая публичная версия с безопасным превью; платная — только
     если у модели нет ни одной бесплатной версии под Anima;
@@ -49,6 +49,9 @@ NEVER_REVIEW = {"minor", "реальный человек", "ручной бло
 # Типы моделей CivitAI, которые берём (по одному запросу на тип): kind -> код в файле.
 TYPES = {"LORA": "lora", "LoCon": "locon", "DoRA": "dora"}
 KIND_CODES = ["lora", "locon", "dora"]
+# Что реально берётся в каталог. LoCon и DoRA включаются, когда выяснится, работают ли они в боте
+# Stable Waifu по тому же <lora:ID:вес>: добавить "LoCon", "DoRA" в кортеж.
+ENABLED_TYPES = ("LORA",)
 API_URL = (
     "https://civitai.com/api/v1/models?types={type}&baseModels=Anima"
     "&sort=Most%20Downloaded&limit=100"
@@ -159,7 +162,7 @@ MANUAL_BLOCK = load_blocklist()
 
 
 def reject_reason(model: dict) -> str | None:
-    if model.get("type") not in TYPES:
+    if model.get("type") not in ENABLED_TYPES:
         return "не LoRA"
     if model.get("id") in MANUAL_BLOCK:
         return "ручной блок-лист"
@@ -562,7 +565,7 @@ def fetch_json(url: str, retries: int = 4) -> dict:
 def crawl(max_pages: int | None) -> list[dict]:
     """По одному обходу на тип модели (LORA, LoCon, DoRA); --pages ограничивает каждый обход."""
     models = []
-    for api_type in TYPES:
+    for api_type in ENABLED_TYPES:
         url, pages, got = API_URL.format(type=api_type), 0, 0
         while url and (max_pages is None or pages < max_pages):
             data = fetch_json(url)

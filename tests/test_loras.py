@@ -141,6 +141,8 @@ def synth(model_id, model_type="LORA", versions=None, **extra):
             "stats": {"downloadCount": 5}, "modelVersions": versions, **extra}
 
 
+check("по умолчанию берётся только LORA", mod.ENABLED_TYPES == ("LORA",))
+mod.ENABLED_TYPES = tuple(mod.TYPES)  # форматы LoCon и DoRA выключены в импортёре: проверяем готовый код
 made, why, _ = mod.select([
     synth(1), synth(2, "LoCon"), synth(3, "DoRA"), synth(4, "Checkpoint"),
     synth(5, versions=[{"id": 50, "availability": "EarlyAccess", "earlyAccessEndsAt": "2026-12-01T00:00:00.000Z"}]),
@@ -162,6 +164,9 @@ check("в галерею бесплатной версии не попадают
 for lora in (got[2], got[5]):
     again = mod.unpack(mod.pack(lora))
     check(f"pack/unpack: kind и access сохраняются ({lora['id']})", (again["kind"], again["access"], again["until"]) == (lora["kind"], lora["access"], lora["until"]), again)
+mod.ENABLED_TYPES = ("LORA",)
+off, off_why, _ = mod.select([synth(2, "LoCon"), synth(3, "DoRA")])
+check("пока форматы выключены, LoCon и DoRA отбрасываются", off == [] and off_why.get("не LoRA") == 2, off_why)
 old_row = mod.pack(got[1])[: mod.FIELDS.index("kind")]
 old = mod.unpack(old_row)
 check("старая строка без новых полей читается как бесплатная LoRA", (old["kind"], old["access"], old["until"]) == ("lora", 0, ""), old)
