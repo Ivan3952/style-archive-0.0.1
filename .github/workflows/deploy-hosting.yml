@@ -53,7 +53,7 @@ jobs:
           PORT: ${{ secrets.DEPLOY_PORT }}
           LIVE: ${{ vars.SITE_LIVE }}
         run: |
-          set -uo pipefail
+          set -euo pipefail
           export SSHPASS="$PASS"
           SSH="sshpass -e ssh -p ${PORT:-22} -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ServerAliveCountMax=6"
           TARGET="$USER_@$HOST:${DEST%/}"
@@ -76,14 +76,26 @@ jobs:
             cp maintenance/index.html dist/index.html
           fi
 
-          # 1) картинки по папкам. Сначала AM (thumb, web): сайт оживает раньше.
-          #    WebP уже сжат, поэтому без -z; --size-only: mtime после checkout всегда новый
-          for d in thumb web opus sky characters; do
-            [ -d "media/$d" ] || continue
-            echo "=== media/$d ==="
-            sync -rl --size-only --partial --timeout=180 --info=stats1 -e "$SSH" \
-              "media/$d/" "$TARGET/media/$d/" || exit 1
-          done
+          paths=(media/{thumb,web,opus,sky,characters})
+          marker="${DEST%/}/.media-deploy-sha"
+          base=$($SSH "$USER_@$HOST" "if test -f '$marker'; then cat '$marker'; fi")
+          files="$RUNNER_TEMP/media-files"
+          if [[ "$GITHUB_EVENT_NAME" != workflow_dispatch && "$base" =~ ^[0-9a-f]{40}$ ]] &&
+             { git cat-file -e "$base^{commit}" 2>/dev/null ||
+               git fetch --no-tags --depth=1 --filter=blob:none origin "$base"; }; then
+            git diff --no-renames --name-only -z --diff-filter=ACMT "$base" HEAD -- "${paths[@]}" > "$files"
+          else
+            # Первый запуск, ручное восстановление или незавершённая выкладка.
+            git ls-files -z -- "${paths[@]}" > "$files"
+          fi
+
+          if [ -s "$files" ]; then
+            # После частичной передачи сервер уже не соответствует старому коммиту.
+            $SSH "$USER_@$HOST" "rm -f '$marker'"
+            sync -lc --from0 --files-from="$files" --partial --timeout=180 --info=stats1 -e "$SSH" ./ "$TARGET/"
+          else
+            echo "Изменений медиа нет"
+          fi
 
           # 2) сборка без index.html (assets с хэшами и data), по контрольной сумме
           echo "=== сборка: assets и data ==="
@@ -97,3 +109,5 @@ jobs:
           # 4) убрать с сервера файлы прежней структуры (до сборки Vite), явным списком
           echo "=== очистка устаревших файлов ==="
           $SSH "$USER_@$HOST" "cd '${DEST%/}' && rm -f app.js style.css archives-v00*.js archives-v00*.css archive-polish-v00*.css command-search-v00*.js command-search-v00*.css danbooru-v00*.js final-polish-fix-v00*.js final-polish-fix-v00*.css final-polish-v00*.js final-polish-v00*.css grid-density-v00*.js grid-density-v00*.css info-v00*.js info-v00*.css locale-ru-v00*.js qol-v00*.js saved-new-tab-v00*.js search-discovery-v00*.js search-discovery-v00*.css search-quality-lite-v00*.js search-quality-lite-v00*.css search-v00*.js data/danbooru.json .nojekyll" || echo "::warning::очистка не выполнилась, это не критично"
+
+          $SSH "$USER_@$HOST" "printf '%s\\n' '$GITHUB_SHA' > '$marker.tmp' && mv '$marker.tmp' '$marker'"
