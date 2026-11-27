@@ -107,7 +107,8 @@ const DICT = {
     sortNew: "НОВЫЕ",
     sortLiked: "ЛАЙКИ",
     free: "БЕСПЛАТНЫЕ",
-    paid: "ПЛАТНЫЕ",
+    paid: "ВРЕМЕННО ПЛАТНЫЕ",
+    noPaid: "В этом разделе пока нет подтверждённых моделей с платным ранним доступом.",
     paidBadge: "ПЛАТНАЯ",
     paidTitle: "Платный ранний доступ на CivitAI",
     paidUntil: "до",
@@ -220,7 +221,8 @@ const DICT = {
     sortNew: "NEW",
     sortLiked: "LIKED",
     free: "FREE",
-    paid: "PAID",
+    paid: "TEMPORARILY PAID",
+    noPaid: "This section has no models with confirmed paid early access yet.",
     paidBadge: "PAID",
     paidTitle: "Paid early access on CivitAI",
     paidUntil: "until",
@@ -463,12 +465,18 @@ function unpackRow(data) {
 }
 
 function readLoras(data, adult = false) {
+  const today = new Date().toISOString().slice(0, 10);
   return data.loras.map(unpackRow(data)).map((lora, order) => {
     const triggers = triggerGroups(lora.triggers);
     return {
       ...lora,
       order,
       adult,
+      access:
+        Number(lora.access) === 1 &&
+        (!/^\d{4}-\d{2}-\d{2}$/.test(lora.until) || lora.until >= today)
+          ? 1
+          : 0,
       tagKeys: (lora.tags || []).map(norm),
       /* авторы часто пишут несколько триггеров одной строкой через запятую — делим на отдельные теги */
       triggers,
@@ -642,7 +650,7 @@ function applyFilters() {
   const frameRange = FRAME_RANGES[frames];
   const tokens = norm(state.q).split(" ").filter(Boolean);
   const list = ref
-    ? match
+    ? match && (state.access !== "paid" || match.access)
       ? [match]
       : []
     : state.all.filter((lora) => {
@@ -1095,9 +1103,12 @@ function syncStatus() {
   el.empty.hidden = state.filtered.length > 0;
   if (!el.empty.hidden) {
     const reset = `<button class="ch-btn-v008" type="button" data-reset>${esc(t("reset"))}</button>`;
-    el.empty.innerHTML = state.idRef
-      ? `${esc(t("emptyId").replace("{id}", state.idRef))} <a class="ch-btn-v008" href="https://civitai.com/models/${esc(state.idRef)}" target="_blank" rel="noopener">${esc(t("openCivitai"))} ↗</a> ${reset}`
-      : `${esc(t("empty"))} ${reset}`;
+    el.empty.innerHTML =
+      state.access === "paid" && !state.all.some((lora) => lora.access)
+        ? `${esc(t("noPaid"))} ${reset}`
+        : state.idRef
+          ? `${esc(t("emptyId").replace("{id}", state.idRef))} <a class="ch-btn-v008" href="https://civitai.com/models/${esc(state.idRef)}" target="_blank" rel="noopener">${esc(t("openCivitai"))} ↗</a> ${reset}`
+          : `${esc(t("empty"))} ${reset}`;
   }
 }
 
