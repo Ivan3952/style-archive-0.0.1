@@ -41,6 +41,82 @@
   gap: 8px;
   padding: 10px 0;
 }
+.loras-page .lr-toolbar-v010 {
+  position: static;
+  padding: 6px 0;
+  backdrop-filter: none;
+}
+.lr-toolbar-row-v010 {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+}
+.lr-toolbar-row-v010 .lr-scope-v010 {
+  padding: 0;
+}
+.lr-filter-count-v010 {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.lr-filters-v010 {
+  width: min(720px, calc(100% - 24px));
+  max-height: none;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+}
+.lr-filters-v010::backdrop {
+  background: #000a;
+}
+.lr-filters-shell-v010 {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  max-height: min(700px, calc(100dvh - 24px));
+}
+.lr-filters-shell-v010 > header,
+.lr-filters-shell-v010 > footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+}
+.lr-filters-shell-v010 > header {
+  border-bottom: 1px solid var(--line);
+}
+.lr-filters-shell-v010 > footer {
+  border-top: 1px solid var(--line);
+}
+.lr-filters-shell-v010 h2 {
+  margin: 0;
+  font-size: 16px;
+}
+.lr-filters-shell-v010 > footer .primary {
+  margin-inline-start: auto;
+}
+.lr-filters-scroll-v010 {
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 12px;
+}
+@media (max-width: 720px) {
+  .lr-toolbar-row-v010 {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
+  }
+  .lr-toolbar-row-v010 .toolbar-bar-v005 {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .lr-toolbar-row-v010 .lr-scope-v010 {
+    gap: 5px;
+  }
+}
 .lr-preview-filter-v010 {
   padding-top: 0;
 }
@@ -72,28 +148,12 @@
   color: var(--text);
   font: inherit;
 }
-.lr-advanced-v010 {
-  margin: 0 0 12px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--line-soft);
-}
-.lr-advanced-v010 summary {
-  padding: 9px 0;
-  color: var(--text);
-  font: 500 12px var(--font-mono);
-  cursor: pointer;
-}
-.lr-advanced-v010 summary span:last-child {
-  margin-inline-start: 6px;
-  color: var(--accent);
-}
 .lr-advanced-fields-v010 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr));
   gap: 10px;
-  padding-bottom: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
 }
 .lr-advanced-fields-v010 .lr-select-v010 {
   min-width: 0;

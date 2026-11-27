@@ -85,178 +85,217 @@
 
       <p class="lr-lead-v010" id="lrLead"></p>
 
-      <section class="toolbar ch-toolbar-v008" aria-label="Поиск">
-        <div class="lr-scope-v010 ch-chips-v008">
-          <button
-            class="filter-chip active"
-            type="button"
-            data-scope="standard"
-            aria-pressed="true"
-            data-lr-i18n="standard"
-          ></button>
-          <button class="filter-chip" type="button" data-scope="adult" aria-pressed="false">
-            18+
-          </button>
-        </div>
-        <div class="lr-preview-filter-v010 ch-chips-v008">
-          <button
-            class="filter-chip active"
-            type="button"
-            data-preview="with"
-            aria-pressed="true"
-            data-lr-i18n="withPreview"
-          ></button>
-          <button
-            class="filter-chip"
-            type="button"
-            data-preview="without"
-            aria-pressed="false"
-            data-lr-i18n="withoutPreview"
-          ></button>
-        </div>
-        <div class="toolbar-bar-v005">
-          <label class="search-wrap">
-            <span class="search-label" data-lr-i18n="search">ПОИСК</span>
-            <input
-              id="lrSearch"
-              type="search"
-              autocomplete="off"
-              spellcheck="false"
-              placeholder=""
-            />
-            <span class="search-count" id="lrCount">0</span>
-          </label>
-        </div>
-        <div class="ch-filters-v008">
-          <div class="ch-chips-v008" id="lrCategories"></div>
-          <div class="ch-chips-v008 lr-sort-v010" id="lrSort"></div>
-        </div>
-        <div class="ch-chips-v008 lr-kinds-v010" id="lrKinds" hidden></div>
-        <div class="lr-refine-v010" id="lrRefine">
-          <label class="lr-select-v010">
-            <span data-lr-i18n="filterTriggers"></span>
-            <select id="lrTriggerFilter">
-              <option value="all" data-lr-i18n="all"></option>
-              <option value="author" data-lr-i18n="withTriggers"></option>
-              <option value="none" data-lr-i18n="withoutTriggers"></option>
-              <option value="multiple" data-lr-i18n="multipleTriggers"></option>
-              <option value="described" data-lr-i18n="descriptionTriggers"></option>
-            </select>
-          </label>
-          <button
-            class="filter-chip"
-            type="button"
-            data-feature="gallery"
-            aria-pressed="false"
-            data-lr-i18n="withGallery"
-          ></button>
-          <button
-            class="filter-chip"
-            type="button"
-            data-feature="saved"
-            aria-pressed="false"
-            data-lr-i18n="saved"
-          ></button>
-          <button class="ch-btn-v008" type="button" data-reset hidden data-lr-i18n="reset"></button>
-        </div>
-        <details class="lr-advanced-v010" id="lrAdvanced">
-          <summary>
-            <span data-lr-i18n="advancedFilters"></span>
-            <span id="lrAdvancedCount" hidden></span>
-          </summary>
-          <div class="lr-advanced-fields-v010">
-            <label class="lr-select-v010">
-              <span data-lr-i18n="authorFilter"></span>
+      <section class="toolbar ch-toolbar-v008 lr-toolbar-v010" aria-label="Поиск">
+        <div class="lr-toolbar-row-v010">
+          <div class="lr-scope-v010 ch-chips-v008">
+            <button
+              class="filter-chip active"
+              type="button"
+              data-scope="standard"
+              aria-pressed="true"
+              data-lr-i18n="standard"
+            ></button>
+            <button class="filter-chip" type="button" data-scope="adult" aria-pressed="false">
+              18+
+            </button>
+          </div>
+          <div class="toolbar-bar-v005">
+            <label class="search-wrap">
+              <span class="search-label" data-lr-i18n="search">ПОИСК</span>
               <input
+                id="lrSearch"
                 type="search"
-                data-facet="author"
                 autocomplete="off"
                 spellcheck="false"
-                maxlength="80"
+                placeholder=""
               />
-            </label>
-            <label class="lr-select-v010">
-              <span data-lr-i18n="publishedFilter"></span>
-              <select data-facet="period">
-                <option value="all" data-lr-i18n="anyPeriod"></option>
-                <option value="30" data-lr-i18n="last30"></option>
-                <option value="90" data-lr-i18n="last90"></option>
-                <option value="365" data-lr-i18n="last365"></option>
-                <option value="unknown" data-lr-i18n="noDate"></option>
-              </select>
-            </label>
-            <label class="lr-select-v010">
-              <span data-lr-i18n="downloadsFilter"></span>
-              <select data-facet="downloads">
-                <option value="all" data-lr-i18n="all"></option>
-                <option value="under100" data-lr-i18n="under100"></option>
-                <option value="100">100+</option>
-                <option value="1000">1 000+</option>
-                <option value="10000">10 000+</option>
-              </select>
-            </label>
-            <label class="lr-select-v010" data-image-facet>
-              <span data-lr-i18n="framesFilter"></span>
-              <select data-facet="frames">
-                <option value="all" data-lr-i18n="all"></option>
-                <option value="one" data-lr-i18n="oneFrame"></option>
-                <option value="2-5">2–5</option>
-                <option value="6-10">6–10</option>
-                <option value="11">11+</option>
-              </select>
-            </label>
-            <label class="lr-select-v010">
-              <span data-lr-i18n="includeTags"></span>
-              <input
-                type="search"
-                data-facet="tags"
-                autocomplete="off"
-                spellcheck="false"
-                maxlength="200"
-              />
-            </label>
-            <label class="lr-select-v010">
-              <span data-lr-i18n="excludeTags"></span>
-              <input
-                type="search"
-                data-facet="excludeTags"
-                autocomplete="off"
-                spellcheck="false"
-                maxlength="200"
-              />
-            </label>
-            <label class="lr-select-v010">
-              <span data-lr-i18n="likesFilter"></span>
-              <select data-facet="likes">
-                <option value="all" data-lr-i18n="all"></option>
-                <option value="10">10+</option>
-                <option value="50">50+</option>
-                <option value="100">100+</option>
-                <option value="500">500+</option>
-              </select>
-            </label>
-            <label class="lr-select-v010" data-image-facet>
-              <span data-lr-i18n="orientationFilter"></span>
-              <select data-facet="orientation">
-                <option value="all" data-lr-i18n="all"></option>
-                <option value="portrait" data-lr-i18n="portrait"></option>
-                <option value="landscape" data-lr-i18n="landscape"></option>
-                <option value="square" data-lr-i18n="square"></option>
-                <option value="unknown" data-lr-i18n="unknownSize"></option>
-              </select>
-            </label>
-            <label class="lr-select-v010" data-image-facet>
-              <span data-lr-i18n="resolutionFilter"></span>
-              <select data-facet="resolution">
-                <option value="all" data-lr-i18n="all"></option>
-                <option value="768">768+ px</option>
-                <option value="1024">1 024+ px</option>
-                <option value="1536">1 536+ px</option>
-                <option value="2048">2 048+ px</option>
-              </select>
+              <span class="search-count" id="lrCount">0</span>
             </label>
           </div>
-        </details>
+          <button
+            class="filters-toggle-v005"
+            id="lrOpenFilters"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="lrFilters"
+          >
+            <span data-lr-i18n="filterPanel"></span>
+            <span class="lr-filter-count-v010" id="lrFilterCount" hidden></span>
+          </button>
+        </div>
+        <dialog class="lr-filters-v010" id="lrFilters" aria-labelledby="lrFiltersTitle">
+          <div class="lr-filters-shell-v010">
+            <header>
+              <h2 id="lrFiltersTitle" data-lr-i18n="filterPanel"></h2>
+              <button
+                class="ch-btn-v008"
+                type="button"
+                data-close-filters
+                autofocus
+                data-lr-i18n="close"
+              ></button>
+            </header>
+            <div class="lr-filters-scroll-v010">
+              <div class="lr-preview-filter-v010 ch-chips-v008">
+                <button
+                  class="filter-chip active"
+                  type="button"
+                  data-preview="with"
+                  aria-pressed="true"
+                  data-lr-i18n="withPreview"
+                ></button>
+                <button
+                  class="filter-chip"
+                  type="button"
+                  data-preview="without"
+                  aria-pressed="false"
+                  data-lr-i18n="withoutPreview"
+                ></button>
+              </div>
+              <div class="ch-filters-v008">
+                <div class="ch-chips-v008" id="lrCategories"></div>
+                <div class="ch-chips-v008 lr-sort-v010" id="lrSort"></div>
+              </div>
+              <div class="ch-chips-v008 lr-kinds-v010" id="lrKinds" hidden></div>
+              <div class="lr-refine-v010" id="lrRefine">
+                <label class="lr-select-v010">
+                  <span data-lr-i18n="filterTriggers"></span>
+                  <select id="lrTriggerFilter">
+                    <option value="all" data-lr-i18n="all"></option>
+                    <option value="author" data-lr-i18n="withTriggers"></option>
+                    <option value="none" data-lr-i18n="withoutTriggers"></option>
+                    <option value="multiple" data-lr-i18n="multipleTriggers"></option>
+                    <option value="described" data-lr-i18n="descriptionTriggers"></option>
+                  </select>
+                </label>
+                <button
+                  class="filter-chip"
+                  type="button"
+                  data-feature="gallery"
+                  aria-pressed="false"
+                  data-lr-i18n="withGallery"
+                ></button>
+                <button
+                  class="filter-chip"
+                  type="button"
+                  data-feature="saved"
+                  aria-pressed="false"
+                  data-lr-i18n="saved"
+                ></button>
+              </div>
+
+              <div id="lrAdvanced">
+                <div class="lr-advanced-fields-v010">
+                  <label class="lr-select-v010">
+                    <span data-lr-i18n="authorFilter"></span>
+                    <input
+                      type="search"
+                      data-facet="author"
+                      autocomplete="off"
+                      spellcheck="false"
+                      maxlength="80"
+                    />
+                  </label>
+                  <label class="lr-select-v010">
+                    <span data-lr-i18n="publishedFilter"></span>
+                    <select data-facet="period">
+                      <option value="all" data-lr-i18n="anyPeriod"></option>
+                      <option value="30" data-lr-i18n="last30"></option>
+                      <option value="90" data-lr-i18n="last90"></option>
+                      <option value="365" data-lr-i18n="last365"></option>
+                      <option value="unknown" data-lr-i18n="noDate"></option>
+                    </select>
+                  </label>
+                  <label class="lr-select-v010">
+                    <span data-lr-i18n="downloadsFilter"></span>
+                    <select data-facet="downloads">
+                      <option value="all" data-lr-i18n="all"></option>
+                      <option value="under100" data-lr-i18n="under100"></option>
+                      <option value="100">100+</option>
+                      <option value="1000">1 000+</option>
+                      <option value="10000">10 000+</option>
+                    </select>
+                  </label>
+                  <label class="lr-select-v010" data-image-facet>
+                    <span data-lr-i18n="framesFilter"></span>
+                    <select data-facet="frames">
+                      <option value="all" data-lr-i18n="all"></option>
+                      <option value="one" data-lr-i18n="oneFrame"></option>
+                      <option value="2-5">2–5</option>
+                      <option value="6-10">6–10</option>
+                      <option value="11">11+</option>
+                    </select>
+                  </label>
+                  <label class="lr-select-v010">
+                    <span data-lr-i18n="includeTags"></span>
+                    <input
+                      type="search"
+                      data-facet="tags"
+                      autocomplete="off"
+                      spellcheck="false"
+                      maxlength="200"
+                    />
+                  </label>
+                  <label class="lr-select-v010">
+                    <span data-lr-i18n="excludeTags"></span>
+                    <input
+                      type="search"
+                      data-facet="excludeTags"
+                      autocomplete="off"
+                      spellcheck="false"
+                      maxlength="200"
+                    />
+                  </label>
+                  <label class="lr-select-v010">
+                    <span data-lr-i18n="likesFilter"></span>
+                    <select data-facet="likes">
+                      <option value="all" data-lr-i18n="all"></option>
+                      <option value="10">10+</option>
+                      <option value="50">50+</option>
+                      <option value="100">100+</option>
+                      <option value="500">500+</option>
+                    </select>
+                  </label>
+                  <label class="lr-select-v010" data-image-facet>
+                    <span data-lr-i18n="orientationFilter"></span>
+                    <select data-facet="orientation">
+                      <option value="all" data-lr-i18n="all"></option>
+                      <option value="portrait" data-lr-i18n="portrait"></option>
+                      <option value="landscape" data-lr-i18n="landscape"></option>
+                      <option value="square" data-lr-i18n="square"></option>
+                      <option value="unknown" data-lr-i18n="unknownSize"></option>
+                    </select>
+                  </label>
+                  <label class="lr-select-v010" data-image-facet>
+                    <span data-lr-i18n="resolutionFilter"></span>
+                    <select data-facet="resolution">
+                      <option value="all" data-lr-i18n="all"></option>
+                      <option value="768">768+ px</option>
+                      <option value="1024">1 024+ px</option>
+                      <option value="1536">1 536+ px</option>
+                      <option value="2048">2 048+ px</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <footer>
+              <button
+                class="ch-btn-v008"
+                type="button"
+                data-reset
+                hidden
+                data-lr-i18n="reset"
+              ></button>
+              <button
+                class="ch-btn-v008 primary"
+                id="lrShowResults"
+                type="button"
+                data-close-filters
+              ></button>
+            </footer>
+          </div>
+        </dialog>
       </section>
 
       <div class="ch-grid-v008" id="lrGrid" aria-live="polite"></div>

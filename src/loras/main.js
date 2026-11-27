@@ -53,7 +53,8 @@ const DICT = {
     withoutTriggers: "Без триггеров автора",
     multipleTriggers: "Несколько наборов",
     descriptionTriggers: "Есть теги из описания",
-    advancedFilters: "Дополнительные фильтры",
+    filterPanel: "Фильтры",
+    showResults: (count) => `Показать модели (${count})`,
     authorFilter: "Автор на CivitAI",
     authorPlaceholder: "Имя или часть имени",
     publishedFilter: "Дата публикации",
@@ -164,7 +165,8 @@ const DICT = {
     withoutTriggers: "No author triggers",
     multipleTriggers: "Multiple sets",
     descriptionTriggers: "Tags from description",
-    advancedFilters: "More filters",
+    filterPanel: "Filters",
+    showResults: (count) => `Show models (${count})`,
     authorFilter: "CivitAI author",
     authorPlaceholder: "Name or part of name",
     publishedFilter: "Published",
@@ -360,7 +362,10 @@ const el = {
   toolbar: $(".ch-toolbar-v008"),
   refine: $("#lrRefine"),
   advanced: $("#lrAdvanced"),
-  advancedCount: $("#lrAdvancedCount"),
+  filters: $("#lrFilters"),
+  openFilters: $("#lrOpenFilters"),
+  filterCount: $("#lrFilterCount"),
+  showResults: $("#lrShowResults"),
   triggerFilter: $("#lrTriggerFilter"),
   scope: $(".lr-scope-v010"),
   preview: $(".lr-preview-filter-v010"),
@@ -1070,6 +1075,7 @@ function rerenderCard(id) {
 function syncStatus() {
   const total = state.all.filter((lora) => previewGroup(lora) === state.preview).length;
   el.count.textContent = `${fmt(state.filtered.length)} / ${fmt(total)}`;
+  el.showResults.textContent = t("showResults")(fmt(state.filtered.length));
   if (state.scope === "adult" && !state.adult?.length) {
     el.empty.hidden = false;
     el.empty.textContent = t(
@@ -1148,9 +1154,21 @@ function syncControls() {
     const value = state.extra[field.dataset.facet];
     if (field.value !== value) field.value = value;
   });
-  const activeExtras = extraCount();
-  el.advancedCount.textContent = fmt(activeExtras);
-  el.advancedCount.hidden = !activeExtras;
+  const active =
+    extraCount() +
+    [
+      state.preview !== "with",
+      state.category !== "all",
+      state.sort !== "popular",
+      state.kind !== "all",
+      state.access !== "all",
+      state.triggerFilter !== "all",
+      state.gallery,
+      state.savedOnly,
+    ].filter(Boolean).length;
+  el.filterCount.textContent = fmt(active);
+  el.filterCount.hidden = !active;
+  el.openFilters.classList.toggle("has-active", Boolean(active));
   el.refine.querySelector("[data-feature='gallery']").hidden = state.preview === "without";
   const selections = {
     scope: state.scope,
@@ -1175,17 +1193,7 @@ function syncControls() {
       button.classList.toggle("active", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
-  el.refine.querySelector("[data-reset]").hidden = !(
-    state.q.trim() ||
-    state.category !== "all" ||
-    state.sort !== "popular" ||
-    state.kind !== "all" ||
-    state.access !== "all" ||
-    state.triggerFilter !== "all" ||
-    state.gallery ||
-    activeExtras ||
-    state.savedOnly
-  );
+  el.filters.querySelector("[data-reset]").hidden = !(state.q.trim() || active);
 }
 
 function applyLocale() {
@@ -1236,6 +1244,16 @@ function bind() {
     timer = window.setTimeout(applyFilters, 120);
   };
   el.search.addEventListener("input", queueFilter);
+  el.openFilters.addEventListener("click", () => el.filters.showModal());
+  el.filters.addEventListener("click", (event) => {
+    if (event.target === el.filters || event.target.closest("[data-close-filters]")) {
+      el.filters.close();
+    } else if (event.target.closest("[data-reset]")) {
+      state.preview = "with";
+      resetFilters();
+      el.showResults.focus();
+    }
+  });
   el.advanced.addEventListener("input", (event) => {
     const key = event.target.dataset.facet;
     if (!Object.hasOwn(TEXT_FACETS, key)) return;
@@ -1280,11 +1298,6 @@ function bind() {
     applyFilters();
   });
   el.refine.addEventListener("click", (event) => {
-    if (event.target.closest("[data-reset]")) {
-      resetFilters();
-      el.search.focus();
-      return;
-    }
     const feature = event.target.closest("[data-feature]")?.dataset.feature;
     if (!feature) return;
     if (feature === "gallery") {
@@ -1545,7 +1558,6 @@ async function start() {
   /* поле поиска заполняется из ?q= до фильтрации: applyFilters читает запрос из поля */
   el.search.value = state.q;
   refreshScope();
-  if (extraCount()) el.advanced.open = true;
   /* ссылка loras.html?id=… сразу открывает карточку */
   const linked = params.get("id");
   if (linked && state.byId.has(linked)) openViewer(linked);
