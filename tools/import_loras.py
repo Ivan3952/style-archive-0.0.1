@@ -9,6 +9,9 @@
   python3 tools/import_loras.py --probe 1030872         # что API отдаёт про доступность версий одной модели
   python3 tools/import_loras.py                         # пробный прогон: отчёт «добавлено / изменено / пропало»
   python3 tools/import_loras.py --apply                 # записать data/loras.json
+  python3 tools/import_loras.py --add-new 3 --apply     # добавить подходящие новые модели с первых трёх страниц
+  python3 tools/import_loras.py --from-json models.json # пробный импорт сохранённого ответа API
+  python3 tools/import_loras.py --add-ids ID --adult --apply  # добавить проверенный вручную ID в отдельный каталог 18+
 
 Что попадает в каталог (решено 14.11.2026, порог «R»; форматы и платный доступ — 16.11.2026):
   - типы моделей: сейчас только LORA; LoCon и DoRA готовы, но выключены (ENABLED_TYPES), у записи есть поле kind;
@@ -21,6 +24,8 @@
   - не помечена как связанная с несовершеннолетними (minor) или реальными людьми (poi);
   - нет «взрослых» тегов (NSFW_TAGS) — даже если рядом стоит «sfw»: при сомнении не показываем;
   - у Anima-версии есть хотя бы одна безопасная картинка (nsfwLevel = 1, не minor/poi): только такие и показываются.
+  - для LoRA с подтверждённым рейтингом ниже R достаточно подходящей версии Anima: без PG-превью
+    показывается заглушка, а отдельная метка NSFW или взрослый тег не меняет раздел.
 Картинки не копируются: сайт показывает их с CDN CivitAI в уменьшенном виде (width=450), у автора, со ссылкой.
 
 Формат API (сверен 14.11.2026, ~6000+ LoRA под Anima): items[].modelVersions[] (новые первыми),
@@ -37,11 +42,13 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "data" / "loras.json"
+ADULT_FILE = ROOT / "data" / "loras-adult.json"
 BLOCKLIST_FILE = ROOT / "data" / "lora_blocklist.json"
 # Исключённое для ручного пересмотра: только локально (в .gitignore, на сайт не копируется).
 REVIEW_FILE = ROOT / "data" / "loras_review.json"
@@ -67,7 +74,7 @@ BASE_MODEL = "Anima"
 MAX_MODEL_LEVEL = 7  # порог «R»
 SAFE_IMAGE_LEVEL = 1  # превью только PG
 IMAGE_WIDTH = 450
-MAX_IMAGES = 10  # первая — на карточке (loras.json), остальные — галерея в окне (loras-gallery/)
+MAX_REVIEW_IMAGES = 10  # объём примеров в локальном отчёте, не лимит галереи
 MAX_TAGS = 8
 MAX_TRIGGERS = 32  # тегов во всех наборах вместе
 MAX_TRIGGER_LEN = 60
@@ -176,6 +183,31 @@ def load_blocklist() -> set[int]:
 MANUAL_BLOCK = load_blocklist()
 
 
+def restricted_subject(model: dict, versions: list[dict]) -> bool:
+    if any(
+        entry.get("minor") or entry.get("poi")
+        for version in versions
+        for entry in (version, *(version.get("images") or []))
+    ):
+        return True
+    labels = " ".join([model.get("name") or "", *map(str, model.get("tags") or [])])
+    return bool(re.search(r"\b(?:minor|underage|loli(?:con)?|shota(?:con)?)\b", labels.replace("_", " "), re.I))
+
+
+def below_r_standard(model: dict) -> bool:
+    if (
+        model.get("type") not in ENABLED_TYPES
+        or model.get("id") in MANUAL_BLOCK
+        or model.get("minor")
+        or model.get("poi")
+    ):
+        return False
+    versions = anima_versions(model)
+    levels = [version.get("nsfwLevel", model.get("nsfwLevel")) for version in versions]
+    # 1 = PG, 2 = PG-13, 3 = обе отметки; значение 0 означает неизвестный рейтинг.
+    return bool(levels) and all(type(level) is int and 1 <= level <= 3 for level in levels) and not restricted_subject(model, versions)
+
+
 def reject_reason(model: dict) -> str | None:
     if model.get("type") not in ENABLED_TYPES:
         return "не LoRA"
@@ -185,6 +217,8 @@ def reject_reason(model: dict) -> str | None:
         return "minor"
     if model.get("poi"):
         return "реальный человек"
+    if below_r_standard(model):
+        return None
     if model.get("nsfw"):
         return "nsfw"
     if anima_level(model) > MAX_MODEL_LEVEL:
@@ -251,8 +285,6 @@ def gallery_images(model: dict, version: dict) -> list[dict]:
                 continue
             seen.add(image["url"])
             out.append(image)
-            if len(out) >= MAX_IMAGES:
-                return out
     return out
 
 
@@ -378,9 +410,9 @@ def without_triggers(described: list[str], triggers: list[list[str]]) -> list[st
     return out
 
 
-def convert(model: dict) -> dict:
+def convert(model: dict, *, previews: bool = True) -> dict:
     version = anima_version(model)
-    images = gallery_images(model, version)
+    images = gallery_images(model, version) if previews else []
     tags = [str(tag).strip() for tag in model.get("tags") or [] if str(tag).strip()]
     stats = model.get("stats") or {}
     return {
@@ -422,6 +454,7 @@ FIELDS = ["id", "version_id", "name", "category", "tags", "creator", "downloads"
 # Галерея: остальные превью раскладываются по GALLERY_SHARDS файлам (id % N): окно просмотра
 # грузит один небольшой файл, а не все картинки каталога сразу.
 GALLERY_DIR = ROOT / "data" / "loras-gallery"
+ADULT_GALLERY_DIR = ROOT / "data" / "loras-adult-gallery"
 GALLERY_SHARDS = 100
 CATEGORY_CODES = ["character", "style", "concept", "tool", "other"]
 IMAGE_PREFIX = "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/"
@@ -530,7 +563,7 @@ def review_entry(model: dict, reason: str) -> dict:
         "image_levels": levels,
         "safe_images": [
             {"url": resized(image["url"]), "width": image.get("width") or 0, "height": image.get("height") or 0}
-            for image in safe_images(version)[:MAX_IMAGES]
+            for image in safe_images(version)[:MAX_REVIEW_IMAGES]
         ],
         "url": f"https://civitai.com/models/{model.get('id')}"
         + (f"?modelVersionId={version['id']}" if version.get("id") else ""),
@@ -604,6 +637,283 @@ def load_previous() -> list[dict]:
     return [unpack(row) if isinstance(row, list) else row for row in rows]
 
 
+def adult_eligible(model: dict) -> bool:
+    """Только явно отмеченные модели, отдельно проверенные редактором по ID."""
+    if reject_reason(model) not in {"nsfw", "выше R", "взрослые теги", "взрослое название"}:
+        return False
+    versions = anima_versions(model)
+    return bool(versions) and not restricted_subject(model, versions)
+
+
+def cdn_previews(images: list[dict]) -> list[dict]:
+    previews = []
+    for image in images:
+        url = urllib.parse.urlsplit(image["url"])
+        if url.scheme == "https" and url.netloc == "image.civitai.com":
+            previews.append({"url": resized(image["url"]), "width": image.get("width") or 0,
+                             "height": image.get("height") or 0})
+    return previews
+
+
+def write_json(path: Path, payload: dict) -> None:
+    temp = path.with_suffix(".json.tmp")
+    temp.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    temp.replace(path)
+
+
+def catalog_payload(loras: list[dict]) -> dict:
+    return {
+        "source": "https://civitai.com (open API, baseModel Anima)",
+        "kinds": KIND_CODES,
+        "updated_at": dt.date.today().isoformat(),
+        "count": len(loras),
+        "format": FORMAT,
+        "fields": FIELDS,
+        "categories": CATEGORY_CODES,
+        "image_prefix": IMAGE_PREFIX,
+        "image_width": IMAGE_WIDTH,
+        "gallery_shards": GALLERY_SHARDS,
+        "loras": [pack(lora) for lora in loras],
+    }
+
+
+def remove_from_adult(ids: set[int]) -> int:
+    if not ids or not ADULT_FILE.exists():
+        return 0
+    payload = json.loads(ADULT_FILE.read_text(encoding="utf-8"))
+    if not payload["loras"]:
+        return 0
+    i = payload["fields"].index("id")
+    rows = [row for row in payload["loras"] if row[i] not in ids]
+    removed = len(payload["loras"]) - len(rows)
+    if removed:
+        payload.update(loras=rows, count=len(rows), updated_at=dt.date.today().isoformat())
+        write_json(ADULT_FILE, payload)
+    return removed
+
+
+def add_entries(models: list[dict], *, adult: bool, apply: bool) -> int:
+    path = ADULT_FILE if adult else DATA_FILE
+    payload = json.loads(path.read_text(encoding="utf-8")) if path.exists() else catalog_payload([])
+    if not payload.get("fields") and not payload["loras"]:
+        payload = catalog_payload([])
+    fields = payload["fields"]
+    id_index = fields.index("id")
+    known = {row[id_index] for row in payload["loras"]}
+    if adult:
+        known.update(lora["id"] for lora in load_previous())
+    additions = []
+    for model in models:
+        if model["id"] in known:
+            continue
+        if not (adult_eligible(model) if adult else reject_reason(model) is None):
+            continue
+        known.add(model["id"])
+        entry = convert(model, previews=not adult)
+        if adult:
+            entry["images"] = cdn_previews(safe_images(anima_version(model)))
+        additions.append(entry)
+    print(f"Получено моделей: {len(models)}, новые подходящие записи: {len(additions)}")
+    for lora in additions:
+        print(f"  {lora['id']} · {lora['name']}")
+    if not apply:
+        return 0
+    promoted = {model["id"] for model in models if not adult and below_r_standard(model)}
+    if not additions:
+        remove_from_adult(promoted & known)
+        return 0
+
+    for field in FIELDS:
+        if field not in fields:
+            fields.append(field)
+    for lora in additions:
+        packed = dict(zip(FIELDS, pack(lora)))
+        payload["loras"].append([packed[field] for field in fields])
+
+    gallery_dir = ADULT_GALLERY_DIR if adult else GALLERY_DIR
+    for index, entries in gallery_shards(additions).items():
+        gallery_dir.mkdir(parents=True, exist_ok=True)
+        shard_path = gallery_dir / f"{index}.json"
+        shard = json.loads(shard_path.read_text(encoding="utf-8")) if shard_path.exists() else {}
+        write_json(shard_path, {**shard, **entries})
+    payload["updated_at"] = dt.date.today().isoformat()
+    payload["count"] = len(payload["loras"])
+    write_json(path, payload)
+    if promoted:
+        print(f"Перенесено из 18+: {remove_from_adult(promoted & known)}")
+    return 0
+
+
+def newest_models(max_pages: int) -> list[dict]:
+    url = API_URL.format(type="LORA").replace("Most%20Downloaded", "Newest") + "&nsfw=false"
+    models = []
+    for _ in range(max_pages):
+        if not url:
+            break
+        page = fetch_json(url)
+        models.extend(page["items"])
+        url = (page.get("metadata") or {}).get("nextPage")
+        if url:
+            time.sleep(REQUEST_DELAY)
+    return models
+
+
+def models_from_files(paths: list[Path], ids: list[int] | None) -> list[dict]:
+    models = []
+    for path in paths:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+        if isinstance(data, dict) and "items" in data:
+            batch = data["items"]
+        elif isinstance(data, dict) and "modelVersions" in data:
+            batch = [data]
+        else:
+            raise ValueError(f"{path}: ожидается страница API CivitAI (items) или отдельная модель")
+        if not isinstance(batch, list) or any(
+            not isinstance(model, dict) or type(model.get("id")) is not int or model["id"] < 1
+            for model in batch
+        ):
+            raise ValueError(f"{path}: некорректный список моделей или ID")
+        models.extend(batch)
+    if not ids:
+        return models
+    requested = set(ids)
+    missing = requested - {model["id"] for model in models}
+    if missing:
+        raise ValueError("ID отсутствуют в файлах: " + ", ".join(map(str, sorted(missing))))
+    return [model for model in models if model["id"] in requested]
+
+
+def models_from_preview_results(path: Path):
+    with path.open(encoding="utf-8-sig") as file:
+        for number, line in enumerate(file, 1):
+            try:
+                row = json.loads(line)
+                model_id, version_id, images = row["model_id"], row["version_id"], row["images"]
+                if (
+                    any(type(value) is not int or value < 1 for value in (model_id, version_id))
+                    or not isinstance(images, list)
+                    or any(not isinstance(image, dict) for image in images)
+                ):
+                    raise ValueError("некорректный ID или список кадров")
+            except (ValueError, KeyError, TypeError) as error:
+                raise ValueError(f"{path}:{number}: {error}") from error
+            yield {"id": model_id, "modelVersions": [
+                {"id": version_id, "baseModel": BASE_MODEL, "images": images},
+            ]}
+
+
+def refresh_previews(paths: list[Path], *, apply: bool, preview_results: bool = False) -> int:
+    """Дополняет галереи только уже отобранных моделей, сохраняя обложки и порядок."""
+    for path, directory in ((DATA_FILE, GALLERY_DIR), (ADULT_FILE, ADULT_GALLERY_DIR)):
+        if not path.exists():
+            continue
+        catalog = json.loads(path.read_text(encoding="utf-8"))
+        if not catalog["loras"]:
+            continue
+        fields = {name: i for i, name in enumerate(catalog["fields"])}
+        rows = {row[fields["id"]]: row for row in catalog["loras"]}
+        image_index, more_index = fields["image"], fields["more"]
+        shard_count = catalog.get("gallery_shards", GALLERY_SHARDS)
+        shards = {}
+        changed = set()
+        added = filled = 0
+        matched = set()
+
+        for source in paths:
+            models = models_from_preview_results(source) if preview_results else models_from_files([source], None)
+            for model in models:
+                model_id = model["id"]
+                row = rows.get(model_id)
+                if row is None:
+                    continue
+                version = next((v for v in anima_versions(model) if v["id"] == row[fields["version_id"]]), None)
+                if version is None:
+                    continue
+                matched.add(model_id)
+                previews = cdn_previews(safe_images(version) if path == ADULT_FILE else gallery_images(model, version))
+                index = model_id % shard_count
+                if index not in shards:
+                    file = directory / f"{index}.json"
+                    shards[index] = json.loads(file.read_text(encoding="utf-8")) if file.exists() else {}
+                extras = shards[index].get(str(model_id), [])
+                images = ([row[image_index]] if row[image_index] else []) + extras
+                urls = {unpack_image(packed)["url"] for packed in images}
+                for image in previews:
+                    if image["url"] not in urls:
+                        images.append(pack_image(image))
+                        urls.add(image["url"])
+                        added += 1
+                        changed.add(index)
+                if not row[image_index] and images:
+                    filled += 1
+                row[image_index] = images[0] if images else 0
+                row[more_index] = max(0, len(images) - 1)
+                if images[1:] != extras:
+                    shards[index][str(model_id)] = images[1:]
+                    changed.add(index)
+
+        print(
+            f"{path.name}: совпали версии у {len(matched)} из {len(rows)} моделей; "
+            f"добавлено кадров {added}, заполнено пустых карточек {filled}, "
+            f"без превью {sum(not row[image_index] for row in rows.values())}"
+        )
+        if apply:
+            if changed:
+                directory.mkdir(parents=True, exist_ok=True)
+            for index in sorted(changed):
+                write_json(directory / f"{index}.json", shards[index])
+            write_json(path, catalog)
+    return 0
+
+
+def refresh_access(paths: list[Path], *, apply: bool) -> int:
+    for catalog_file in (DATA_FILE, ADULT_FILE):
+        if not catalog_file.exists():
+            continue
+        catalog = json.loads(catalog_file.read_text(encoding="utf-8"))
+        if not catalog["loras"]:
+            continue
+        fields = catalog["fields"]
+        rows = {row[fields.index("id")]: row for row in catalog["loras"]}
+        version_index = fields.index("version_id")
+        updates = {}
+        for path in paths:
+            for model in models_from_files([path], None):
+                row = rows.get(model["id"])
+                if not row:
+                    continue
+                version = next((v for v in anima_versions(model) if v["id"] == row[version_index]), None)
+                if not version:
+                    continue
+                if version.get("availability") != EARLY:
+                    # В выдаче моделей CivitAI может быть Public без полей раннего доступа.
+                    try:
+                        dt.datetime.fromisoformat((version.get("earlyAccessEndsAt") or "").replace("Z", "+00:00"))
+                    except ValueError:
+                        continue
+                updates[model["id"]] = (int(is_early(version)), early_ends(version) or 0)
+        if not updates:
+            print(f"{catalog_file.name}: подтверждённых обновлений доступа нет")
+            continue
+        for field in ("access", "until"):
+            if field not in fields:
+                fields.append(field)
+        access_idx, until_idx = fields.index("access"), fields.index("until")
+        changed = 0
+        for model_id, (access, until) in updates.items():
+            row = rows[model_id]
+            current = [row[index] if index < len(row) else 0 for index in (access_idx, until_idx)]
+            if current == [access, until]:
+                continue
+            row.extend([0] * (len(fields) - len(row)))
+            row[access_idx], row[until_idx] = access, until
+            changed += 1
+        print(f"{catalog_file.name}: проверено {len(updates)}, платных {sum(x[0] for x in updates.values())}, изменено {changed}")
+        if apply and changed:
+            write_json(catalog_file, catalog)
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--apply", action="store_true", help="записать data/loras.json")
@@ -611,7 +921,61 @@ def main() -> int:
     ap.add_argument("--inspect", type=int, metavar="N", help="показать первые N отобранных и выйти")
     ap.add_argument("--probe", type=int, metavar="ID", help="показать, что API отдаёт про доступность версий модели ID, и выйти")
     ap.add_argument("--force", action="store_true", help="записать, даже если LoRA стало заметно меньше")
+    add = ap.add_mutually_exclusive_group()
+    add.add_argument("--add-ids", nargs="+", type=int, metavar="ID", help="добавить конкретные модели без удаления старых")
+    add.add_argument("--add-new", type=int, metavar="PAGES", help="добавить новые обычные LoRA с указанного числа страниц")
+    ap.add_argument("--from-json", action="append", type=Path, metavar="FILE",
+                    help="взять модели из сохранённого ответа API CivitAI без сети; можно повторить")
+    ap.add_argument("--refresh-previews", action="store_true", help="дополнить галереи обоих каталогов из --from-json")
+    ap.add_argument("--refresh-access", action="store_true", help="обновить платность известных версий из --from-json")
+    ap.add_argument("--preview-results", action="append", type=Path, metavar="JSONL",
+                    help="дополнить галереи результатами export_civitai_previews.py; можно повторить")
+    ap.add_argument("--adult", action="store_true", help="каталог 18+ с PG-превью под спойлером; только одобренные --add-ids")
     args = ap.parse_args()
+    if args.refresh_access:
+        if not args.from_json or any((args.preview_results, args.refresh_previews, args.add_ids,
+                                      args.add_new is not None, args.adult, args.probe, args.inspect,
+                                      args.pages, args.force)):
+            ap.error("--refresh-access требует --from-json и совместим только с --apply")
+        try:
+            return refresh_access(args.from_json, apply=args.apply)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            print(error, file=sys.stderr)
+            return 1
+    if args.preview_results:
+        if any((args.from_json, args.refresh_previews, args.add_ids, args.add_new is not None,
+                args.adult, args.probe, args.inspect, args.pages, args.force)):
+            ap.error("--preview-results совместим только с --apply")
+        try:
+            return refresh_previews(args.preview_results, apply=args.apply, preview_results=True)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            print(error, file=sys.stderr)
+            return 1
+    if args.refresh_previews:
+        if not args.from_json or any((args.add_ids, args.add_new is not None, args.adult,
+                                      args.probe, args.inspect, args.pages, args.force)):
+            ap.error("--refresh-previews требует --from-json и совместим только с --apply")
+        return refresh_previews(args.from_json, apply=args.apply)
+    if args.adult and not args.add_ids:
+        ap.error("--adult требует отдельно проверенные --add-ids")
+    if args.add_new is not None and args.add_new < 1:
+        ap.error("--add-new требует положительное число страниц")
+    if args.from_json and args.add_new is not None:
+        ap.error("--from-json несовместим с --add-new")
+    if args.from_json or args.add_ids or args.add_new is not None:
+        if args.probe or args.inspect or args.pages or args.force:
+            ap.error("режим добавления несовместим с --probe, --inspect, --pages и --force")
+        try:
+            if args.from_json:
+                models = models_from_files(args.from_json, args.add_ids)
+            elif args.add_ids:
+                models = [fetch_json(f"https://civitai.com/api/v1/models/{id}") for id in dict.fromkeys(args.add_ids)]
+            else:
+                models = newest_models(args.add_new)
+        except (RuntimeError, OSError, ValueError) as error:
+            print(error, file=sys.stderr)
+            return 1
+        return add_entries(models, adult=args.adult, apply=args.apply)
     if args.probe:
         model = fetch_json(f"https://civitai.com/api/v1/models/{args.probe}")
         print(f"{model.get('name')} (type={model.get('type')})")
@@ -658,20 +1022,9 @@ def main() -> int:
         )
         return 1
 
-    payload = {
-        "source": "https://civitai.com (open API, baseModel Anima)",
-        "kinds": KIND_CODES,
-        "updated_at": dt.date.today().isoformat(),
-        "count": len(loras),
-        "format": FORMAT,
-        "fields": FIELDS,
-        "categories": CATEGORY_CODES,
-        "image_prefix": IMAGE_PREFIX,
-        "image_width": IMAGE_WIDTH,
-        "gallery_shards": GALLERY_SHARDS,
-        "loras": [pack(lora) for lora in loras],
-    }
+    payload = catalog_payload(loras)
     DATA_FILE.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    remove_from_adult({model["id"] for model in models if model["id"] in after and below_r_standard(model)})
     size = DATA_FILE.stat().st_size / 1024 / 1024
     print(f"\nЗаписано: {DATA_FILE.relative_to(ROOT)} ({len(loras)} LoRA, {size:.1f} МБ)")
     gallery = write_gallery(loras)

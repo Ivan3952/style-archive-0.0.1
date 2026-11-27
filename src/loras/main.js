@@ -20,7 +20,10 @@ import "../legacy/scroll-lock-v009.js";
 import { extractLoraRef } from "./id-search.js";
 
 const DATA_URL = "./data/loras.json";
+const ADULT_URL = "./data/loras-adult.json";
+const SAVED_KEY = "style-archive:lora-saved";
 const GALLERY_URL = "./data/loras-gallery"; // доп. превью: <id % shards>.json, грузятся при открытии окна
+const ADULT_GALLERY_URL = "./data/loras-adult-gallery";
 const LANG_KEY = "style-archive:lang";
 const THEME_KEY = "style-archive:theme";
 const TRAY_KEY = "style-archive:tray";
@@ -44,6 +47,55 @@ const DICT = {
     source:
       "Модели и превью принадлежат их авторам на CivitAI, у каждой карточки есть ссылка. Показываются только LoRA не откровеннее уровня R и только безопасные превью.",
     all: "ВСЕ",
+    standard: "ОБЩИЙ КАТАЛОГ",
+    filterTriggers: "Триггеры",
+    withTriggers: "Указаны автором",
+    withoutTriggers: "Без триггеров автора",
+    multipleTriggers: "Несколько наборов",
+    descriptionTriggers: "Есть теги из описания",
+    advancedFilters: "Дополнительные фильтры",
+    authorFilter: "Автор на CivitAI",
+    authorPlaceholder: "Имя или часть имени",
+    publishedFilter: "Дата публикации",
+    anyPeriod: "За всё время",
+    last30: "За 30 дней",
+    last90: "За 90 дней",
+    last365: "За год",
+    noDate: "Дата неизвестна",
+    downloadsFilter: "Скачивания",
+    under100: "Меньше 100",
+    framesFilter: "Кадры в галерее",
+    oneFrame: "Один кадр",
+    includeTags: "Все указанные теги",
+    excludeTags: "Исключить теги",
+    tagsPlaceholder: "Теги через запятую",
+    likesFilter: "Лайки",
+    orientationFilter: "Ориентация обложки",
+    portrait: "Вертикальная",
+    landscape: "Горизонтальная",
+    square: "Квадратная",
+    unknownSize: "Размер неизвестен",
+    resolutionFilter: "Длинная сторона обложки",
+    withGallery: "2+ ПРЕВЬЮ",
+    withPreview: "С ПРЕВЬЮ",
+    withoutPreview: "БЕЗ ПРЕВЬЮ",
+    saved: "ИЗБРАННОЕ",
+    saveLora: "Добавить в избранное",
+    unsaveLora: "Убрать из избранного",
+    sortName: "ПО ИМЕНИ",
+    adultTitle: "Каталог 18+",
+    revealAdult: "Показать превью",
+    hideAdult: "Скрыть превью",
+    noPreview: "Превью нет",
+    adultNotice:
+      "Здесь могут быть названия моделей для взрослых. Изображения скрыты под спойлером. Раздел доступен с 18 лет.",
+    confirmAge: "МНЕ ЕСТЬ 18",
+    cancel: "НАЗАД",
+    adultLoading: "Загружаем каталог 18+…",
+    adultEmpty: "В каталоге 18+ пока нет опубликованных моделей.",
+    adultError: "Каталог 18+ не загрузился. Попробуй открыть его ещё раз.",
+    adultSource:
+      "Модели принадлежат авторам на CivitAI. Описания и превью можно посмотреть на странице модели.",
     character: "ПЕРСОНАЖИ",
     style: "СТИЛИ",
     concept: "КОНЦЕПТЫ",
@@ -56,10 +108,8 @@ const DICT = {
     paid: "ПЛАТНЫЕ",
     paidBadge: "ПЛАТНАЯ",
     paidTitle: "Платный ранний доступ на CivitAI",
-    paidNote: (date) =>
-      date
-        ? `Платная: ранний доступ на CivitAI, бесплатной станет ${date}. Без покупки в боте может не работать.`
-        : "Платная: ранний доступ на CivitAI. Без покупки в боте может не работать.",
+    paidUntil: "до",
+    paidNote: "Без покупки на CivitAI модель может быть недоступна в боте.",
     by: "автор",
     downloads: "скачиваний",
     triggers: "Триггеры (нажми, чтобы включить или выключить):",
@@ -90,8 +140,7 @@ const DICT = {
     previews: "Превью: открой карточку, чтобы посмотреть все",
     close: "ЗАКРЫТЬ",
     empty: "Ничего не нашли. Попробуй имя латиницей, название тайтла или другую категорию.",
-    emptyId:
-      "LoRA с ID {id} нет в каталоге: её могли удалить, она откровеннее уровня R или без безопасных превью.",
+    emptyId: "В этом разделе нет LoRA с ID {id}.",
     openCivitai: "ОТКРЫТЬ НА CIVITAI",
     emptyData: "Каталог ещё не загружен.",
     reset: "СБРОСИТЬ",
@@ -109,6 +158,55 @@ const DICT = {
     source:
       "Models and previews belong to their authors on CivitAI; every card links there. Only LoRAs rated up to R and only safe previews are shown.",
     all: "ALL",
+    standard: "GENERAL CATALOG",
+    filterTriggers: "Triggers",
+    withTriggers: "Listed by author",
+    withoutTriggers: "No author triggers",
+    multipleTriggers: "Multiple sets",
+    descriptionTriggers: "Tags from description",
+    advancedFilters: "More filters",
+    authorFilter: "CivitAI author",
+    authorPlaceholder: "Name or part of name",
+    publishedFilter: "Published",
+    anyPeriod: "Any time",
+    last30: "Last 30 days",
+    last90: "Last 90 days",
+    last365: "Last year",
+    noDate: "Unknown date",
+    downloadsFilter: "Downloads",
+    under100: "Fewer than 100",
+    framesFilter: "Gallery images",
+    oneFrame: "One image",
+    includeTags: "Require all tags",
+    excludeTags: "Exclude tags",
+    tagsPlaceholder: "Comma-separated tags",
+    likesFilter: "Likes",
+    orientationFilter: "Cover orientation",
+    portrait: "Portrait",
+    landscape: "Landscape",
+    square: "Square",
+    unknownSize: "Unknown size",
+    resolutionFilter: "Long edge of cover",
+    withGallery: "2+ PREVIEWS",
+    withPreview: "WITH PREVIEW",
+    withoutPreview: "NO PREVIEW",
+    saved: "FAVORITES",
+    saveLora: "Add to favorites",
+    unsaveLora: "Remove from favorites",
+    sortName: "BY NAME",
+    adultTitle: "18+ catalog",
+    revealAdult: "Show preview",
+    hideAdult: "Hide preview",
+    noPreview: "No preview",
+    adultNotice:
+      "This section may contain names of adult models. Images are hidden behind spoilers. You must be 18 or older to enter.",
+    confirmAge: "I AM 18 OR OLDER",
+    cancel: "BACK",
+    adultLoading: "Loading the 18+ catalog…",
+    adultEmpty: "No models have been published in the 18+ catalog yet.",
+    adultError: "Could not load the 18+ catalog. Try opening it again.",
+    adultSource:
+      "Models belong to their authors on CivitAI. Descriptions and previews are available on the model page.",
     character: "CHARACTERS",
     style: "STYLES",
     concept: "CONCEPTS",
@@ -121,10 +219,8 @@ const DICT = {
     paid: "PAID",
     paidBadge: "PAID",
     paidTitle: "Paid early access on CivitAI",
-    paidNote: (date) =>
-      date
-        ? `Paid: early access on CivitAI, becomes free on ${date}. Until you buy it, it may not work in the bot.`
-        : "Paid: early access on CivitAI. Until you buy it, it may not work in the bot.",
+    paidUntil: "until",
+    paidNote: "The model may be unavailable in the bot until purchased on CivitAI.",
     by: "by",
     downloads: "downloads",
     triggers: "Triggers (tap to toggle):",
@@ -154,8 +250,7 @@ const DICT = {
     previews: "Previews: open the card to see them all",
     close: "CLOSE",
     empty: "Nothing found. Try a romanized name, a series title or another category.",
-    emptyId:
-      "No LoRA with ID {id} in the catalog: it may be removed, rated above R or have no safe previews.",
+    emptyId: "There is no LoRA with ID {id} in this section.",
     openCivitai: "OPEN ON CIVITAI",
     emptyData: "The catalog is not loaded yet.",
     reset: "RESET",
@@ -164,7 +259,7 @@ const DICT = {
 };
 
 const CATEGORIES = ["all", "character", "style", "concept", "tool", "other"];
-const SORTS = { popular: "sortPopular", new: "sortNew", liked: "sortLiked" };
+const SORTS = { popular: "sortPopular", new: "sortNew", liked: "sortLiked", name: "sortName" };
 /* форматы файла (tools/import_loras.py, TYPES): подпись на карточке и в фильтре */
 const KINDS = { lora: "LoRA", locon: "LoCon", dora: "DoRA" };
 const ACCESS = ["free", "paid"];
@@ -185,17 +280,64 @@ const norm = (value) =>
     .trim();
 
 const params = new URL(window.location.href).searchParams;
+const EXTRA_OPTIONS = {
+  period: ["all", "30", "90", "365", "unknown"],
+  downloads: ["all", "under100", "100", "1000", "10000"],
+  frames: ["all", "one", "2-5", "6-10", "11"],
+  likes: ["all", "10", "50", "100", "500"],
+  orientation: ["all", "portrait", "landscape", "square", "unknown"],
+  resolution: ["all", "768", "1024", "1536", "2048"],
+};
+const TEXT_FACETS = { author: 80, tags: 200, excludeTags: 200 };
+const IMAGE_FACETS = ["frames", "orientation", "resolution"];
+const EXTRA_DEFAULTS = Object.fromEntries([
+  ...Object.keys(TEXT_FACETS).map((key) => [key, ""]),
+  ...Object.keys(EXTRA_OPTIONS).map((key) => [key, "all"]),
+]);
+const FRAME_RANGES = { one: [1, 1], "2-5": [2, 5], "6-10": [6, 10], 11: [11, Infinity] };
+const extraCount = () =>
+  Object.keys(EXTRA_DEFAULTS).filter((key) => state.extra[key].trim() !== EXTRA_DEFAULTS[key])
+    .length;
 const state = {
   all: [],
+  standard: [],
   byId: new Map(),
   filtered: [],
   rendered: 0,
   q: params.get("q") || params.get("id") || "",
   idRef: "",
   category: CATEGORIES.includes(params.get("cat")) ? params.get("cat") : "all",
-  sort: SORTS[params.get("sort")] ? params.get("sort") : "popular",
-  kind: KINDS[params.get("kind")] ? params.get("kind") : "all",
+  sort: Object.hasOwn(SORTS, params.get("sort")) ? params.get("sort") : "popular",
+  kind: Object.hasOwn(KINDS, params.get("kind")) ? params.get("kind") : "all",
   access: ACCESS.includes(params.get("access")) ? params.get("access") : "all",
+  triggerFilter: ["author", "none", "multiple", "described"].includes(params.get("triggers"))
+    ? params.get("triggers")
+    : "all",
+  gallery: params.get("gallery") === "1",
+  extra: {
+    ...EXTRA_DEFAULTS,
+    ...Object.fromEntries(
+      Object.entries(TEXT_FACETS).map(([key, limit]) => [
+        key,
+        (params.get(key) || "").trim().slice(0, limit),
+      ])
+    ),
+    ...Object.fromEntries(
+      Object.entries(EXTRA_OPTIONS).map(([key, options]) => [
+        key,
+        options.includes(params.get(key)) ? params.get(key) : EXTRA_DEFAULTS[key],
+      ])
+    ),
+  },
+  preview: params.get("preview") === "without" ? "without" : "with",
+  savedOnly: params.get("saved") === "1",
+  scope: "standard",
+  adult: null,
+  adultLoading: false,
+  adultError: false,
+  ageConfirmed: false,
+  revealedAdult: new Set(),
+  saved: new Set(),
   weights: new Map(),
   triggersOn: new Map(), // id -> Set("набор:тег") включённых; нет записи — по умолчанию
   loaded: false,
@@ -215,6 +357,14 @@ const el = {
   categories: $("#lrCategories"),
   sort: $("#lrSort"),
   kinds: $("#lrKinds"),
+  toolbar: $(".ch-toolbar-v008"),
+  refine: $("#lrRefine"),
+  advanced: $("#lrAdvanced"),
+  advancedCount: $("#lrAdvancedCount"),
+  triggerFilter: $("#lrTriggerFilter"),
+  scope: $(".lr-scope-v010"),
+  preview: $(".lr-preview-filter-v010"),
+  age: $("#lrAge"),
   lead: $("#lrLead"),
   source: $("#lrSource"),
   statCount: $("#lrStatCount"),
@@ -303,36 +453,82 @@ function unpackRow(data) {
   };
 }
 
-async function load() {
-  try {
-    const response = await fetch(DATA_URL, { cache: "no-cache" });
-    if (!response.ok) throw new Error(String(response.status));
-    const data = await response.json();
-    state.all = (data.loras || []).map(unpackRow(data)).map((lora, order) => ({
+function readLoras(data, adult = false) {
+  return data.loras.map(unpackRow(data)).map((lora, order) => {
+    const triggers = triggerGroups(lora.triggers);
+    return {
       ...lora,
       order,
+      adult,
+      tagKeys: (lora.tags || []).map(norm),
       /* авторы часто пишут несколько триггеров одной строкой через запятую — делим на отдельные теги */
-      triggers: triggerGroups(lora.triggers),
+      triggers,
       described: (lora.described || []).map((tag) => String(tag).trim()).filter(Boolean),
-      images: lora.images || [],
+      images: adult ? (lora.images || []).slice(0, 1) : lora.images || [],
+      more: Number(lora.more) || 0,
       hay: norm(
         [
           lora.name,
           lora.creator,
           ...(lora.tags || []),
-          ...triggerGroups(lora.triggers).flat(),
+          ...triggers.flat(),
           ...(lora.described || []),
         ].join(" | ")
       ),
       nameNorm: norm(lora.name),
-    }));
-    state.byId = new Map(state.all.map((lora) => [String(lora.id), lora]));
+    };
+  });
+}
+
+async function load() {
+  try {
+    const response = await fetch(DATA_URL, { cache: "no-cache" });
+    if (!response.ok) throw new Error(String(response.status));
+    const data = await response.json();
+    state.standard = readLoras(data);
     state.updatedAt = data.updated_at || "";
     state.shards = data.gallery_shards || 100;
     state.unpackImage = imageUnpacker(data);
     state.loaded = true;
   } catch {
     state.loaded = false;
+  }
+}
+
+function refreshScope() {
+  state.all = state.scope === "adult" ? state.adult || [] : state.standard;
+  state.byId = new Map(state.all.map((lora) => [String(lora.id), lora]));
+  el.source.textContent = t(state.scope === "adult" ? "adultSource" : "source");
+  buildControls();
+  applyFilters();
+}
+
+async function changeScope(scope) {
+  const needsAdult = scope === "adult" && !state.adult && !state.adultLoading;
+  if (needsAdult) {
+    state.adultLoading = true;
+    state.adultError = false;
+  }
+  if (scope !== state.scope) {
+    state.revealedAdult.clear();
+    state.scope = scope;
+    state.preview = "with";
+    resetFilters({ refresh: true });
+  }
+  if (!needsAdult) return;
+
+  syncStatus();
+  try {
+    const response = await fetch(ADULT_URL, { cache: "no-cache" });
+    if (!response.ok) throw new Error(String(response.status));
+    const data = await response.json();
+    state.adult = readLoras(data, true);
+    state.adultUpdatedAt = data.updated_at || "";
+  } catch {
+    state.adultError = true;
+  } finally {
+    state.adultLoading = false;
+    if (state.scope === "adult") refreshScope();
   }
 }
 
@@ -394,32 +590,101 @@ function loraLine(lora) {
 
 /* ---------- фильтры ---------- */
 
+const previewGroup = (lora) => (lora.images.length ? "with" : "without");
+const tagQuery = (input) => input.split(",").map(norm).filter(Boolean);
+
+function coverMatches(cover, orientation, resolution) {
+  const width = Number(cover?.width);
+  const height = Number(cover?.height);
+  const actual =
+    width > 0 && height > 0
+      ? width === height
+        ? "square"
+        : width > height
+          ? "landscape"
+          : "portrait"
+      : "unknown";
+  return (
+    (orientation === "all" || orientation === actual) &&
+    (resolution === "all" ||
+      (actual !== "unknown" && Math.max(width, height) >= Number(resolution)))
+  );
+}
+
 function applyFilters() {
   /* поле могло измениться, а отложенный поиск ещё не сработал (очистили и сразу нажали категорию) */
   state.q = el.search.value;
-  const tokens = norm(state.q).split(" ").filter(Boolean);
-  let list = state.all.filter((lora) => {
-    if (state.category !== "all" && lora.category !== state.category) return false;
-    if (state.kind !== "all" && lora.kind !== state.kind) return false;
-    if (state.access === "free" && lora.access) return false;
-    if (state.access === "paid" && !lora.access) return false;
-    return tokens.every((token) => lora.hay.includes(token));
-  });
-
-  /* ID, строка <lora:ID:вес> или ссылка CivitAI: показываем ровно эту LoRA (категория не мешает) */
   const ref = extractLoraRef(state.q);
+  const match = ref && state.byId.get(ref.id);
   state.idRef = ref ? ref.id : "";
-  if (ref) list = state.byId.has(ref.id) ? [state.byId.get(ref.id)] : [];
+  if (match) state.preview = previewGroup(match);
+  if (state.preview === "without") {
+    state.gallery = false;
+    for (const key of IMAGE_FACETS) state.extra[key] = EXTRA_DEFAULTS[key];
+  }
+  const { author, period, downloads, frames, tags, excludeTags, likes, orientation, resolution } =
+    state.extra;
+  const authorQuery = norm(author);
+  const requiredTags = tagQuery(tags);
+  const blockedTags = tagQuery(excludeTags);
+  const cutoff = Number(period)
+    ? new Date(Date.now() - Number(period) * 86_400_000).toISOString().slice(0, 10)
+    : "";
+  const frameRange = FRAME_RANGES[frames];
+  const tokens = norm(state.q).split(" ").filter(Boolean);
+  const list = ref
+    ? match
+      ? [match]
+      : []
+    : state.all.filter((lora) => {
+        if (previewGroup(lora) !== state.preview) return false;
+        if (state.category !== "all" && lora.category !== state.category) return false;
+        if (state.kind !== "all" && lora.kind !== state.kind) return false;
+        if (state.access === "free" && lora.access) return false;
+        if (state.access === "paid" && !lora.access) return false;
+        if (state.triggerFilter === "author" && !lora.triggers.length) return false;
+        if (state.triggerFilter === "none" && lora.triggers.length) return false;
+        if (state.triggerFilter === "multiple" && lora.triggers.length < 2) return false;
+        if (state.triggerFilter === "described" && !lora.described.length) return false;
+        if (authorQuery && !norm(lora.creator).includes(authorQuery)) return false;
+        if (requiredTags.some((tag) => !lora.tagKeys.includes(tag))) return false;
+        if (blockedTags.some((tag) => lora.tagKeys.includes(tag))) return false;
+        if (likes !== "all" && !(Number(lora.likes) >= Number(likes))) return false;
+        if (
+          (orientation !== "all" || resolution !== "all") &&
+          !coverMatches(lora.images[0], orientation, resolution)
+        )
+          return false;
+        if (period === "unknown" && lora.published) return false;
+        if (cutoff && (!lora.published || lora.published < cutoff)) return false;
+        if (downloads !== "all") {
+          if (lora.downloads == null) return false;
+          if (downloads === "under100" ? lora.downloads >= 100 : lora.downloads < Number(downloads))
+            return false;
+        }
+        const frameCount = lora.images.length + lora.more;
+        if (frameRange && (frameCount < frameRange[0] || frameCount > frameRange[1])) return false;
+        if (state.gallery && lora.images.length + lora.more < 2) return false;
+        if (state.savedOnly && !state.saved.has(String(lora.id))) return false;
+        return tokens.every((token) => lora.hay.includes(token));
+      });
 
+  const nameOrder =
+    state.sort === "name"
+      ? new Intl.Collator(lang(), { numeric: true, sensitivity: "base" })
+      : null;
   const by = {
     popular: (a, b) => b.downloads - a.downloads,
-    new: (a, b) => String(b.published).localeCompare(String(a.published)),
+    new: (a, b) => String(b.published || "").localeCompare(String(a.published || "")),
     liked: (a, b) => b.likes - a.likes,
+    name: (a, b) => nameOrder.compare(a.name, b.name),
   }[state.sort];
   /* во «Всех» технические LoRA (турбо, детализаторы) уходят в конец: их скачивают больше всех, но ищут редко */
   const toolLast = (a, b) =>
-    state.category === "all" ? Number(a.category === "tool") - Number(b.category === "tool") : 0;
-  list = [...list].sort((a, b) => toolLast(a, b) || by(a, b) || a.order - b.order);
+    state.category === "all" && state.sort === "popular"
+      ? Number(a.category === "tool") - Number(b.category === "tool")
+      : 0;
+  list.sort((a, b) => toolLast(a, b) || by(a, b) || a.order - b.order);
 
   const query = norm(state.q);
   if (query) {
@@ -435,6 +700,7 @@ function applyFilters() {
 }
 
 function syncUrl() {
+  if (state.scope === "adult") return;
   const url = new URL(window.location.href);
   const set = (key, value) =>
     value ? url.searchParams.set(key, value) : url.searchParams.delete(key);
@@ -444,7 +710,29 @@ function syncUrl() {
   set("sort", state.sort === "popular" ? "" : state.sort);
   set("kind", state.kind === "all" ? "" : state.kind);
   set("access", state.access === "all" ? "" : state.access);
+  set("triggers", state.triggerFilter === "all" ? "" : state.triggerFilter);
+  set("gallery", state.gallery ? "1" : "");
+  set("preview", state.preview === "without" ? "without" : "");
+  set("saved", state.savedOnly ? "1" : "");
+  for (const [key, value] of Object.entries(state.extra))
+    set(key, value === EXTRA_DEFAULTS[key] ? "" : value.trim());
   history.replaceState(null, "", url);
+}
+
+function resetFilters({ refresh = false } = {}) {
+  el.search.value = "";
+  Object.assign(state, {
+    category: "all",
+    kind: "all",
+    access: "all",
+    sort: "popular",
+    triggerFilter: "all",
+    gallery: false,
+    extra: { ...EXTRA_DEFAULTS },
+    savedOnly: false,
+  });
+  if (refresh) refreshScope();
+  else applyFilters();
 }
 
 /* ---------- карточки ---------- */
@@ -532,28 +820,64 @@ function controlsHtml(lora, { full = false } = {}) {
         </div>`;
 }
 
-/* Метки в углу превью: формат (если не обычная LoRA) и «ПЛАТНАЯ» для раннего доступа. */
+/* Метки в углу превью: возрастная категория и формат файла. */
 function flagsHtml(lora) {
   const flags = [];
+  if (lora.adult) flags.push('<span class="adult">18+</span>');
   if (lora.kind !== "lora") flags.push(`<span>${esc(KINDS[lora.kind])}</span>`);
-  if (lora.access)
-    flags.push(`<span class="paid" title="${esc(t("paidTitle"))}">${esc(t("paidBadge"))}</span>`);
   return flags.length ? `<span class="lr-flags-v010">${flags.join("")}</span>` : "";
+}
+
+function paidStatusHtml(lora) {
+  if (!lora.access) return "";
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(lora.until) ? lora.until : "";
+  const until = date
+    ? `<span>${esc(t("paidUntil"))} <time datetime="${date}">${date.split("-").reverse().join(".")}</time></span>`
+    : "";
+  return `<p class="lr-paid-status-v010"><strong title="${esc(t("paidTitle"))}">${esc(t("paidBadge"))}</strong>${until}</p>`;
+}
+
+function favoriteHtml(lora) {
+  const saved = state.saved.has(String(lora.id));
+  const label = t(saved ? "unsaveLora" : "saveLora");
+  return `<button type="button" class="lr-favorite-v010" data-favorite aria-pressed="${saved}" aria-label="${esc(label)}" title="${esc(label)}">${saved ? "♥" : "♡"}</button>`;
+}
+
+function adultPreviewHtml(lora) {
+  const image = lora.images[0];
+  if (!image)
+    return `<div class="lr-spoiler-v010"><strong>18+</strong><span>${esc(t("noPreview"))}</span></div>`;
+  const revealed = state.revealedAdult.has(String(lora.id));
+  return `<button class="lr-spoiler-v010" type="button" data-spoiler aria-expanded="${revealed}">
+    ${revealed ? `<img src="${esc(image.url)}" alt="" decoding="async">` : "<strong>18+</strong>"}
+    <span>${esc(t(revealed ? "hideAdult" : "revealAdult"))}</span>
+  </button>`;
 }
 
 function cardHtml(lora) {
   const image = lora.images[0];
-  const ratio = image?.width && image?.height ? `${image.width}/${image.height}` : "2/3";
-  return `
-    <article class="ch-card-v008 lr-card-v010" data-id="${esc(lora.id)}">
-      <button type="button" class="ch-media-v008 lr-media-v010" data-open style="aspect-ratio:${ratio}" aria-label="${esc(lora.name)}">
-        ${image ? `<img src="${esc(image.url)}" alt="" loading="lazy" decoding="async">` : ""}
+  const ratio =
+    image?.width && image?.height ? `${image.width}/${image.height}` : image ? "2/3" : "3/2";
+  const count = lora.more
+    ? `<span class="lr-count-v010" title="${esc(t("previews"))}">▣ ${lora.more + 1}</span>`
+    : "";
+  const media = lora.adult
+    ? `<div class="lr-adult-media-v010">${adultPreviewHtml(lora)}${flagsHtml(lora)}${count}</div>`
+    : `<button type="button" class="ch-media-v008 lr-media-v010" data-open style="aspect-ratio:${ratio}" aria-label="${esc(lora.name)}">
+        ${image ? `<img src="${esc(image.url)}" alt="" loading="lazy" decoding="async">` : `<span class="lr-empty-preview-v010">${esc(t("noPreview"))}</span>`}
         <span class="lr-cat-v010">${esc(t(lora.category))}</span>
         ${flagsHtml(lora)}
-        ${lora.more ? `<span class="lr-count-v010" title="${esc(t("previews"))}">▣ ${lora.more + 1}</span>` : ""}
-      </button>
+        ${count}
+      </button>`;
+  return `
+    <article class="ch-card-v008 lr-card-v010" data-id="${esc(lora.id)}">
+      ${media}
       <div class="ch-body-v008">
-        <h3 class="ch-name-v008 lr-name-v010" title="${esc(lora.name)}"><button type="button" data-open>${esc(lora.name)}</button></h3>
+        <div class="lr-card-title-v010">
+          <h3 class="ch-name-v008 lr-name-v010" title="${esc(lora.name)}"><button type="button" data-open>${esc(lora.name)}</button></h3>
+          ${favoriteHtml(lora)}
+        </div>
+        ${paidStatusHtml(lora)}
         <p class="lr-meta-v010">${esc(t("by"))} ${esc(lora.creator)} · ${fmt(lora.downloads)} ${esc(t("downloads"))}</p>
         ${triggersCardHtml(lora)}
         ${controlsHtml(lora)}
@@ -567,15 +891,23 @@ function loadGallery(lora) {
   if (lora.gallery) return Promise.resolve(lora.gallery);
   if (!lora.more) return Promise.resolve((lora.gallery = lora.images));
   const shard = Number(lora.id) % state.shards;
-  if (!state.galleryCache.has(shard)) {
+  const url = `${lora.adult ? ADULT_GALLERY_URL : GALLERY_URL}/${shard}.json`;
+  if (!state.galleryCache.has(url)) {
     state.galleryCache.set(
-      shard,
-      fetch(`${GALLERY_URL}/${shard}.json`)
-        .then((response) => (response.ok ? response.json() : {}))
-        .catch(() => ({}))
+      url,
+      fetch(url)
+        .then((response) => {
+          if (!response.ok) throw new Error(String(response.status));
+          return response.json();
+        })
+        .catch(() => {
+          state.galleryCache.delete(url);
+          return null;
+        })
     );
   }
-  return state.galleryCache.get(shard).then((data) => {
+  return state.galleryCache.get(url).then((data) => {
+    if (!data) return null;
     const extra = (data[String(lora.id)] || []).map(state.unpackImage).filter(Boolean);
     lora.gallery = [...lora.images, ...extra];
     return lora.gallery;
@@ -583,11 +915,14 @@ function loadGallery(lora) {
 }
 
 function mediaHtml(lora) {
+  if (lora.adult && !state.revealedAdult.has(String(lora.id)))
+    return `<div class="ch-viewer-media-v008 lr-adult-media-v010" data-id="${esc(lora.id)}">${adultPreviewHtml(lora)}</div>`;
   const images = lora.gallery || lora.images;
   const count = Math.max(images.length, lora.images.length + (lora.gallery ? 0 : lora.more));
   const index = Math.min(state.viewerImage, Math.max(0, images.length - 1));
   const image = images[index];
-  if (!image) return `<div class="ch-viewer-media-v008 empty"></div>`;
+  if (!image)
+    return `<div class="ch-viewer-media-v008 empty"><span class="lr-empty-preview-v010">${esc(t("noPreview"))}</span></div>`;
   const nav =
     count > 1
       ? `<button type="button" class="lr-nav-v010 prev" data-gallery="-1" aria-label="←" ${index === 0 ? "disabled" : ""}>‹</button>
@@ -603,7 +938,11 @@ function mediaHtml(lora) {
           )
           .join("")}</div>`
       : "";
-  return `<div class="ch-viewer-media-v008 lr-gallery-v010">
+  const hide = lora.adult
+    ? `<button class="ch-btn-v008 lr-hide-gallery-v010" type="button" data-spoiler aria-expanded="true">${esc(t("hideAdult"))}</button>`
+    : "";
+  return `<div class="ch-viewer-media-v008 lr-gallery-v010" data-id="${esc(lora.id)}">
+      ${hide}
       <div class="lr-stage-v010"><img src="${esc(image.url)}" alt="${esc(lora.name)}">${nav}</div>
       ${thumbs}
     </div>`;
@@ -611,10 +950,23 @@ function mediaHtml(lora) {
 
 function renderMedia(lora) {
   const media = el.viewer.querySelector(".lr-gallery-v010, .ch-viewer-media-v008");
-  if (media) media.outerHTML = mediaHtml(lora);
+  if (!media) return;
+  const spoilerFocused =
+    media.contains(document.activeElement) && document.activeElement.matches("[data-spoiler]");
+  media.outerHTML = mediaHtml(lora);
+  if (spoilerFocused) el.viewer.querySelector("[data-spoiler]")?.focus();
+}
+
+function loadViewerGallery(lora) {
+  if (lora.gallery || !lora.more || (lora.adult && !state.revealedAdult.has(String(lora.id))))
+    return;
+  loadGallery(lora).then((gallery) => {
+    if (gallery && el.viewer.open && el.viewer.dataset.id === String(lora.id)) renderMedia(lora);
+  });
 }
 
 function stepGallery(lora, delta, absolute = false) {
+  if (lora.adult && !state.revealedAdult.has(String(lora.id))) return;
   const images = lora.gallery || lora.images;
   const next = absolute ? delta : state.viewerImage + delta;
   if (next < 0 || next >= images.length || next === state.viewerImage) return;
@@ -633,7 +985,8 @@ function viewerHtml(lora) {
         </div>
         <button class="text-button" type="button" data-close>${esc(t("close"))}</button>
       </header>
-      ${lora.access ? `<p class="lr-paid-note-v010">${esc(t("paidNote")(lora.until ? lora.until.split("-").reverse().join(".") : ""))}</p>` : ""}
+      ${paidStatusHtml(lora)}
+      ${lora.access ? `<p class="lr-paid-note-v010">${esc(t("paidNote"))}</p>` : ""}
       ${triggersFullHtml(lora)}
       ${controlsHtml(lora, { full: true })}
     </div>`;
@@ -653,11 +1006,7 @@ function openViewer(id) {
     el.viewer.querySelector(".lr-viewer-info-v010").scrollTop = scroll[0];
     el.viewer.querySelector(".ch-viewer-shell-v008").scrollTop = scroll[1];
   }
-  if (!lora.gallery && lora.more) {
-    loadGallery(lora).then(() => {
-      if (el.viewer.open && el.viewer.dataset.id === String(lora.id)) renderMedia(lora);
-    });
-  }
+  loadViewerGallery(lora);
 }
 
 /* ---------- меню «на CivitAI»: перейти / скопировать ссылку / скопировать ID ---------- */
@@ -719,8 +1068,16 @@ function rerenderCard(id) {
 }
 
 function syncStatus() {
-  el.count.textContent = `${fmt(state.filtered.length)} / ${fmt(state.all.length)}`;
-  if (!state.loaded) {
+  const total = state.all.filter((lora) => previewGroup(lora) === state.preview).length;
+  el.count.textContent = `${fmt(state.filtered.length)} / ${fmt(total)}`;
+  if (state.scope === "adult" && !state.adult?.length) {
+    el.empty.hidden = false;
+    el.empty.textContent = t(
+      state.adultLoading ? "adultLoading" : state.adultError ? "adultError" : "adultEmpty"
+    );
+    return;
+  }
+  if (state.scope === "standard" && !state.loaded) {
     el.empty.hidden = false;
     el.empty.textContent = t("emptyData");
     return;
@@ -767,35 +1124,68 @@ function buildControls() {
               `<button class="filter-chip" type="button" data-kind="${kind}">${esc(KINDS[kind])} <span>${fmt(kindCounts[kind])}</span></button>`
           )
       : [];
-  const accessChips = paid
-    ? ACCESS.map(
-        (key) =>
-          `<button class="filter-chip" type="button" data-access="${key}">${esc(t(key))} <span>${fmt(key === "paid" ? paid : state.all.length - paid)}</span></button>`
-      )
-    : [];
+  const accessChips = ACCESS.filter((key) => paid || key === "paid" || state.access === "free").map(
+    (key) =>
+      `<button class="filter-chip" type="button" data-access="${key}">${esc(t(key))} <span>${fmt(key === "paid" ? paid : state.all.length - paid)}</span></button>`
+  );
   el.kinds.innerHTML = [...kindChips, ...accessChips].join("");
   el.kinds.hidden = !el.kinds.innerHTML;
   el.statCount.textContent = fmt(state.all.length);
   el.statCharacters.textContent = fmt(counts.character || 0);
-  el.updated.textContent = state.updatedAt
-    ? `${t("updated")} ${state.updatedAt.split("-").reverse().join(".")}`
+  const updatedAt = state.scope === "adult" ? state.adultUpdatedAt : state.updatedAt;
+  el.updated.textContent = updatedAt
+    ? `${t("updated")} ${updatedAt.split("-").reverse().join(".")}`
     : "";
 }
 
 function syncControls() {
   if (el.search.value !== state.q) el.search.value = state.q;
-  el.categories.querySelectorAll("[data-category]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.category === state.category);
+  el.triggerFilter.value = state.triggerFilter;
+  el.advanced.querySelectorAll("[data-image-facet]").forEach((field) => {
+    field.hidden = state.preview === "without";
   });
-  el.sort.querySelectorAll("[data-sort]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.sort === state.sort);
+  el.advanced.querySelectorAll("[data-facet]").forEach((field) => {
+    const value = state.extra[field.dataset.facet];
+    if (field.value !== value) field.value = value;
   });
-  el.kinds.querySelectorAll("[data-kind]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.kind === state.kind);
-  });
-  el.kinds.querySelectorAll("[data-access]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.access === state.access);
-  });
+  const activeExtras = extraCount();
+  el.advancedCount.textContent = fmt(activeExtras);
+  el.advancedCount.hidden = !activeExtras;
+  el.refine.querySelector("[data-feature='gallery']").hidden = state.preview === "without";
+  const selections = {
+    scope: state.scope,
+    preview: state.preview,
+    category: state.category,
+    sort: state.sort,
+    kind: state.kind,
+    access: state.access,
+  };
+  el.toolbar
+    .querySelectorAll(
+      "[data-scope], [data-preview], [data-category], [data-sort], [data-kind], [data-access], [data-feature]"
+    )
+    .forEach((button) => {
+      const [key, value] = Object.entries(button.dataset)[0];
+      const selected =
+        key === "feature"
+          ? value === "saved"
+            ? state.savedOnly
+            : state.gallery
+          : selections[key] === value;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+  el.refine.querySelector("[data-reset]").hidden = !(
+    state.q.trim() ||
+    state.category !== "all" ||
+    state.sort !== "popular" ||
+    state.kind !== "all" ||
+    state.access !== "all" ||
+    state.triggerFilter !== "all" ||
+    state.gallery ||
+    activeExtras ||
+    state.savedOnly
+  );
 }
 
 function applyLocale() {
@@ -806,8 +1196,11 @@ function applyLocale() {
     .querySelectorAll("[data-lr-i18n]")
     .forEach((node) => (node.textContent = t(node.dataset.lrI18n)));
   el.search.placeholder = t("searchPlaceholder");
+  el.advanced.querySelector("[data-facet='author']").placeholder = t("authorPlaceholder");
+  for (const key of ["tags", "excludeTags"])
+    el.advanced.querySelector(`[data-facet="${key}"]`).placeholder = t("tagsPlaceholder");
   el.lead.textContent = t("lead");
-  el.source.textContent = t("source");
+  el.source.textContent = t(state.scope === "adult" ? "adultSource" : "source");
   el.langButton.textContent = lang() === "en" ? "RU" : "EN";
 }
 
@@ -838,12 +1231,84 @@ async function copyText(text, message) {
 
 function bind() {
   let timer = null;
-  el.search.addEventListener("input", () => {
+  const queueFilter = () => {
     window.clearTimeout(timer);
-    timer = window.setTimeout(() => {
-      state.q = el.search.value;
+    timer = window.setTimeout(applyFilters, 120);
+  };
+  el.search.addEventListener("input", queueFilter);
+  el.advanced.addEventListener("input", (event) => {
+    const key = event.target.dataset.facet;
+    if (!Object.hasOwn(TEXT_FACETS, key)) return;
+    state.extra[key] = event.target.value;
+    queueFilter();
+  });
+  el.advanced.addEventListener("change", (event) => {
+    const key = event.target.dataset.facet;
+    if (!Object.hasOwn(EXTRA_OPTIONS, key)) return;
+    state.extra[key] = event.target.value;
+    if (key === "frames" && state.extra.frames === "one") state.gallery = false;
+    applyFilters();
+  });
+
+  el.scope.addEventListener("click", (event) => {
+    const scope = event.target.closest("[data-scope]")?.dataset.scope;
+    if (!scope) return;
+    if (scope === "adult" && !state.ageConfirmed) {
+      el.age.returnValue = "";
+      el.age.showModal();
+    } else {
+      changeScope(scope);
+    }
+  });
+  el.age.addEventListener("close", () => {
+    if (el.age.returnValue !== "confirm") return;
+    state.ageConfirmed = true;
+    changeScope("adult");
+  });
+  el.preview.addEventListener("click", (event) => {
+    const next = event.target.closest("[data-preview]")?.dataset.preview;
+    if (!next || next === state.preview) return;
+    const ref = extractLoraRef(el.search.value);
+    if (ref && state.byId.has(ref.id) && previewGroup(state.byId.get(ref.id)) !== next) {
+      el.search.value = "";
+    }
+    state.preview = next;
+    applyFilters();
+  });
+  el.triggerFilter.addEventListener("change", () => {
+    state.triggerFilter = el.triggerFilter.value;
+    applyFilters();
+  });
+  el.refine.addEventListener("click", (event) => {
+    if (event.target.closest("[data-reset]")) {
+      resetFilters();
+      el.search.focus();
+      return;
+    }
+    const feature = event.target.closest("[data-feature]")?.dataset.feature;
+    if (!feature) return;
+    if (feature === "gallery") {
+      state.gallery = !state.gallery;
+      if (state.gallery && state.extra.frames === "one") state.extra.frames = "all";
+    } else state.savedOnly = !state.savedOnly;
+    applyFilters();
+  });
+  el.grid.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-favorite]");
+    if (!button) return;
+    const id = button.closest("[data-id]").dataset.id;
+    if (state.saved.has(id)) state.saved.delete(id);
+    else state.saved.add(id);
+    try {
+      localStorage.setItem(SAVED_KEY, JSON.stringify([...state.saved]));
+    } catch {}
+    if (state.savedOnly) {
       applyFilters();
-    }, 120);
+      el.refine.querySelector("[data-feature='saved']").focus();
+    } else {
+      button.outerHTML = favoriteHtml(state.byId.get(id));
+      el.grid.querySelector(`[data-id="${CSS.escape(id)}"] [data-favorite]`)?.focus();
+    }
   });
 
   el.categories.addEventListener("click", (event) => {
@@ -877,6 +1342,19 @@ function bind() {
     const lora = state.byId.get(host.dataset.id);
     if (!lora) return;
     const id = String(lora.id);
+    if (event.target.closest("[data-spoiler]")) {
+      if (state.revealedAdult.has(id)) state.revealedAdult.delete(id);
+      else state.revealedAdult.add(id);
+      rerenderCard(id);
+      if (el.viewer.open) {
+        renderMedia(lora);
+        el.viewer.querySelector("[data-spoiler]")?.focus();
+        loadViewerGallery(lora);
+      } else {
+        el.grid.querySelector(`[data-id="${CSS.escape(id)}"] [data-spoiler]`)?.focus();
+      }
+      return;
+    }
     const refresh = () => {
       rerenderCard(id);
       if (el.viewer.open && el.viewer.dataset.id === id) openViewer(id);
@@ -1017,8 +1495,8 @@ function bind() {
 
   el.empty.addEventListener("click", (event) => {
     if (!event.target.closest("[data-reset]")) return;
-    Object.assign(state, { q: "", category: "all", kind: "all", access: "all" });
-    applyFilters();
+    resetFilters();
+    el.search.focus();
   });
 
   el.langButton.addEventListener("click", () => {
@@ -1057,13 +1535,17 @@ function bind() {
 }
 
 async function start() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SAVED_KEY) || "[]");
+    if (Array.isArray(saved)) state.saved = new Set(saved.filter((id) => typeof id === "string"));
+  } catch {}
   applyLocale();
   bind();
   await load();
-  buildControls();
   /* поле поиска заполняется из ?q= до фильтрации: applyFilters читает запрос из поля */
   el.search.value = state.q;
-  applyFilters();
+  refreshScope();
+  if (extraCount()) el.advanced.open = true;
   /* ссылка loras.html?id=… сразу открывает карточку */
   const linked = params.get("id");
   if (linked && state.byId.has(linked)) openViewer(linked);

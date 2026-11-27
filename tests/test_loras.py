@@ -28,12 +28,12 @@ def check(title, condition, detail=""):
     print(f"ok   {title}")
 
 
-check("отобраны ровно безопасные и R", sorted(by_id) == sorted([2540444, 2530730, 2400317, 2638819, 2560840]), sorted(by_id))
+check("отобраны модели ниже R и допущенные R", sorted(by_id) == sorted([2540444, 2530730, 2400317, 2638819, 2560840, 2640938]), sorted(by_id))
 check("XXX исключён", 929497 not in by_id and reasons.get("выше R") == 1, reasons)
 check("minor исключён", 465603 not in by_id and reasons.get("minor") == 1)
-check("без безопасных превью исключён", 2640938 not in by_id and reasons.get("нет безопасных превью") == 1)
+check("модель ниже R без PG-превью остаётся в общем каталоге", by_id[2640938]["images"] == [])
 check("тег nsfw рядом с sfw всё равно исключает", 2718862 not in by_id and reasons.get("взрослые теги") == 1)
-check("дубли не повторяются", len(loras) == 5)
+check("дубли не повторяются", len(loras) == 6)
 
 ba = by_id[2530730]
 check("берётся новая версия с безопасной картинкой", ba["version_id"] == 2949191)
@@ -59,7 +59,7 @@ check("версия 748cm — новая с картинкой", by_id[2638819][
 check("старый формат /orig тоже уменьшается", mod.resized("https://image.civitai.com/k/u/orig") == "https://image.civitai.com/k/u/width=450")
 
 review_ids = {item["id"] for item in review}
-check("в пересмотр попадают XXX, без превью и с тегами", review_ids == {929497, 2640938, 2718862}, review_ids)
+check("в пересмотр попадают XXX и модель со взрослыми тегами без рейтинга ниже R", review_ids == {929497, 2718862}, review_ids)
 check("minor в пересмотр не попадает", 465603 not in review_ids)
 xxx = next(item for item in review if item["id"] == 929497)
 check("в пересмотре только безопасные превью и счётчики", xxx["image_levels"] == {"1": 1} and len(xxx["safe_images"]) == 1, xxx)
@@ -171,6 +171,12 @@ by_id = {lora["id"]: lora for lora in mod_made}
 check("Public с ранним доступом в будущем считается платной", by_id[9]["access"] == 1 and by_id[9]["until"] == "2999-01-01", by_id[9])
 check("ранний доступ в прошлом — уже бесплатная", by_id[10]["access"] == 0 and by_id[10]["until"] == "", by_id[10])
 mod.ENABLED_TYPES = ("LORA",)
+check("подтверждённый PG допускается при отдельной метке NSFW", mod.reject_reason(synth(101, nsfw=True)) is None)
+check("смешанный рейтинг версий с R не ниже R", not mod.below_r_standard(synth(102, versions=[
+    {"id": 1021, "nsfwLevel": 1}, {"id": 1022, "nsfwLevel": 4},
+])))
+check("неизвестный рейтинг версии не считается PG", not mod.below_r_standard(synth(103, versions=[{"id": 1031, "nsfwLevel": 0}])))
+check("модель с отметкой minor не переносится при низком рейтинге", not mod.below_r_standard(synth(104, minor=True)))
 off, off_why, _ = mod.select([synth(2, "LoCon"), synth(3, "DoRA")])
 check("пока форматы выключены, LoCon и DoRA отбрасываются", off == [] and off_why.get("не LoRA") == 2, off_why)
 old_row = mod.pack(got[1])[: mod.FIELDS.index("kind")]
