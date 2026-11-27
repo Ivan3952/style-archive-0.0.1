@@ -41,22 +41,20 @@
   gap: 8px;
   padding: 10px 0;
 }
-.loras-page .lr-toolbar-v010 {
-  position: static;
-  padding: 6px 0;
-  backdrop-filter: none;
-}
 .lr-sticky-controls-v010 {
   position: sticky;
   top: var(--lr-header-height, 66px);
   z-index: 21;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  gap: 6px 12px;
   padding: 5px 0;
   border-bottom: 1px solid var(--line);
   background: var(--bg);
+}
+.lr-sticky-controls-v010 .toolbar-bar-v005 {
+  min-width: 0;
 }
 .lr-sticky-controls-v010 .lr-scope-v010 {
   padding: 0;
@@ -64,6 +62,28 @@
 .lr-filter-count-v010 {
   color: var(--accent);
   font-variant-numeric: tabular-nums;
+}
+.lr-back-to-top-v010 {
+  position: fixed;
+  z-index: 25;
+  inset-inline-end: max(14px, env(safe-area-inset-right));
+  inset-block-end: max(14px, env(safe-area-inset-bottom));
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 22px;
+  cursor: pointer;
+}
+.lr-back-to-top-v010:hover,
+.lr-back-to-top-v010:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .lr-filters-v010 {
   width: min(720px, calc(100% - 24px));
@@ -113,6 +133,12 @@
 @media (max-width: 720px) {
   .lr-sticky-controls-v010 {
     top: 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 6px;
+  }
+  .lr-sticky-controls-v010 .toolbar-bar-v005 {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
   .lr-sticky-controls-v010 .lr-scope-v010 {
     gap: 5px;

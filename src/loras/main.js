@@ -54,6 +54,7 @@ const DICT = {
     multipleTriggers: "Несколько наборов",
     descriptionTriggers: "Есть теги из описания",
     filterPanel: "Фильтры",
+    backToTop: "Наверх",
     showResults: (count) => `Показать модели (${count})`,
     authorFilter: "Автор на CivitAI",
     authorPlaceholder: "Имя или часть имени",
@@ -166,6 +167,7 @@ const DICT = {
     multipleTriggers: "Multiple sets",
     descriptionTriggers: "Tags from description",
     filterPanel: "Filters",
+    backToTop: "Back to top",
     showResults: (count) => `Show models (${count})`,
     authorFilter: "CivitAI author",
     authorPlaceholder: "Name or part of name",
@@ -360,6 +362,8 @@ const el = {
   sort: $("#lrSort"),
   kinds: $("#lrKinds"),
   stickyControls: $(".lr-sticky-controls-v010"),
+  backToTop: $("#lrBackToTop"),
+  catalogTitle: $("#lrCatalogTitle"),
   refine: $("#lrRefine"),
   advanced: $("#lrAdvanced"),
   filters: $("#lrFilters"),
@@ -1206,6 +1210,8 @@ function applyLocale() {
     .querySelectorAll("[data-lr-i18n]")
     .forEach((node) => (node.textContent = t(node.dataset.lrI18n)));
   el.search.placeholder = t("searchPlaceholder");
+  el.backToTop.setAttribute("aria-label", t("backToTop"));
+  el.backToTop.title = t("backToTop");
   el.advanced.querySelector("[data-facet='author']").placeholder = t("authorPlaceholder");
   for (const key of ["tags", "excludeTags"])
     el.advanced.querySelector(`[data-facet="${key}"]`).placeholder = t("tagsPlaceholder");
@@ -1246,6 +1252,20 @@ function bind() {
   };
   syncHeaderHeight();
   new ResizeObserver(syncHeaderHeight).observe(header);
+
+  const syncBackToTop = () => {
+    el.backToTop.hidden = window.scrollY < 450;
+  };
+  syncBackToTop();
+  el.backToTop.addEventListener("click", () => {
+    el.catalogTitle.focus({ preventScroll: true });
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
+  });
 
   let timer = null;
   const queueFilter = () => {
@@ -1505,6 +1525,7 @@ function bind() {
   window.addEventListener(
     "scroll",
     () => {
+      syncBackToTop();
       if (
         !el.menu.hidden &&
         !el.menu.classList.contains("sheet") &&
