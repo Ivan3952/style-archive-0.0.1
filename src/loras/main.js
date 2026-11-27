@@ -359,7 +359,7 @@ const el = {
   categories: $("#lrCategories"),
   sort: $("#lrSort"),
   kinds: $("#lrKinds"),
-  toolbar: $(".ch-toolbar-v008"),
+  stickyControls: $(".lr-sticky-controls-v010"),
   refine: $("#lrRefine"),
   advanced: $("#lrAdvanced"),
   filters: $("#lrFilters"),
@@ -1178,21 +1178,23 @@ function syncControls() {
     kind: state.kind,
     access: state.access,
   };
-  el.toolbar
-    .querySelectorAll(
-      "[data-scope], [data-preview], [data-category], [data-sort], [data-kind], [data-access], [data-feature]"
-    )
-    .forEach((button) => {
-      const [key, value] = Object.entries(button.dataset)[0];
-      const selected =
-        key === "feature"
-          ? value === "saved"
-            ? state.savedOnly
-            : state.gallery
-          : selections[key] === value;
-      button.classList.toggle("active", selected);
-      button.setAttribute("aria-pressed", String(selected));
-    });
+  const stateButtons = [
+    ...el.scope.querySelectorAll("[data-scope]"),
+    ...el.filters.querySelectorAll(
+      "[data-preview], [data-category], [data-sort], [data-kind], [data-access], [data-feature]"
+    ),
+  ];
+  stateButtons.forEach((button) => {
+    const [key, value] = Object.entries(button.dataset)[0];
+    const selected =
+      key === "feature"
+        ? value === "saved"
+          ? state.savedOnly
+          : state.gallery
+        : selections[key] === value;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
   el.filters.querySelector("[data-reset]").hidden = !(state.q.trim() || active);
 }
 
@@ -1238,6 +1240,13 @@ async function copyText(text, message) {
 }
 
 function bind() {
+  const header = $(".topbar");
+  const syncHeaderHeight = () => {
+    el.stickyControls.style.setProperty("--lr-header-height", `${header.offsetHeight}px`);
+  };
+  syncHeaderHeight();
+  new ResizeObserver(syncHeaderHeight).observe(header);
+
   let timer = null;
   const queueFilter = () => {
     window.clearTimeout(timer);

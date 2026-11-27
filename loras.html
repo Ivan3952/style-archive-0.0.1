@@ -85,43 +85,43 @@
 
       <p class="lr-lead-v010" id="lrLead"></p>
 
-      <section class="toolbar ch-toolbar-v008 lr-toolbar-v010" aria-label="Поиск">
-        <div class="lr-toolbar-row-v010">
-          <div class="lr-scope-v010 ch-chips-v008">
-            <button
-              class="filter-chip active"
-              type="button"
-              data-scope="standard"
-              aria-pressed="true"
-              data-lr-i18n="standard"
-            ></button>
-            <button class="filter-chip" type="button" data-scope="adult" aria-pressed="false">
-              18+
-            </button>
-          </div>
-          <div class="toolbar-bar-v005">
-            <label class="search-wrap">
-              <span class="search-label" data-lr-i18n="search">ПОИСК</span>
-              <input
-                id="lrSearch"
-                type="search"
-                autocomplete="off"
-                spellcheck="false"
-                placeholder=""
-              />
-              <span class="search-count" id="lrCount">0</span>
-            </label>
-          </div>
+      <div class="lr-sticky-controls-v010">
+        <div class="lr-scope-v010 ch-chips-v008">
           <button
-            class="filters-toggle-v005"
-            id="lrOpenFilters"
+            class="filter-chip active"
             type="button"
-            aria-haspopup="dialog"
-            aria-controls="lrFilters"
-          >
-            <span data-lr-i18n="filterPanel"></span>
-            <span class="lr-filter-count-v010" id="lrFilterCount" hidden></span>
+            data-scope="standard"
+            aria-pressed="true"
+            data-lr-i18n="standard"
+          ></button>
+          <button class="filter-chip" type="button" data-scope="adult" aria-pressed="false">
+            18+
           </button>
+        </div>
+        <button
+          class="filters-toggle-v005"
+          id="lrOpenFilters"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="lrFilters"
+        >
+          <span data-lr-i18n="filterPanel"></span>
+          <span class="lr-filter-count-v010" id="lrFilterCount" hidden></span>
+        </button>
+      </div>
+      <section class="toolbar ch-toolbar-v008 lr-toolbar-v010" aria-label="Поиск">
+        <div class="toolbar-bar-v005">
+          <label class="search-wrap">
+            <span class="search-label" data-lr-i18n="search">ПОИСК</span>
+            <input
+              id="lrSearch"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder=""
+            />
+            <span class="search-count" id="lrCount">0</span>
+          </label>
         </div>
         <dialog class="lr-filters-v010" id="lrFilters" aria-labelledby="lrFiltersTitle">
           <div class="lr-filters-shell-v010">
