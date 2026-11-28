@@ -3,7 +3,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 const pkg = JSON.parse(readFileSync(resolve(process.cwd(), "package.json"), "utf8"));
-const CODENAME = "Clean Slate";
+const RELEASE = `v${pkg.version} · Wide Angle`;
 
 /* Дата релиза = день сборки (по Москве); «проверенные стили до» = самая поздняя дата публикации в данных. */
 const BUILD_DATE = new Intl.DateTimeFormat("ru-RU", {
@@ -76,6 +76,7 @@ function injectVersion() {
     transformIndexHtml: (html) =>
       html
         .replaceAll("%APP_VERSION%", pkg.version)
+        .replaceAll("%APP_RELEASE%", RELEASE)
         .replaceAll("%BUILD_DATE%", BUILD_DATE)
         .replaceAll("%DATA_DATE%", DATA_DATE),
   };
@@ -86,7 +87,7 @@ export default defineConfig({
   publicDir: "public",
   define: {
     // единственный источник версии: поле version в package.json
-    __APP_RELEASE__: JSON.stringify(`v${pkg.version} · ${CODENAME}`),
+    __APP_RELEASE__: JSON.stringify(RELEASE),
     __BUILD_DATE__: JSON.stringify(BUILD_DATE),
   },
   plugins: [injectVersion(), copyRuntimeData()],
